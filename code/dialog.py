@@ -2,7 +2,6 @@ import csv
 import pygame
 
 from npc import NPC
-from collectableItem import CollectableItem
 from settings import SETTINGS
 
 
@@ -34,12 +33,6 @@ class Dialog:
                     if row[0] == self.speaker.dbSymbol:
                         if self.check_condition(row[3]):
                             self.text = row[SETTINGS.LANGUAGE]
-                elif type(self.speaker) is CollectableItem:
-                    if row[0] == "item":
-                        self.text = row[SETTINGS.LANGUAGE]
-                elif type(self.speaker) is str:
-                    if row[0] == self.speaker:
-                        self.text = row[SETTINGS.LANGUAGE]
 
     def mod_text(self):
         if "<playername>" in self.text:

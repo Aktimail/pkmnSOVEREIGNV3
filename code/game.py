@@ -55,7 +55,7 @@ class Game:
 
     def check_query(self):
         if self.gameState.switch_game_state_query:
-            if not self.gameState.DialogManager.reading and not self.gameState.AnimationManager.playing:
+            if not self.gameState.DialogManager.reading:
 
                 self.gameState.switch_game_state_query = False
 

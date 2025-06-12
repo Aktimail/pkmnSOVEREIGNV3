@@ -10,9 +10,7 @@ from dialogManager import DialogManager
 from animationManager import AnimationManager
 from map import Map
 from npc import NPC
-from collectableItem import CollectableItem
 from item import Item
-from dynamicTile import DynamicTile
 from data import DATA
 from tool import Tool
 
@@ -21,7 +19,7 @@ class WorldEngine:
     def __init__(self, screen, keyboard, controller, player):
         self.Screen = screen
         self.DialogManager = DialogManager(screen, keyboard, controller)
-        self.AnimationManager = AnimationManager(screen)
+        self.AnimationManager = AnimationManager()
         self.Player = player
 
         self.Map = None
@@ -69,10 +67,6 @@ class WorldEngine:
     def update(self):
         self.Map.render(self.Screen)
 
-        if self.AnimationManager.playing:
-            self.AnimationManager.update()
-            return
-
         if self.DialogManager.reading:
             self.DialogManager.update()
             return
@@ -82,7 +76,6 @@ class WorldEngine:
         self.check_player_interaction()
         self.check_wild_pkmn()
         self.check_switch()
-        self.check_dynamic_tiles()
         self.check_bike()
 
         self.Map.update(self.Player)
@@ -121,10 +114,6 @@ class WorldEngine:
                 for npc in self.npcs:
                     if npc.dbSymbol == obj.npc_dbsymbol:
                         npc.checkpoints[obj.checkpoint] = pygame.Rect(obj.x, obj.y, 16, 16)
-
-            elif obj.type == "item":
-                if obj.item_id not in self.itemsCollectedId:
-                    self.add_item(CollectableItem(obj.name, obj.item_id, obj.x, obj.y, obj.shown))
 
             elif obj.type == "wildPkmn":
                 self.wildPkmnSpawn.append({"rect": pygame.Rect(obj.x, obj.y, obj.width, obj.height),
@@ -185,19 +174,6 @@ class WorldEngine:
                         if not self.check_obstacle(self.Player.hitbox, npc.hitbox):
                             self.Player.interaction = True
 
-                            if not npc.alert:
-                                npc.alert = True
-
-                                def npc_approach(target_npc):
-                                    self.Player.facing_entity(target_npc)
-                                    target_npc.chasing = True
-
-                                self.AnimationManager.push_animation(
-                                    "alert",
-                                    self.map_to_screen_pos(npc.position),
-                                    callback=npc_approach,
-                                    target=npc)
-
     def check_wild_pkmn(self):
         if self.Player.justMoved:
             for spawn in self.wildPkmnSpawn:
@@ -210,16 +186,6 @@ class WorldEngine:
                         lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
                         self.Player.Opponent = Pokemon(name, lvl)
                         self.switch_game_state_query = True
-
-    def check_dynamic_tiles(self):
-        for tile in self.tilesTypes["grass"]:
-            for sprite in self.Map.Group:
-                if type(sprite) == DynamicTile:
-                    if sprite.position == tile.topleft:
-                        if self.Player.position != tile.topleft:
-                            self.remove_dynamic_tile(sprite)
-            if self.Player.facingTile == tile and self.Player.inMotion:
-                self.add_dynamic_tile(DynamicTile(self.Screen, "grass", self.Player.facingTile.topleft))
 
     def check_bike(self):
         if self.Player.bike:
@@ -245,18 +211,6 @@ class WorldEngine:
         self.itemsCollectedId.append(item.id)
         if item.shown:
             self.collisions.remove(item.rect)
-
-    def add_dynamic_tile(self, tile):
-        for sprite in self.Map.Group:
-            if type(sprite) is DynamicTile:
-                if tile.position == sprite.position:
-                    return
-        self.Map.Group.add(tile)
-        self.dynamicTiles.append(tile)
-
-    def remove_dynamic_tile(self, tile):
-        self.Map.Group.remove(tile)
-        self.dynamicTiles.remove(tile)
 
     def check_obstacle(self, hitboxa, hitboxb):
         road = pygame.Rect.union(hitboxa, hitboxb)

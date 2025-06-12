@@ -11,7 +11,7 @@ class BattleEngine:
         self.Screen = screen
         self.Cursor = cursor
         self.DialogManager = DialogManager(screen, keyboard, controller)
-        self.AnimationManager = AnimationManager(screen)
+        self.AnimationManager = AnimationManager()
 
         self.Player = player
         self.Opponent = None
