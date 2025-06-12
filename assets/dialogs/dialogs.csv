@@ -1,0 +1,7 @@
+dbSymbol,fr,en,condition
+flora01,"Salut connard","Yo what's up, your <playerlead> is so cool, look at my <spklead>, he's as cool as your's!<break>My name is <spkname>, what about you ?",
+flora01,"YO TOUT LE MONDE C'EST SQUEEZIE ??? le mec a completement craque","YO WHAT'S UP EVERYONE I'M SQUEEZIE ??? I'm crazyy",defeated
+flora02,"Salut la compagnie !","Hello everyone !",
+flora02,"Quoi t'as pas entendu ?","What, you didn't hear me ?",second
+item, <itemname>, <itemname>,
+bike, pas de velo narvalo, pas de velo narvalo,
