@@ -1,13 +1,12 @@
+import os
 import math
 import random
 import json
 
-from data import DATA
 from move import Move
 from type import Type
 from ability import Ability
 from item import Item
-from modifier import Modifier
 
 
 class Pokemon:
@@ -16,6 +15,7 @@ class Pokemon:
         self.forms = data["forms"]
 
         self.id = data["id"]
+        self.publicId = 0
         self.name = data["dbSymbol"].title()
         self.height = self.forms[0]["height"]
         self.weight = self.forms[0]["weight"]
@@ -55,7 +55,7 @@ class Pokemon:
                     "spd": self.forms[0]["evSpd"]
                     }
 
-        self.nature = random.choice(tuple(DATA.NATURES.values()))
+        self.nature = self.get_nature()
 
         self.boosts = {"atk": 0, "defe": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
         self.status = {"main": None, "sec": []}
@@ -100,6 +100,13 @@ class Pokemon:
         ability = random.choice(self.forms[0]["abilities"])
         return Ability(ability)
 
+    @staticmethod
+    def get_nature():
+        path = "../assets/data/natures"
+        files = os.listdir(path)
+        nature = random.choice(files)
+        return json.load(open(path + "/" + nature))
+
     def get_item(self):
         items = []
         for item in self.forms[0]["itemHeld"]:
@@ -114,10 +121,7 @@ class Pokemon:
         path = f"../assets/graphics/pokemons/{direction}/"
         if self.shiny:
             path += "shiny/"
-            if self.gender == "female" and self.forms[0]["resources"]["hasFemale"]:
-                if not self.forms[0]["femaleRate"] == 100:
-                    path += "female/"
-        elif self.gender == "female" and self.forms[0]["resources"]["hasFemale"]:
+        if self.gender == "female" and self.forms[0]["resources"]["hasFemale"]:
             if not self.forms[0]["femaleRate"] == 100:
                 path += "female/"
 
@@ -221,12 +225,17 @@ class Pokemon:
                     elif pkmn.boosts[stat] < -6:
                         pkmn.boosts[stat] = -6
 
+                    boost_factors = json.load(open("../assets/data/other/boostFactors.json"))
+                    gen_boost_f = boost_factors["general"]
+                    acc_boost_f = boost_factors["accuracy"]
+                    eva_boost_f = boost_factors["evasion"]
+
                     if stat == "acc":
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * DATA.ACC_F_BOOST[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * acc_boost_f[pkmn.boosts[stat] + 6]
                     elif stat == "eva":
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * DATA.EVA_F_BOOST[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * eva_boost_f[pkmn.boosts[stat] + 6]
                     else:
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * DATA.GEN_F_BOOSTS[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * gen_boost_f[pkmn.boosts[stat] + 6]
 
         for status in move.status:
             if status:
@@ -246,9 +255,6 @@ class Pokemon:
 
     def is_ko(self):
         return not self.stageStats["hp"]
-
-    def get_lead(self):
-        return self
 
     def init_mod(self, mod):
         if "gender" in mod:
@@ -276,7 +282,7 @@ class Pokemon:
                 self.evs[stat] = mod["evs"][stat]
 
         if "nature" in mod:
-            self.nature = DATA.NATURES[mod["nature"]]
+            self.nature = json.load(open(f"../assets/data/natures/{mod["nature"]}.json"))
 
         if "status" in mod:
             self.status = mod["status"]

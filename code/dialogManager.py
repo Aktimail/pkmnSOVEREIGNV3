@@ -1,5 +1,3 @@
-import pygame
-
 from settings import SETTINGS
 from dialogUi import DialogUi
 from dialog import Dialog
@@ -20,12 +18,11 @@ class DialogManager:
 
         self.reading = False
 
-    def open_dialog(self, player, speaker, skip=True):
-        self.Dialog = Dialog(player, speaker)
-        self.Dialog.init_text()
-        self.Dialog.mod_text()
+    def open_dialog(self, player, dbsymbol, speaker=None, item=None):
+        self.Dialog = Dialog(player, dbsymbol, speaker, item)
+        self.Dialog.load_dialog()
+        self.Dialog.update_tags()
         self.Dialog.format_text()
-        self.skip = skip
         self.reading = True
 
     def close_dialog(self):
@@ -38,7 +35,7 @@ class DialogManager:
 
     def check_auto_skip(self):
         if not self.Dialog.writing:
-            self.timer += self.Screen.dt
+            self.timer += self.Screen.deltaTime
             if self.timer >= self.skip_time:
                 self.timer = 0
                 if not self.Dialog.next_text():

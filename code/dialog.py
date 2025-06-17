@@ -1,14 +1,16 @@
 import csv
 import pygame
 
-from npc import NPC
 from settings import SETTINGS
 
 
 class Dialog:
-    def __init__(self, player, speaker):
+    def __init__(self, player, dbsymbol, speaker=None, item=None):
         self.player = player
+        self.dbSymbol = dbsymbol
+
         self.speaker = speaker
+        self.item = item
 
         self.txt_size = 32
         self.txt_color = (0, 0, 0)
@@ -25,26 +27,28 @@ class Dialog:
 
         self.writing = True
 
-    def init_text(self):
+    def load_dialog(self):
         with open("../assets/dialogs/dialogs.csv", 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                if type(self.speaker) is NPC:
-                    if row[0] == self.speaker.dbSymbol:
-                        if self.check_condition(row[3]):
-                            self.text = row[SETTINGS.LANGUAGE]
+                if row[1] == self.dbSymbol:
+                    if self.check_condition(row[4]):
+                        self.text = row[SETTINGS.LANGUAGE+1]
 
-    def mod_text(self):
+    def update_tags(self):
         if "<playername>" in self.text:
             self.text = self.text.replace("<playername>", self.player.name)
-        if "<spkname>" in self.text:
-            self.text = self.text.replace("<spkname>", self.speaker.name)
         if "<playerlead>" in self.text:
             self.text = self.text.replace("<playerlead>", self.player.get_lead().name)
-        if "<spklead>" in self.text:
-            self.text = self.text.replace("<spklead>", self.speaker.get_lead().name)
-        if "<itemname>" in self.text:
-            self.text = self.text.replace("<itemname>", self.speaker.dbSymbol)
+
+        if self.speaker:
+            if "<spkname>" in self.text:
+                self.text = self.text.replace("<spkname>", self.speaker.name)
+            if "<spklead>" in self.text:
+                self.text = self.text.replace("<spklead>", self.speaker.get_lead().name)
+        if self.item:
+            if "<itemname>" in self.text:
+                self.text = self.text.replace("<itemname>", self.item.dbSymbol)
 
     def format_text(self):
         space_width = self.font.render(" ", True, self.txt_color).get_width()
@@ -107,9 +111,9 @@ class Dialog:
         if not condition:
             return True
         elif condition == "defeated":
-            if self.speaker.dbSymbol in self.player.trainers_defeated:
+            if self.dbSymbol in self.player.trainers_defeated:
                 return True
         elif condition == "second":
-            if self.speaker.dbSymbol in self.player.npcs_encountered:
+            if self.dbSymbol in self.player.npcs_encountered:
                 return True
         return False

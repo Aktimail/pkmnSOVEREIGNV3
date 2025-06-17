@@ -1,0 +1,19 @@
+{
+        "fist_plate": "fighting",
+        "dread_plate": "dark",
+        "flame_plate": "fire",
+        "draco_plate": "dragon",
+        "stone_plate": "rock_type",
+        "zap_plate": "electric",
+        "iron_plate": "steel",
+        "meadow_plate": "grass",
+        "splash_plate": "water",
+        "icicle_plate": "ice",
+        "toxic_plate": "poison",
+        "sky_plate": "flying",
+        "blank_plate": "normal",
+        "insect_plate": "bug",
+        "earth_plate": "ground",
+        "spooky_plate": "ghost",
+        "mind_plate": "psychic"
+}

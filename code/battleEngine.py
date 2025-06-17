@@ -1,6 +1,4 @@
 from animationManager import AnimationManager
-from pokemon import Pokemon
-from npc import NPC
 from dialogManager import DialogManager
 from battleUi import BattleUi
 from battleAi import BattleAi
@@ -21,14 +19,11 @@ class BattleEngine:
 
         self.active_menu = None
 
-        self.mod = None
-
         self.switch_game_state_query = False
 
     def init_battle(self):
         self.active_menu = None
         self.Opponent = self.Player.Opponent
-        self.mod = "trainer" if type(self.Opponent) == NPC else "wildpkmn"
         self.Ui = BattleUi(self.Screen, self.get_battle_data())
         self.Ai = BattleAi(self.get_battle_data())
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
@@ -39,7 +34,6 @@ class BattleEngine:
             self.Player.trainers_defeated.append(self.Opponent.dbSymbol)
         self.Player.get_back_world_comp()
         self.switch_game_state_query = True
-
 
     def update(self):
         self.Ui.render()
@@ -99,4 +93,3 @@ class BattleEngine:
             "player": self.Player,
             "opponent": self.Opponent
         }
-

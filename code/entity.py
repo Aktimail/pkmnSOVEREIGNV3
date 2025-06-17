@@ -35,14 +35,13 @@ class Entity(pygame.sprite.Sprite):
 
         self.pokedollars = 0
 
+        self.publicData = {}
+
         self.collision = False
-        self.freeze = False
         self.inMotion = False
-        self.wasInMotion = False
-        self.justMoved = False
+        self.idle = False
+        self.idleCounter = 0
         self.interaction = False
-        self.alert = False
-        self.chasing = False
 
     def sprite_update(self):
         spritesheet_img = pygame.image.load(self.spritesheet)
@@ -52,17 +51,20 @@ class Entity(pygame.sprite.Sprite):
         self.rect.midbottom = self.hitbox.midbottom
 
     def update(self):
-        if self.chasing:
-            self.move()
         self.movement_update()
         self.facing_tile_update()
         self.animation_cycle()
         self.sprite_update()
-        self.check_just_moved()
+        self.idle_update()
 
-    def check_just_moved(self):
-        self.justMoved = self.wasInMotion and not self.inMotion
-        self.wasInMotion = self.inMotion
+    def idle_update(self):
+        if not self.inMotion:
+            self.idleCounter += 1
+            if self.idleCounter >= 2:
+                self.idle = True
+        elif self.inMotion:
+            self.idleCounter = 0
+            self.idle = False
 
     def reset_move(self):
         self.inMotion = False
@@ -100,8 +102,7 @@ class Entity(pygame.sprite.Sprite):
                 self.inMotion = False
 
     def animation_cycle(self):
-        if self.inMotion:
-            self.freeze = False
+        if not self.idle:
             self.animCycle += 1
             if not self.animCycle % 8:
                 self.spriteIdx += 1
@@ -111,13 +112,11 @@ class Entity(pygame.sprite.Sprite):
             if self.animCycle >= 16:
                 self.animCycle = 0
 
-        if not self.inMotion:
-            if self.freeze:
-                if self.spriteIdx % 2:
-                    self.spriteIdx += 1
-                    if self.spriteIdx > 3:
-                        self.spriteIdx = 0
-            self.freeze = True
+        elif self.idle:
+            if self.spriteIdx % 2:
+                self.spriteIdx += 1
+                if self.spriteIdx > 3:
+                    self.spriteIdx = 0
 
     def facing_tile_update(self):
         if not self.inMotion:
