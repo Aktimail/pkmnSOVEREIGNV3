@@ -111,9 +111,9 @@ class Dialog:
         if not condition:
             return True
         elif condition == "defeated":
-            if self.dbSymbol in self.player.trainers_defeated:
+            if self.dbSymbol in self.player.trainersDefeated:
                 return True
         elif condition == "second":
-            if self.dbSymbol in self.player.npcs_encountered:
+            if self.dbSymbol in self.player.npcsEncountered:
                 return True
         return False

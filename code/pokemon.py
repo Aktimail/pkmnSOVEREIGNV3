@@ -127,6 +127,9 @@ class Pokemon:
 
         return path + f"{self.id}.png"
 
+    def get_lead(self):
+        return self
+
     def init_moveset(self):
         moveset = []
         for move in self.movepool:
@@ -312,3 +315,20 @@ class Pokemon:
             "shiny": self.shiny,
             "hp": self.stageStats["hp"]
         }
+
+    def load_pokemon(self, data):
+        self.gender = data["gender"]
+        self.Ability = Ability(data["ability"])
+        self.Item = Item(data["item"]) if data["item"] else None
+        self.moveset.clear()
+        for d in data["moveset"]:
+            M = Move(d["name"])
+            M.load_move(d)
+            self.moveset.append(M)
+        self.ivs = data["ivs"]
+        self.evs = data["evs"]
+        self.nature = data["nature"]
+        self.status = data["status"]
+        self.exp = data["exp"]
+        self.shiny = data["shiny"]
+        self.stageStats["hp"] = data["hp"]

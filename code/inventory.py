@@ -11,7 +11,6 @@ class Inventory:
         self.keys_items = []
 
     def add_item(self, item):
-        IdGenerator().setup_id(item)
         if item.socket == 1:
             self.items.append(item)
         elif item.socket == 5:
@@ -21,24 +20,6 @@ class Inventory:
 
     def use_item(self, item):
         pass
-
-    def check_id(self, id):
-        for item in self.items:
-            if item.id == id:
-                return True
-        for item in self.medicine:
-            if item.id == id:
-                return True
-        for item in self.CT_CS:
-            if item.id == id:
-                return True
-        for item in self.berries:
-            if item.id == id:
-                return True
-        for item in self.keys_items:
-            if item.id == id:
-                return True
-        return False
 
     def save_inventory(self):
         return {

@@ -2,6 +2,7 @@ from animationManager import AnimationManager
 from dialogManager import DialogManager
 from battleUi import BattleUi
 from battleAi import BattleAi
+from entity import Entity
 
 
 class BattleEngine:
@@ -27,11 +28,13 @@ class BattleEngine:
         self.Ui = BattleUi(self.Screen, self.get_battle_data())
         self.Ai = BattleAi(self.get_battle_data())
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
+        print(self.Player.worldCompo)
 
     def end_battle(self):
-        if self.Opponent.lost():
-            self.Player.npcs_encountered.append(self.Opponent.dbSymbol)
-            self.Player.trainers_defeated.append(self.Opponent.dbSymbol)
+        if type(self.Opponent) is Entity:
+            if self.Opponent.lost():
+                self.Player.npcsEncountered.append(self.Opponent.dbSymbol)
+                self.Player.trainersDefeated.append(self.Opponent.dbSymbol)
         self.Player.get_back_world_comp()
         self.switch_game_state_query = True
 

@@ -1,4 +1,7 @@
+import os
 import pygame
+import pathlib
+import json
 
 from screen import Screen
 from keyboard import Keyboard
@@ -40,7 +43,7 @@ class Game:
             self.Player
         )
 
-        self.WorldEngine.switch_map("Saint-Rémy")
+        self.load_data()
 
         self.gameState = self.WorldEngine
 
@@ -69,6 +72,7 @@ class Game:
     def inputs_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # self.save_data()
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
@@ -90,3 +94,25 @@ class Game:
                     self.Cursor.left_click = False
                 elif event.button == 3:
                     self.Cursor.right_click = False
+
+    def save_data(self):
+        if not pathlib.Path("../save").exists():
+            os.makedirs("../save")
+            pathlib.Path("../save/map.data").touch()
+            pathlib.Path("../save/player.data").touch()
+
+        with open("../save/map.data", "w") as file:
+            file.write(json.dumps(self.WorldEngine.save_map()))
+
+        with open("../save/player.data", "w") as file:
+            file.write(json.dumps(self.Player.save_player()))
+
+    def load_data(self):
+        if pathlib.Path("../save").exists():
+            map_data = json.load(open("../save/map.data"))
+            player_data = json.load(open("../save/player.data"))
+
+            self.Player.load_player(player_data)
+            self.WorldEngine.load_map(map_data)
+        else:
+            self.WorldEngine.switch_map("Saint-Rémy")

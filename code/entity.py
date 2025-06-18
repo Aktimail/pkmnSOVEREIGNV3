@@ -175,7 +175,7 @@ class Entity(pygame.sprite.Sprite):
                 if pkmn.name == name:
                     world_compo.append(pkmn)
                     break
-        return world_compo
+        self.team = world_compo
 
     def is_aligned(self):
         if self.position.x % 16:

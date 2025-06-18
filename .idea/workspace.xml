@@ -5,27 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1eec6ba-4e2f-42c3-81b8-3ef763a7716f" name="Changes" comment="general update">
-      <change afterPath="$PROJECT_DIR$/assets/data/other/boostFactors.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/data/other/idDict.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/data/other/plates.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/data/other/typeEnhancingItems.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/dynamicTile.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/idGenerator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/dialogs/dialogs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/assets/dialogs/dialogs.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/graphics/other/poke_ball.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/graphics/other/poke_ball_hiden.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/battleEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/dialogManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/dialogManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/entity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/inventory.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/inventory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/player.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/pokemon.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/pokemon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/screen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/worldEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/worldEngine.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,41 +52,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.IdGenerator.executor": "Run",
-    "Python.dialogUi.executor": "Run",
-    "Python.idGenerator (1).executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Documents/prog/pkmnSOVEREIGN"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.IdGenerator.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dialogUi.executor&quot;: &quot;Run&quot;,
+    &quot;Python.idGenerator (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.idGenerator.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Documents/prog/pkmnSOVEREIGN&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Python.idGenerator (1)">
-    <configuration name="idGenerator (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="pkmnSOVEREIGNV3" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/idGenerator.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+}</component>
+  <component name="RunManager" selected="Python.main">
     <configuration name="idGenerator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pkmnSOVEREIGNV3" />
       <option name="ENV_FILES" value="" />
@@ -167,7 +134,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.idGenerator (1)" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.idGenerator" />
         <item itemvalue="Python.test" />
@@ -214,11 +180,28 @@
       <option name="project" value="LOCAL" />
       <updated>1749738556982</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="general update">
+      <option name="closed" value="true" />
+      <created>1750156980307</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750156980307</updated>
+    </task>
+    <task id="LOCAL-00005" summary="general update">
+      <option name="closed" value="true" />
+      <created>1750157001380</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750157001380</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="general update" />
+    <option name="LAST_COMMIT_MESSAGE" value="general update" />
   </component>
 </project>

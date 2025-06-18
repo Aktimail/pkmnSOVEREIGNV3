@@ -35,8 +35,9 @@ class Player(Entity):
 
         self.bike = False
 
-        self.npcs_encountered = []
-        self.trainers_defeated = []
+        self.npcsEncountered = []
+        self.trainersDefeated = []
+        self.collectedItems = []
 
     def update(self):
         self.check_inputs()
@@ -102,17 +103,23 @@ class Player(Entity):
             "team": [pkmn.save_pkmn() for pkmn in self.team],
             "inventory": self.Inventory.save_inventory(),
             "pokedollars": self.pokedollars,
-            "npcs_encounter": self.npcs_encountered,
-            "trainers_defeated": self.trainers_defeated
+            "npcsEncounter": self.npcsEncountered,
+            "trainersDefeated": self.trainersDefeated,
+            "collectedItems": self.collectedItems
         }
 
     def load_player(self, data):
         self.position = pygame.Vector2(data["position"][0], data["position"][1])
         self.direction = data["direction"]
-        self.Inventory = Inventory().load_inventory(data["inventory"])
-        self.pokedollars = data["pokedollars"]
-        self.npcs_encountered = data["npcs_encounter"]
-        self.trainers_defeated = data["trainers_defeated"]
         self.team.clear()
-        for pkmn in data["team"]:
-            self.team.append(Pokemon(pkmn["name"], pkmn["level"], mod=pkmn))
+        for d in data["team"]:
+            P = Pokemon(d["name"], d["level"])
+            P.load_pokemon(d)
+            self.team.append(P)
+        Inv = Inventory()
+        Inv.load_inventory(data["inventory"])
+        self.Inventory = Inv
+        self.pokedollars = data["pokedollars"]
+        self.npcsEncountered = data["npcsEncounter"]
+        self.trainersDefeated = data["trainersDefeated"]
+        self.collectedItems = data["collectedItems"]

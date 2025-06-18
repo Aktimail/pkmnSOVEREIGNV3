@@ -36,7 +36,6 @@ class WorldEngine:
         self.switches = []
         self.npcs = []
         self.items = []
-        self.collectedItems = []
         self.wildPkmnSpawn = []
         self.gate = None
 
@@ -118,7 +117,7 @@ class WorldEngine:
                         npc.checkpoints[obj.checkpoint] = pygame.Rect(obj.x, obj.y, 16, 16)
 
             elif obj.type == "item":
-                if obj.worldId not in self.collectedItems:
+                if obj.worldId not in self.Player.collectedItems:
                     self.items.append({"position": pygame.Vector2(obj.x, obj.y),
                                        "shown": obj.shown,
                                        "worldId": obj.worldId,
@@ -163,11 +162,10 @@ class WorldEngine:
             for npc in self.npcs:
                 if self.Player.facingTile == npc.hitbox:
                     npc.facing_entity(self.Player)
-                    npc.interaction = True
-                    self.Player.npcs_encountered.append(npc.dbSymbol)
+                    self.Player.npcsEncountered.append(npc.dbSymbol)
                     self.DialogManager.open_dialog(self.Player, npc.dbSymbol, npc)
 
-                    if npc.team and npc.dbSymbol not in self.Player.trainers_defeated:
+                    if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
                         self.Player.Opponent = npc
                         self.switch_game_state_query = True
 
@@ -182,35 +180,38 @@ class WorldEngine:
                         for tile in self.dynamicTiles:
                             if item["position"] == tile.position:
                                 self.remove_dynamic_tile(tile)
-                                print("a")
 
                     self.Player.Inventory.add_item(item["item"])
-                    self.collectedItems.append(item["worldId"])
+                    self.Player.collectedItems.append(item["worldId"])
 
                     self.DialogManager.open_dialog(self.Player, "item", item=item["item"])
 
     def check_ext_interaction(self):
         if not self.Player.inMotion:
             for npc in self.npcs:
-                if npc.scanRange and npc.dbSymbol not in self.Player.npcs_encountered:
+                if npc.scanRange and npc.dbSymbol not in self.Player.npcsEncountered:
                     if npc.scanRect.colliderect(self.Player.hitbox):
                         if not self.check_obstacle(self.Player.hitbox, npc.hitbox):
                             self.Player.interaction = True
                             self.Player.facing_entity(npc)
                             if not npc.facingTile == self.Player.hitbox:
                                 npc.move()
+                            else:
+                                npc.interaction = True
 
     def check_wild_pkmn(self):
-        for spawn in self.wildPkmnSpawn:
-            if self.Player.hitbox.colliderect(spawn["rect"]):
-                spawn_data = json.load(open(f"../assets/data/wildPkmn/{self.Map.dbSymbol}.json"))
-                spawn_data = spawn_data[spawn["adress"]]
-                if random.random() < spawn_data["probability"]:
-                    pokemon = Tool.random_picker(spawn_data["pokemon"])
-                    name = pokemon["name"]
-                    lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
-                    self.Player.Opponent = Pokemon(name, lvl)
-                    self.switch_game_state_query = True
+        if not self.Player.inMotion and not self.Player.idle:
+            for spawn in self.wildPkmnSpawn:
+                if self.Player.hitbox.colliderect(spawn["rect"]):
+                    spawn_data = json.load(open(f"../assets/data/wildPkmn/{self.Map.dbSymbol}.json"))
+                    spawn_data = spawn_data[spawn["adress"]]
+                    if random.random() < spawn_data["probability"]:
+                        self.Player.Keyboard.keys.clear()
+                        pokemon = Tool.random_picker(spawn_data["pokemon"])
+                        name = pokemon["name"]
+                        lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
+                        self.Player.Opponent = Pokemon(name, lvl)
+                        self.switch_game_state_query = True
 
     def check_bike(self):
         if self.Player.bike:
@@ -241,3 +242,11 @@ class WorldEngine:
 
     def map_to_screen_pos(self, position):
         return self.Map.MapLayer.translate_point((position.x, position.y - 32))
+
+    def save_map(self):
+        return {
+            "dbSymbol": self.Map.dbSymbol,
+        }
+
+    def load_map(self, data):
+        self.switch_map(data["dbSymbol"])
