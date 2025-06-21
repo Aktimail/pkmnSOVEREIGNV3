@@ -12,6 +12,8 @@ from map import Map
 from npc import NPC
 from item import Item
 from dynamicTile import DynamicTile
+from wildOpponent import WildOpponent
+from trainerOpponent import TrainerOpponent
 from data import DATA
 from tool import Tool
 
@@ -25,11 +27,8 @@ class WorldEngine:
 
         self.Map = None
 
-        self.tilesTypes = {
-            "grass": [],
-            "water": [],
-        }
-        self.dynamicTiles = []
+        self.tilesTypes = {}
+        self.dynamicsTiles = []
 
         self.collisions = []
         self.spawns = []
@@ -41,6 +40,8 @@ class WorldEngine:
 
         self.switch_game_state_query = False
 
+        self.entityLayer = 0
+
     def switch_map(self, map_dbsymbol):
         self.Map = Map(map_dbsymbol)
         self.Map.TmxData = pytmx.load_pygame(f"../assets/maps/{map_dbsymbol}.tmx")
@@ -48,11 +49,11 @@ class WorldEngine:
         map_data = pyscroll.data.TiledMapData(self.Map.TmxData)
         self.Map.MapLayer = pyscroll.BufferedRenderer(map_data, self.Screen.display.get_size())
         self.Map.MapLayer.zoom = self.Map.TmxData.zoom
-
-        entity_layer = 50
-        self.Map.Group = pyscroll.PyscrollGroup(map_layer=self.Map.MapLayer, default_layer=entity_layer)
+        self.entityLayer = self.Map.TmxData.entityLayer
+        self.Map.Group = pyscroll.PyscrollGroup(map_layer=self.Map.MapLayer, default_layer=self.entityLayer)
 
         self.init_object()
+        self.init_dynamics_tiles()
         self.add_entity(self.Player)
 
         if self.gate:
@@ -75,15 +76,15 @@ class WorldEngine:
         self.check_ext_interaction()
         self.check_player_interaction()
         self.check_wild_pkmn()
+        self.check_shaking_grass()
         self.check_switch()
         self.check_bike()
 
         self.Map.update(self.Player)
 
     def init_object(self):
-        for type in self.tilesTypes:
-            self.tilesTypes[type].clear()
-        self.dynamicTiles.clear()
+        self.tilesTypes.clear()
+        self.dynamicsTiles.clear()
         self.collisions.clear()
         self.spawns.clear()
         self.switches.clear()
@@ -94,7 +95,9 @@ class WorldEngine:
 
         for obj in self.Map.TmxData.objects:
             if obj.type == "collision":
-                self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+                subrects = Tool.split_rect(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+                for rect in subrects:
+                    self.collisions.append(rect)
 
             elif obj.type == "spawn":
                 self.spawns.append({"position": pygame.Vector2(obj.x, obj.y),
@@ -121,9 +124,9 @@ class WorldEngine:
                     self.items.append({"position": pygame.Vector2(obj.x, obj.y),
                                        "shown": obj.shown,
                                        "worldId": obj.worldId,
-                                       "item": Item(obj.name)})
+                                       "item": Item(obj.dbSymbol)})
                     if obj.shown:
-                        self.add_dynamic_tile(DynamicTile("pokeball", 1, True, obj.x, obj.y))
+                        self.add_dynamic_tile("pokeball", obj.x, obj.y, layer=self.entityLayer-1)
                         self.collisions.append(pygame.Rect(obj.x, obj.y, 16, 16))
 
             elif obj.type == "wildPkmn":
@@ -133,7 +136,26 @@ class WorldEngine:
             elif obj.type == "tileType":
                 rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
                 for subrect in Tool.split_rect(rect):
-                    self.tilesTypes[obj.tileType].append(subrect)
+                    if obj.tileType in self.tilesTypes:
+                        self.tilesTypes[obj.tileType].append(subrect)
+                    else:
+                        self.tilesTypes[obj.tileType] = [subrect]
+
+    def init_dynamics_tiles(self):
+        if "water" in self.tilesTypes:
+            for rect in self.tilesTypes["water"]:
+                self.add_dynamic_tile("water", rect.x, rect.y, layer=0)
+                self.collisions.append(rect)
+        if "flower" in self.tilesTypes:
+            for rect in self.tilesTypes["flower"]:
+                self.add_dynamic_tile("flower", rect.x, rect.y, layer=self.entityLayer-1)
+        if "grass" in self.tilesTypes:
+            for rect in self.tilesTypes["grass"]:
+                self.add_dynamic_tile("grass", rect.x, rect.y, layer=self.entityLayer-1)
+        if "bridge" in self.tilesTypes:
+            for rect in self.tilesTypes["bridge"]:
+                if rect in self.collisions:
+                    self.collisions.remove(rect)
 
     def check_collisions(self):
         self.Player.collision = False
@@ -163,10 +185,14 @@ class WorldEngine:
                 if self.Player.facingTile == npc.hitbox:
                     npc.facing_entity(self.Player)
                     self.Player.npcsEncountered.append(npc.dbSymbol)
-                    self.DialogManager.open_dialog(self.Player, npc.dbSymbol, npc)
+                    self.DialogManager.open_dialog(self.Player, npc.dbSymbol,
+                                                   context={
+                                                       "spkname": npc.name,
+                                                       "spklead": npc.get_active_pkmn().name
+                                                   })
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
-                        self.Player.Opponent = npc
+                        self.Player.Opponent = TrainerOpponent(npc)
                         self.switch_game_state_query = True
 
             for item in self.items:
@@ -177,14 +203,24 @@ class WorldEngine:
                         for collision in self.collisions:
                             if collision.topleft == item["position"]:
                                 self.collisions.remove(collision)
-                        for tile in self.dynamicTiles:
+                        for tile in self.dynamicsTiles:
                             if item["position"] == tile.position:
                                 self.remove_dynamic_tile(tile)
 
                     self.Player.Inventory.add_item(item["item"])
                     self.Player.collectedItems.append(item["worldId"])
 
-                    self.DialogManager.open_dialog(self.Player, "item", item=item["item"])
+                    self.DialogManager.open_dialog(self.Player, "item",
+                                                   context={
+                                                       "itemname": item["item"].dbSymbol
+                                                   }
+                                                   )
+
+            for tile in self.dynamicsTiles:
+                if tile.dbSymbol == "water":
+                    if self.Player.facingTile == tile.rect:
+                        if tile.rect in self.collisions:
+                            self.DialogManager.open_dialog(self.Player, "water")
 
     def check_ext_interaction(self):
         if not self.Player.inMotion:
@@ -199,6 +235,20 @@ class WorldEngine:
                             else:
                                 npc.interaction = True
 
+    def check_shaking_grass(self):
+        if "grass" in self.tilesTypes:
+            for rect in self.tilesTypes["grass"]:
+                if self.Player.hitbox.colliderect(rect):
+                    self.add_dynamic_tile("grassShaking", rect.x, rect.y, layer=self.entityLayer+1)
+
+            for tile in self.dynamicsTiles:
+                if tile.dbSymbol == "grassShaking":
+                    if not self.Player.hitbox.colliderect(tile):
+                        self.remove_dynamic_tile(tile)
+
+                    elif tile.position.y < self.Player.hitbox.y:
+                        self.Map.Group.change_layer(tile, self.entityLayer-1)
+
     def check_wild_pkmn(self):
         if not self.Player.inMotion and not self.Player.idle:
             for spawn in self.wildPkmnSpawn:
@@ -206,11 +256,12 @@ class WorldEngine:
                     spawn_data = json.load(open(f"../assets/data/wildPkmn/{self.Map.dbSymbol}.json"))
                     spawn_data = spawn_data[spawn["adress"]]
                     if random.random() < spawn_data["probability"]:
+                        self.Player.reset_move()
                         self.Player.Keyboard.keys.clear()
                         pokemon = Tool.random_picker(spawn_data["pokemon"])
                         name = pokemon["name"]
                         lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
-                        self.Player.Opponent = Pokemon(name, lvl)
+                        self.Player.Opponent = WildOpponent(Pokemon(name, lvl))
                         self.switch_game_state_query = True
 
     def check_bike(self):
@@ -220,18 +271,25 @@ class WorldEngine:
                 self.DialogManager.open_dialog(self.Player, "bike")
 
     def add_entity(self, entity):
+        if entity in self.Map.Group:
+            return
         self.Map.Group.add(entity)
         entity.reset_move()
         if type(entity) is NPC:
             self.npcs.append(entity)
 
-    def add_dynamic_tile(self, tile):
+    def add_dynamic_tile(self, dbsymbol, x, y, layer=None):
+        tile = DynamicTile(dbsymbol, x, y)
+        if tile in self.Map.Group:
+            return
+        layer = self.entityLayer if layer is None else layer
         self.Map.Group.add(tile)
-        self.dynamicTiles.append(tile)
+        self.Map.Group.change_layer(tile, layer)
+        self.dynamicsTiles.append(tile)
 
     def remove_dynamic_tile(self, tile):
         self.Map.Group.remove(tile)
-        self.dynamicTiles.remove(tile)
+        self.dynamicsTiles.remove(tile)
 
     def check_obstacle(self, hitboxa, hitboxb):
         road = pygame.Rect.union(hitboxa, hitboxb)

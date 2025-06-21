@@ -8,7 +8,7 @@ class Item:
 
         self.dbSymbol = data["dbSymbol"]
         self.id = data["id"]
-        self.publicId = 0
+        self.UID = 0
         self.icon = data["icon"]
         self.price = data["price"]
         self.socket = data["socket"]

@@ -5,12 +5,11 @@ from settings import SETTINGS
 
 
 class Dialog:
-    def __init__(self, player, dbsymbol, speaker=None, item=None):
-        self.player = player
+    def __init__(self, player, dbsymbol, context=None):
+        self.Player = player
         self.dbSymbol = dbsymbol
 
-        self.speaker = speaker
-        self.item = item
+        self.context = context
 
         self.txt_size = 32
         self.txt_color = (0, 0, 0)
@@ -37,18 +36,15 @@ class Dialog:
 
     def update_tags(self):
         if "<playername>" in self.text:
-            self.text = self.text.replace("<playername>", self.player.name)
+            self.text = self.text.replace("<playername>", self.Player.name)
         if "<playerlead>" in self.text:
-            self.text = self.text.replace("<playerlead>", self.player.get_lead().name)
+            self.text = self.text.replace("<playerlead>", self.Player.get_active_pkmn().name)
 
-        if self.speaker:
-            if "<spkname>" in self.text:
-                self.text = self.text.replace("<spkname>", self.speaker.name)
-            if "<spklead>" in self.text:
-                self.text = self.text.replace("<spklead>", self.speaker.get_lead().name)
-        if self.item:
-            if "<itemname>" in self.text:
-                self.text = self.text.replace("<itemname>", self.item.dbSymbol)
+        if self.context:
+            for key, value in self.context.items():
+                tag = f"<{key}>"
+                if tag in self.text:
+                    self.text = self.text.replace(tag, value)
 
     def format_text(self):
         space_width = self.font.render(" ", True, self.txt_color).get_width()
@@ -111,9 +107,9 @@ class Dialog:
         if not condition:
             return True
         elif condition == "defeated":
-            if self.dbSymbol in self.player.trainersDefeated:
+            if self.dbSymbol in self.Player.trainersDefeated:
                 return True
         elif condition == "second":
-            if self.dbSymbol in self.player.npcsEncountered:
+            if self.dbSymbol in self.Player.npcsEncountered:
                 return True
         return False

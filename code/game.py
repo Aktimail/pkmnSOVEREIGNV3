@@ -25,7 +25,7 @@ class Game:
             self.Screen,
             "Red",
             "hero_01",
-            760, 700,
+            800, 688,
             self.Keyboard,
             self.Controller
         )

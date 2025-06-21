@@ -2,10 +2,11 @@ import pygame
 
 
 class BattleUi:
-    def __init__(self, screen, battle_data):
+    def __init__(self, screen, player, opponent, context):
         self.screen = screen
-        self.player = battle_data["player"]
-        self.Opponent = battle_data["opponent"]
+        self.Player = player
+        self.Opponent = opponent
+        self.context = context
 
         self.font = pygame.font.Font("../assets/dialogs/PKMN RBYGSC.ttf", 15)
 
@@ -63,9 +64,9 @@ class BattleUi:
                 "pos": (-50, 442)
             },
             "pokemon": {
-                "image": pygame.image.load(self.player.get_lead().sprites["back"]),
+                "image": pygame.image.load(self.Player.get_active_pkmn().sprites["back"]),
                 "size": (576, 576),
-                "pos": (150, self.player.get_lead().frontOffsetY * 7 + 49)
+                "pos": (150, self.Player.get_active_pkmn().frontOffsetY * 7 + 49)
             }
         }
 
@@ -77,9 +78,9 @@ class BattleUi:
                 "pos": (700, 225)
             },
             "pokemon": {
-                "image": pygame.image.load(self.Opponent.get_lead().sprites["front"]),
+                "image": pygame.image.load(self.Opponent.get_active_pkmn().sprites["front"]),
                 "size": (288, 288),
-                "pos": (775, self.Opponent.get_lead().frontOffsetY * 3 + 50)
+                "pos": (775, self.Opponent.get_active_pkmn().frontOffsetY * 3 + 50)
             }
         }
 
@@ -91,12 +92,12 @@ class BattleUi:
                 "pos": (0, 480)
             },
             "pkmn_name": {
-                "image": self.font.render(self.player.get_lead().name, True, (0, 0, 0)),
+                "image": self.font.render(self.Player.get_active_pkmn().name, True, (0, 0, 0)),
                 "size": None,
                 "pos": (0, 480)
             },
             "pkmn_lvl": {
-                "image": self.font.render("lvl " + str(self.player.get_lead().level), True, (0, 0, 0)),
+                "image": self.font.render("lvl " + str(self.Player.get_active_pkmn().level), True, (0, 0, 0)),
                 "size": None,
                 "pos": (195, 480)
             },
@@ -106,8 +107,9 @@ class BattleUi:
                 "pos": (0, 0)
             },
             "hp": {
-                "image": self.get_hp_color(self.player.get_lead()),
-                "size": (int(self.player.get_lead().stageStats["hp"] / self.player.get_lead().globalStats["hp"] * 276), 12),
+                "image": self.get_hp_color(self.Player.get_active_pkmn()),
+                "size": (int(self.Player.get_active_pkmn().stageStats["hp"] /
+                             self.Player.get_active_pkmn().globalStats["hp"] * 276), 12),
                 "pos": (0, 0)
             },
             "pokeballs": {
@@ -125,12 +127,12 @@ class BattleUi:
                 "pos": (1005, 5)
             },
             "pkmn_name": {
-                "image": self.font.render(self.Opponent.get_lead().name, True, (0, 0, 0)),
+                "image": self.font.render(self.Opponent.get_active_pkmn().name, True, (0, 0, 0)),
                 "size": None,
                 "pos": (1005, 5)
             },
             "pkmn_lvl": {
-                "image": self.font.render("lvl " + str(self.Opponent.get_lead().level), True, (0, 0, 0)),
+                "image": self.font.render("lvl " + str(self.Opponent.get_active_pkmn().level), True, (0, 0, 0)),
                 "size": None,
                 "pos": (1200, 5)
             },
@@ -140,8 +142,9 @@ class BattleUi:
                 "pos": (0, 0)
             },
             "hp": {
-                "image": self.get_hp_color(self.Opponent.get_lead()),
-                "size": (int(self.Opponent.get_lead().stageStats["hp"] / self.Opponent.get_lead().globalStats["hp"] * 276), 12),
+                "image": self.get_hp_color(self.Opponent.get_active_pkmn()),
+                "size": (int(self.Opponent.get_active_pkmn().stageStats["hp"] /
+                             self.Opponent.get_active_pkmn().globalStats["hp"] * 276), 12),
                 "pos": (0, 30)
             },
             "pokeballs": {
@@ -198,16 +201,16 @@ class BattleUi:
                                                        self.main_menu_assets[asset]["size"][1])
 
     def render_battle_menu(self):
-        for i in range(len(self.player.get_lead().moveset)):
+        for i in range(len(self.Player.get_active_pkmn().moveset)):
             image = self.battle_asset["image"]
             image = pygame.transform.scale(image, self.battle_asset["size"])
             asset_pos = (self.battle_asset["pos"][0], self.battle_asset["pos"][1] + i * 80)
             self.screen.display.blit(image, asset_pos)
 
-            move_name = self.font.render(self.player.get_lead().moveset[i].name, True, (0, 0, 0))
-            move_type = self.font.render(self.player.get_lead().moveset[i].type.name, True, (0, 0, 0))
+            move_name = self.font.render(self.Player.get_active_pkmn().moveset[i].name, True, (0, 0, 0))
+            move_type = self.font.render(self.Player.get_active_pkmn().moveset[i].type.name, True, (0, 0, 0))
             move_pp = self.font.render(
-                str(self.player.get_lead().moveset[i].pp) + " / " + str(self.player.get_lead().moveset[i].maxPp),
+                str(self.Player.get_active_pkmn().moveset[i].pp) + " / " + str(self.Player.get_active_pkmn().moveset[i].maxPp),
                 True, (0, 0, 0))
 
             self.screen.display.blit(move_name, (asset_pos[0], asset_pos[1]))
@@ -220,8 +223,8 @@ class BattleUi:
                                                                  self.battle_asset["size"][1])
 
     def render_team_menu(self):
-        for i in range(len(self.player.team)):
-            x = 125 if i >= 3 or len(self.player.team) <= 3 else 0
+        for i in range(len(self.Player.team)):
+            x = 125 if i >= 3 or len(self.Player.team) <= 3 else 0
             y = 240 if i >= 3 else 0
 
             image = self.team_asset["image"]
@@ -229,11 +232,11 @@ class BattleUi:
             asset_pos = (self.team_asset["pos"][0] + x, self.team_asset["pos"][1] + i * 80 - y)
             self.screen.display.blit(image, asset_pos)
 
-            pkmn_name = self.font.render(self.player.team[i].name, True, (0, 0, 0))
-            pkmn_hp = self.get_hp_color(self.player.team[i])
+            pkmn_name = self.font.render(self.Player.team[i].name, True, (0, 0, 0))
+            pkmn_hp = self.get_hp_color(self.Player.team[i])
             pkmn_hp = pygame.transform.scale(
                 pkmn_hp,
-                (int(self.player.team[i].stageStats["hp"] / self.player.team[i].globalStats["hp"] * 100), 7)
+                (int(self.Player.team[i].stageStats["hp"] / self.Player.team[i].globalStats["hp"] * 100), 7)
             )
 
             self.screen.display.blit(pkmn_name, (asset_pos[0], asset_pos[1]))

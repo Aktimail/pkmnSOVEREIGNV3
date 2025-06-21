@@ -2,9 +2,10 @@ import random
 
 
 class BattleAi:
-    def __init__(self, battle_data):
-        self.Trainer = battle_data["opponent"]
-        self.Player = battle_data["player"]
+    def __init__(self, player, opponent, context):
+        self.Opponent = opponent
+        self.Player = player
+        self.context = context
 
     def select_option(self):
         if self.consider_switch():
@@ -12,7 +13,7 @@ class BattleAi:
         elif self.consider_object():
             self.select_object()
         else:
-            return random.choice(self.select_move())
+            return "attack", random.choice(self.select_move())
 
     def consider_switch(self):
         pass
@@ -22,14 +23,14 @@ class BattleAi:
 
     def select_move(self):
         potential_move = []
-        for move in self.Trainer.get_lead().moveset:
+        for move in self.Opponent.get_active_pkmn().moveset:
             f = 1
-            for t in self.Player.get_lead().type:
+            for t in self.Player.get_active_pkmn().type:
                 f *= move.type.factors[t.name]
             if f >= 2:
                 potential_move.append(move)
         if not potential_move:
-            return self.Trainer.get_lead().moveset
+            return self.Opponent.get_active_pkmn().moveset
         return potential_move
 
     def select_pokemon(self):

@@ -2,7 +2,6 @@ from animationManager import AnimationManager
 from dialogManager import DialogManager
 from battleUi import BattleUi
 from battleAi import BattleAi
-from entity import Entity
 
 
 class BattleEngine:
@@ -25,16 +24,15 @@ class BattleEngine:
     def init_battle(self):
         self.active_menu = None
         self.Opponent = self.Player.Opponent
-        self.Ui = BattleUi(self.Screen, self.get_battle_data())
-        self.Ai = BattleAi(self.get_battle_data())
+        self.Ui = BattleUi(self.Screen, self.Player, self.Opponent, self.build_battle_context())
+        self.Ai = BattleAi(self.Player, self.Opponent, self.build_battle_context())
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
-        print(self.Player.worldCompo)
 
     def end_battle(self):
-        if type(self.Opponent) is Entity:
+        if self.Opponent.get_trainer:
             if self.Opponent.lost():
-                self.Player.npcsEncountered.append(self.Opponent.dbSymbol)
-                self.Player.trainersDefeated.append(self.Opponent.dbSymbol)
+                self.Player.npcsEncountered.append(self.Opponent.get_trainer().dbSymbol)
+                self.Player.trainersDefeated.append(self.Opponent.get_trainer().dbSymbol)
         self.Player.get_back_world_comp()
         self.switch_game_state_query = True
 
@@ -42,24 +40,40 @@ class BattleEngine:
         self.Ui.render()
         self.Ui.render_main_menu()
         self.check_inputs()
+        self.round_script()
 
-    def init_round(self):
-        pass
+    def round_script(self):
+        if self.Player.battle_choice:
+            self.Opponent.battle_choice = self.Ai.select_option()
 
-    def check_priority(self):
+            prio_order = self.setup_prio()
+
+            for contender in prio_order:
+                if not contender.get_active_pkmn().is_ko():
+                    if contender.battle_choice[0] == "attack":
+                        contender.attack(contender.battle_choice[1],
+                                         prio_order[prio_order.index(contender)-1].get_active_pkmn(),
+                                         self.build_battle_context())
+                    elif contender.battle_choice[0] == "switch":
+                        contender.switch(contender.battle_choice[1])
+            self.global_events_update()
+
+            self.Player.battle_choice = None
+
+    def setup_prio(self):
         return [self.Player, self.Opponent]
 
-    def global_effects_update(self):
+    def global_events_update(self):
         pass
 
     def check_inputs(self):
         if self.active_menu == "battle":
             self.Ui.render_battle_menu()
-            for i in range(len(self.Player.get_lead().moveset)):
+            for i in range(len(self.Player.get_active_pkmn().moveset)):
                 if self.Ui.interactive_rect["move" + str(i)].collidepoint(self.Cursor.position):
-                    self.Ui.render_move_info(self.Player.get_lead().moveset[i], 0, 0)
+                    self.Ui.render_move_info(self.Player.get_active_pkmn().moveset[i], 0, 0)
                     if self.Cursor.left_click:
-                        self.Player.fight(self.Player.get_lead().moveset[i], self.get_battle_data())
+                        self.Player.battle_choice = ("attack", self.Player.get_active_pkmn().moveset[i])
 
         elif self.active_menu == "team":
             self.Ui.render_team_menu()
@@ -67,7 +81,7 @@ class BattleEngine:
                 if i:
                     if self.Ui.interactive_rect["pkmn" + str(i)].collidepoint(self.Cursor.position):
                         if self.Cursor.left_click:
-                            self.Player.switch(i)
+                            self.Player.battle_choice = ("switch", self.Player.team[i])
 
         elif self.active_menu == "bag":
             pass
@@ -91,8 +105,5 @@ class BattleEngine:
             elif self.Cursor.left_click:
                 self.active_menu = None
 
-    def get_battle_data(self):
-        return {
-            "player": self.Player,
-            "opponent": self.Opponent
-        }
+    def build_battle_context(self):
+        return {}

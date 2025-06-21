@@ -49,4 +49,4 @@ class IdGenerator:
         id += id_n
 
         self.add_id(id)
-        obj.publicId = id
+        obj.UID = id

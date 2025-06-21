@@ -4,7 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1eec6ba-4e2f-42c3-81b8-3ef763a7716f" name="Changes" comment="general update" />
+    <list default="true" id="e1eec6ba-4e2f-42c3-81b8-3ef763a7716f" name="Changes" comment="general update">
+      <change afterPath="$PROJECT_DIR$/assets/data/animations/dynamicsTiles.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/abstractOpponent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/trainerOpponent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/wildOpponent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/moves/swords_dance.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/moves/swords_dance.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dialogs/dialogs.csv" beforeDir="false" afterPath="$PROJECT_DIR$/assets/dialogs/dialogs.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dialogs/dialogs.xls" beforeDir="false" afterPath="$PROJECT_DIR$/assets/dialogs/dialogs.xls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/animations/grass.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/dynamicTiles/pokeball.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/graphics/dynamicTiles/pokeball.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/house_a.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/house_a.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/testmap.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/testmap.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/battleAi.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleAi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/battleEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleEngine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/battleUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/dialogManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/dialogManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/dynamicTile.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/dynamicTile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/entity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/idGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/idGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/pokemon.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/pokemon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/tool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/worldEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/worldEngine.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,6 +60,9 @@
     &quot;accountId&quot;: &quot;726e76f9-8569-4409-a281-356c1627a166&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/code/battleEngine.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -41,19 +72,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.IdGenerator.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dialogUi.executor&quot;: &quot;Run&quot;,
-    &quot;Python.idGenerator (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.idGenerator.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Documents/prog/pkmnSOVEREIGN&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.IdGenerator.executor": "Run",
+    "Python.dialogUi.executor": "Run",
+    "Python.idGenerator (1).executor": "Run",
+    "Python.idGenerator.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/Documents/prog/pkmnSOVEREIGNV2"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.main">
     <configuration name="idGenerator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pkmnSOVEREIGNV3" />
@@ -124,8 +155,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.idGenerator" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.idGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -193,7 +224,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750205116448</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="general update">
+      <option name="closed" value="true" />
+      <created>1750256759516</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1750256759516</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

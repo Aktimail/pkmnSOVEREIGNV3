@@ -9,7 +9,7 @@
   "pp":20,
   "category":"status",
   "movecriticalRate":1,
-  "battleEngineMethod":"s_stat",
+  "battleEngineMethod":"s_self_stat",
   "priority":0,
   "isDirect":false,
   "isCharge":false,

@@ -21,6 +21,7 @@ class Entity(pygame.sprite.Sprite):
         self.worldCompo = None
         self.Opponent = None
         self.battle_choice = None
+        self.publicData = {}
 
         self.direction = "down"
         self.stepProgression = 0
@@ -35,8 +36,6 @@ class Entity(pygame.sprite.Sprite):
 
         self.pokedollars = 0
 
-        self.publicData = {}
-
         self.collision = False
         self.inMotion = False
         self.idle = False
@@ -45,7 +44,7 @@ class Entity(pygame.sprite.Sprite):
 
     def sprite_update(self):
         spritesheet_img = pygame.image.load(self.spritesheet)
-        self.image = Tool.split_spritesheet(spritesheet_img)[self.direction][self.spriteIdx]
+        self.image = Tool.split_entity_spritesheet(spritesheet_img)[self.direction][self.spriteIdx]
         self.rect = self.image.get_rect()
         self.hitbox.topleft = self.position
         self.rect.midbottom = self.hitbox.midbottom
@@ -152,12 +151,13 @@ class Entity(pygame.sprite.Sprite):
             return True
         return False
 
-    def fight(self, move, battle_data):
-        self.get_lead().attack(move, battle_data)
+    def attack(self, move, target, context):
+        self.get_active_pkmn().attack(move, target, context)
 
-    def switch(self, i):
-        self.get_lead().boost = {"atk": 0, "defe": 0, "aspe": 0, "dspe": 0, "spd": 0, "acc": 0, "eva": 0}
-        self.team[0], self.team[i] = self.team[i], self.team[0]
+    def switch(self, pkmn):
+        idx = self.team.index(pkmn)
+        self.get_active_pkmn().boosts = {k: 0 for k in self.get_active_pkmn().boosts}
+        self.team[0], self.team[idx] = self.team[idx], self.team[0]
 
     def lost(self):
         for pkmn in self.team:
@@ -165,8 +165,8 @@ class Entity(pygame.sprite.Sprite):
                 return False
         return True
 
-    def get_lead(self):
-        return self.team[0]
+    def get_active_pkmn(self):
+        return self.team[0] if self.team else 0
 
     def get_back_world_comp(self):
         world_compo = []

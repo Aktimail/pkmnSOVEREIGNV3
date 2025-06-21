@@ -15,7 +15,7 @@ class Pokemon:
         self.forms = data["forms"]
 
         self.id = data["id"]
-        self.publicId = 0
+        self.UID = 0
         self.name = data["dbSymbol"].title()
         self.height = self.forms[0]["height"]
         self.weight = self.forms[0]["weight"]
@@ -84,7 +84,7 @@ class Pokemon:
             "spd": self.init_stat("spd")
         }
 
-        self.stageStats = self.globalStats
+        self.stageStats = self.globalStats.copy()
 
     def get_gender(self):
         if self.forms[0]["femaleRate"] == -1:
@@ -168,7 +168,7 @@ class Pokemon:
             elif self.level < 100:
                 return math.floor((self.level ** 3) * (160 - self.level) / 100)
 
-    def can_attack(self, move: Move):
+    def can_attack(self, move, target, context):
         if self.status["main"] == "sleep" and move.name != "Sleep Talk":
             return False
 
@@ -192,31 +192,27 @@ class Pokemon:
 
         return True
 
-    def check_accuracy(self, move, battle_data):
-        target = battle_data["opponent"].get_lead()
+    def check_accuracy(self, move, target, context):
         if random.randint(0, 100) >= move.accuracy * self.boosts["acc"] * target.boosts["eva"]:
             return True
         return False
 
-    def calcul_damage(self, move, battle_data):
-        target = battle_data["opponent"].get_lead()
-        if move.power:
-            damage = int((2 * self.level) / 5) + 2
+    def calcul_damage(self, move, target, context):
 
-            power = move.power
-            attack = self.stageStats["atk"] if move.category == "physical" else self.stageStats["aspe"]
-            defense = target.stageStats["defe"] if move.category == "special" else target.stageStats["dspe"]
-            damage = int(damage * power * (attack / defense))
-            damage = int(damage / 50)
+        damage = int((2 * self.level) / 5) + 2
 
-            type = move.type.get_type_ratio(target)
-            damage = int(damage * type)
+        power = move.power
+        attack = self.stageStats["atk"] if move.category == "physical" else self.stageStats["aspe"]
+        defense = target.stageStats["defe"] if move.category == "special" else target.stageStats["dspe"]
+        damage = int(damage * power * (attack / defense))
+        damage = int(damage / 50)
 
-            return damage
-        return 0
+        type = move.type.get_type_ratio(target)
+        damage = int(damage * type)
 
-    def additional_effects(self, move, battle_data):
-        target = battle_data["opponent"].get_lead()
+        return damage
+
+    def additional_effects(self, move, target, context):
         if random.randint(0, 100) <= move.effectChance:
             if move.boosts:
                 pkmn = self if move.battleEngineMethod == "s_self_stat" else target
@@ -234,11 +230,11 @@ class Pokemon:
                     eva_boost_f = boost_factors["evasion"]
 
                     if stat == "acc":
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * acc_boost_f[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(acc_boost_f[pkmn.boosts[stat] + 6]))
                     elif stat == "eva":
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * eva_boost_f[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(eva_boost_f[pkmn.boosts[stat] + 6]))
                     else:
-                        pkmn.stageStats[stat] = pkmn.globalStats[stat] * gen_boost_f[pkmn.boosts[stat] + 6]
+                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(gen_boost_f[pkmn.boosts[stat] + 6]))
 
         for status in move.status:
             if status:
@@ -250,11 +246,16 @@ class Pokemon:
                         if not status["status"] in self.status["sec"]:
                             self.status["sec"].append(status["status"])
 
-    def attack(self, move, battle_data):
-        if self.can_attack(move):
-            if self.check_accuracy(move, battle_data):
-                damage = self.calcul_damage(move, battle_data)
-                self.additional_effects(move, battle_data)
+    def attack(self, move, target, context):
+
+        if self.can_attack(move, target, context):
+            if self.check_accuracy(move, target, context):
+
+                if move.power:
+                    damage = self.calcul_damage(move, target, context)
+                    target.stageStats["hp"] -= damage
+
+                self.additional_effects(move, target, context)
 
     def is_ko(self):
         return not self.stageStats["hp"]

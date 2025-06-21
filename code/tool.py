@@ -4,7 +4,7 @@ import random
 
 class Tool:
     @staticmethod
-    def split_spritesheet(spritesheet):
+    def split_entity_spritesheet(spritesheet):
         all_images = {"down": [],
                       "left": [],
                       "right": [],
