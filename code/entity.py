@@ -151,7 +151,7 @@ class Entity(pygame.sprite.Sprite):
             return True
         return False
 
-    def attack(self, move, target, context):
+    def fight(self, move, target, context):
         self.get_active_pkmn().attack(move, target, context)
 
     def switch(self, pkmn):

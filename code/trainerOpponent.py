@@ -14,5 +14,5 @@ class TrainerOpponent(AbstractOpponent):
     def lost(self):
         return self.Trainer.lost()
 
-    def attack(self, move, target, context):
-        self.Trainer.attack(move, target, context)
+    def fight(self, move, target, context):
+        self.Trainer.fight(move, target, context)

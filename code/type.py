@@ -4,6 +4,7 @@ import json
 class Type:
     def __init__(self, name):
         data = json.load(open(f"../assets/data/types/{name}.json"))
+        self.dbSymbol = data["dbSymbol"]
         self.name = data["dbSymbol"]
         self.color = data["color"]
 

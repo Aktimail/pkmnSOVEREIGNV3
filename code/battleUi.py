@@ -108,7 +108,7 @@ class BattleUi:
             },
             "hp": {
                 "image": self.get_hp_color(self.Player.get_active_pkmn()),
-                "size": (int(self.Player.get_active_pkmn().stageStats["hp"] /
+                "size": (int(self.Player.get_active_pkmn().currentHp /
                              self.Player.get_active_pkmn().globalStats["hp"] * 276), 12),
                 "pos": (0, 0)
             },
@@ -143,7 +143,7 @@ class BattleUi:
             },
             "hp": {
                 "image": self.get_hp_color(self.Opponent.get_active_pkmn()),
-                "size": (int(self.Opponent.get_active_pkmn().stageStats["hp"] /
+                "size": (int(self.Opponent.get_active_pkmn().currentHp /
                              self.Opponent.get_active_pkmn().globalStats["hp"] * 276), 12),
                 "pos": (0, 30)
             },
@@ -236,7 +236,7 @@ class BattleUi:
             pkmn_hp = self.get_hp_color(self.Player.team[i])
             pkmn_hp = pygame.transform.scale(
                 pkmn_hp,
-                (int(self.Player.team[i].stageStats["hp"] / self.Player.team[i].globalStats["hp"] * 100), 7)
+                (int(self.Player.team[i].currentHp / self.Player.team[i].globalStats["hp"] * 100), 7)
             )
 
             self.screen.display.blit(pkmn_name, (asset_pos[0], asset_pos[1]))
@@ -264,10 +264,10 @@ class BattleUi:
     def get_hp_color(self, pkmn):
         hp_bars = pygame.image.load("../assets/graphics/battle/hp.png")
         hp_bars = self.split_hp_bars(hp_bars)
-        if pkmn.stageStats["hp"] == pkmn.globalStats["hp"]:
+        if pkmn.currentHp == pkmn.globalStats["hp"]:
             active_bar = hp_bars[-1]
         else:
-            active_bar = hp_bars[int((pkmn.stageStats["hp"] / pkmn.globalStats["hp"]) * 6)]
+            active_bar = hp_bars[int((pkmn.currentHp / pkmn.globalStats["hp"]) * 6)]
         return active_bar
 
     @staticmethod

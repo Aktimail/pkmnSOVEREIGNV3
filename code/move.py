@@ -8,6 +8,7 @@ class Move:
 
         self.klass = data["klass"]
         self.id = data["id"]
+        self.dbSymbol = data["dbSymbol"]
         self.name = data["dbSymbol"].title()
         self.type = Type(data["type"])
 

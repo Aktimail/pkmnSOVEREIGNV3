@@ -16,6 +16,7 @@ class Pokemon:
 
         self.id = data["id"]
         self.UID = 0
+        self.dbSymbol = data["dbSymbol"]
         self.name = data["dbSymbol"].title()
         self.height = self.forms[0]["height"]
         self.weight = self.forms[0]["weight"]
@@ -72,6 +73,8 @@ class Pokemon:
         }
         self.frontOffsetY = self.forms[0]["frontOffsetY"]
 
+        self.currentHp = self.init_stat("hp")
+
         if mod:
             self.init_mod(mod)
 
@@ -84,7 +87,7 @@ class Pokemon:
             "spd": self.init_stat("spd")
         }
 
-        self.stageStats = self.globalStats.copy()
+        self.happiness = 0
 
     def get_gender(self):
         if self.forms[0]["femaleRate"] == -1:
@@ -147,6 +150,18 @@ class Pokemon:
         return math.floor((((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
                             self.level / 100) + 5) * self.nature[stat])
 
+    def get_stage_stat(self, stat):
+        boost_factors = json.load(open("../assets/data/other/boostFactors.json"))
+        gen_boost = boost_factors["general"]
+        eva_boost = boost_factors["evasion"]
+        acc_boost = boost_factors["accuracy"]
+        if stat == "eva":
+            return int(self.globalStats[stat] * eval(eva_boost[self.boosts[stat] + 6]))
+        elif stat == "acc":
+            return int(self.globalStats[stat] * eval(acc_boost[self.boosts[stat] + 6]))
+        else:
+            return int(self.globalStats[stat] * eval(gen_boost[self.boosts[stat] + 6]))
+
     def exp_to_nxt_lvl(self):
         if self.level == 100:
             return 0
@@ -169,7 +184,7 @@ class Pokemon:
                 return math.floor((self.level ** 3) * (160 - self.level) / 100)
 
     def can_attack(self, move, target, context):
-        if self.status["main"] == "sleep" and move.name != "Sleep Talk":
+        if self.status["main"] == "sleep" and move.dbSymbol != "sleep_talk":
             return False
 
         elif self.status["main"] == "freeze":
@@ -190,6 +205,8 @@ class Pokemon:
             if random.randint(0, 100) <= 50:
                 return False
 
+        pp_losses = 2 if target.Ability.dbSymbol == "pressure" else 1
+        move.pp -= pp_losses
         return True
 
     def check_accuracy(self, move, target, context):
@@ -197,20 +214,143 @@ class Pokemon:
             return True
         return False
 
-    def calcul_damage(self, move, target, context):
+    def calcul_damage(self, move: Move, target, context):
+        def apply_mod(value, mod):
+            return round((value * mod) / 0x1000)
 
-        damage = int((2 * self.level) / 5) + 2
+        def chain_up(*mods):
+            last = len(mods)
+            chained_mod = mods[0]
+            for i in range(1, last):
+                chained_mod = ((chained_mod * mods[i]) + 0x800) >> 12
+            return chained_mod
 
-        power = move.power
-        attack = self.stageStats["atk"] if move.category == "physical" else self.stageStats["aspe"]
-        defense = target.stageStats["defe"] if move.category == "special" else target.stageStats["dspe"]
-        damage = int(damage * power * (attack / defense))
-        damage = int(damage / 50)
+        CAT = "atk" if move.category == "physical" else "aspe"
+        FOULPLAYTRIGGER = True if move.dbSymbol == "foul_play" else False
+        STATCLIENT = target if FOULPLAYTRIGGER else self
+        UNAWARETRIGGER = True if target.Ability.dbSymbol == "unaware" else False
+        STAGEATK = STATCLIENT.globalStats[CAT] if UNAWARETRIGGER else STATCLIENT.get_stage_stat(CAT)
+        PARAMATK = STAGEATK
+        MODTF = 0x800 if (target.Ability.dbSymbol == "thick_fat" and
+                          move.type.dbSymbol in ["ice", "fire"]) else 0x1000
+        MODTRNT = 0x1800 if (self.Ability.dbSymbol == "torrent" and
+                             self.currentHp <= self.globalStats["hp"] / 3 and
+                             move.type.dbSymbol == "water") else 0x1000
+        MODGUTS = 0x1800 if (self.Ability.dbSymbol == "guts" and
+                             self.status["main"] and
+                             move.category == "physical") else 0x1000
+        MODSWA = 0x1800 if (self.Ability.dbSymbol == "swarm" and
+                            self.currentHp <= self.globalStats["hp"] / 3 and
+                            move.type.dbSymbol == "bug") else 0x1000
+        MODOVG = 0x1800 if (self.Ability.dbSymbol == "overgrow" and
+                            self.currentHp <= self.globalStats["hp"] / 3 and
+                            move.type.dbSymbol == "grass") else 0x1000
+        MODPLMI = 0x1800 if (self.Ability.dbSymbol in ["plus", "minus"] and
+                             context["ally"] and
+                             context["ally"].Ability.dbSymbol in ["plus", "minus"] and
+                             move.category == "special") else 0x1000
+        MODBLZ = 0x1800 if (self.Ability.dbSymbol == "blaze" and
+                            self.currentHp <= self.globalStats["hp"] / 3 and
+                            move.type.dbSymbol == "fire") else 0x1000
+        MODDFT = 0x800 if (self.Ability.dbSymbol == "defeatist" and
+                           self.currentHp <= self.globalStats["hp"] / 2) else 0x1000
+        MODPHPW = 0x2000 if (self.Ability.dbSymbol in ["pure_power", "huge_power"] and
+                             move.category == "physical") else 0x1000
+        MODSLRP = 0x1800 if (self.Ability.dbSymbol == "solar_power" and
+                             context["wheater"] == "intense_sunlight" and
+                             move.category == "special") else 0x1000
+        MODHSTL = 0x1800 if (self.Ability.dbSymbol == "hustle" and
+                             move.category == "physical") else 0x1000
+        MODFLFR = 0x1800 if (self.Ability.dbSymbol == "flash_fire" and
+                             self.Ability.active and
+                             move.type.dbSymbol == "fire") else 0x1000
+        MODSLST = 0x800 if (self.Ability.dbSymbol == "slow_start" and
+                            context["onFieldCounter"] < 5) else 0x1000
+        MODFLGF = 0x1800 if (context["ally"] and
+                             context["ally"].Ability.dbSymbol == "flower_gift" and
+                             context["wheater"] == "intense_sunlight" and
+                             move.category == "special") else 0x1000
+        MODCLUB = 0x2000 if (self.dbSymbol in ["cubone", "marowak"] and
+                             self.Item and
+                             self.Item.dbSymbol == "thick_club" and
+                             move.category == "physical") else 0x1000
+        MODDST = 0x2000 if (self.dbSymbol == "clamperl" and
+                            self.Item and
+                            self.Item.dbSymbol == "deep_sea_tooth" and
+                            move.category == "special") else 0x1000
+        MODPIKA = 0x2000 if (self.dbSymbol == "pikachu" and
+                             self.Item and
+                             self.Item.dbSymbol == "light_ball") else 0x1000
+        MODLATI = 0x1800 if (self.dbSymbol in ["latios", "latias"] and
+                             self.Item and
+                             self.Item.dbSymbol == "soul_dew" and
+                             move.category == "special") else 0x1000
+        MODCHBN = 0x1800 if (self.Item and
+                             self.Item.dbSymbol == "choice_band" and
+                             move.category == "physical") else 0x1000
+        MODCHSP = 0x1800 if (self.Item and
+                             self.Item.dbSymbol == "choice_specs" and
+                             move.category == "special") else 0x1000
+        MODATK1 = chain_up(MODTF, MODTRNT, MODGUTS, MODSWA, MODOVG, MODPLMI, MODBLZ, MODDFT, MODPHPW, MODSLRP)
+        ATK = apply_mod(PARAMATK, MODATK1)
+        ATK = apply_mod(ATK, MODHSTL)
+        MODATK2 = chain_up(MODFLFR, MODSLST, MODFLGF, MODCLUB, MODDST, MODPIKA, MODLATI, MODCHBN, MODCHSP)
+        ATK = apply_mod(ATK, MODATK2)
 
-        type = move.type.get_type_ratio(target)
-        damage = int(damage * type)
+        POWER = move.power
+        if move.dbSymbol == "frustration":
+            POWER = int(((255 - self.happiness) * 10) / 25)
+        elif move.dbSymbol == "payback" and not context["firstToMove"]:
+            POWER = 100
+        elif move.dbSymbol == "return":
+            POWER = int((self.happiness * 10) / 25)
+        elif move.dbSymbol == "electro_ball":
+            deltaSpeed = self.get_stage_stat("spd") / target.get_stage_stat("spd")
+            results = {
+                deltaSpeed >= 4: 150,
+                4 > deltaSpeed >= 3: 120,
+                3 > deltaSpeed >= 2: 80,
+                2 > deltaSpeed >= 1: 60,
+                deltaSpeed < 1: 40
+            }
+            POWER = results[True]
+        elif move.dbSymbol == "avalanche" and context["gotHit"]:
+            POWER = 120
+        elif move.dbSymbol == "gyro_ball":
+            POWER = int(min(150, 25 * target.get_stage_stat("spd") / self.get_stage_stat("spd")))
+        elif move.dbSymbol in ["eruption", "water_spout"]:
+            POWER = int((150 * self.currentHp) / self.globalStats["hp"])
+        elif move.dbSymbol == "punishment":
+            boostlvltotal = sum(val for val in target.boosts.values() if val >= 0)
+            POWER = min(120, 60 + 20 * boostlvltotal)
+        elif move.dbSymbol == "fury_cutter":
+            succes_streak = 0
+            for i in range(len(context["selfMovesLogs"])-1, len(context["selfMovesLogs"])-4, -1):
+                if context["selfMovesLogs"]["move"] == "fury_cutter" and context["selfMovesLogs"]["hit"]:
+                    succes_streak += 1
+            POWER = 20 * 2 ** succes_streak
+        elif move.dbSymbol in ["low_kick", "grass_knot"]:
+            w = target.weight
+            result = {
+                w >= 200: 120,
+                200 > w >= 100: 100,
+                100 > w >= 50: 80,
+                50 > w >= 25: 60,
+                25 > w >= 10: 40,
+                10 > w: 20
+            }
+            POWER = result[True]
+        elif move.dbSymbol == "echoed_voice":
+            use_streak = 0
+            for i in range(len(context["teamMovesLogs"]) - 1, len(context["teamMovesLogs"]) - 6, -1):
+                if context["teamMovesLogs"]["move"] == "echoed_voice":
+                    use_streak += 1
+            result = [40, 80, 120, 160, 200]
+            POWER = result[use_streak]
+        elif move.dbSymbol == "hex" and target.status["main"]:
+            POWER = 100
 
-        return damage
+        return 0
 
     def additional_effects(self, move, target, context):
         if random.randint(0, 100) <= move.effectChance:
@@ -223,18 +363,6 @@ class Pokemon:
                         pkmn.boosts[stat] = 6
                     elif pkmn.boosts[stat] < -6:
                         pkmn.boosts[stat] = -6
-
-                    boost_factors = json.load(open("../assets/data/other/boostFactors.json"))
-                    gen_boost_f = boost_factors["general"]
-                    acc_boost_f = boost_factors["accuracy"]
-                    eva_boost_f = boost_factors["evasion"]
-
-                    if stat == "acc":
-                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(acc_boost_f[pkmn.boosts[stat] + 6]))
-                    elif stat == "eva":
-                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(eva_boost_f[pkmn.boosts[stat] + 6]))
-                    else:
-                        pkmn.stageStats[stat] = int(pkmn.globalStats[stat] * eval(gen_boost_f[pkmn.boosts[stat] + 6]))
 
         for status in move.status:
             if status:
@@ -253,22 +381,24 @@ class Pokemon:
 
                 if move.power:
                     damage = self.calcul_damage(move, target, context)
-                    target.stageStats["hp"] -= damage
+                    target.currentHp -= damage
+                    if target.currentHp < 0:
+                        target.currentHp = 0
 
                 self.additional_effects(move, target, context)
 
     def is_ko(self):
-        return not self.stageStats["hp"]
+        return not self.currentHp
 
     def init_mod(self, mod):
         if "gender" in mod:
             self.gender = mod["gender"]
 
         if "ability" in mod:
-            self.Ability = mod["ability"]
+            self.Ability = Ability(mod["ability"])
 
         if "item" in mod:
-            self.Item = mod["item"]
+            self.Item = Item(mod["item"])
 
         if "moveset" in mod:
             for _ in range(len(mod["moveset"])):
@@ -298,7 +428,7 @@ class Pokemon:
             self.shiny = mod["shiny"]
 
         if "hp" in mod:
-            self.stageStats["hp"] = mod["hp"]
+            self.currentHp = mod["hp"]
 
     def save_pkmn(self):
         return {
@@ -314,7 +444,7 @@ class Pokemon:
             "status": self.status,
             "exp": self.exp,
             "shiny": self.shiny,
-            "hp": self.stageStats["hp"]
+            "hp": self.currentHp
         }
 
     def load_pokemon(self, data):
@@ -332,4 +462,4 @@ class Pokemon:
         self.status = data["status"]
         self.exp = data["exp"]
         self.shiny = data["shiny"]
-        self.stageStats["hp"] = data["hp"]
+        self.currentHp = data["hp"]

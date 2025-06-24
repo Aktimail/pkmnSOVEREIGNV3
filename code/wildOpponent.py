@@ -14,5 +14,5 @@ class WildOpponent(AbstractOpponent):
     def lost(self):
         return self.Pokemon.is_ko()
 
-    def attack(self, move, target, context):
+    def fight(self, move, target, context):
         self.Pokemon.attack(move, target, context)

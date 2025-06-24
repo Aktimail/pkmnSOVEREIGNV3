@@ -25,9 +25,9 @@ class Player(Entity):
         self.sprite_update()
 
         self.team = [Pokemon("haxorus", 50, {"moveset": ["dragon_claw", "swords_dance", "", ""]}),
-                     Pokemon("pikachu", 50),
+                     Pokemon("pikachu", 50, {"item": "light_ball"}),
                      Pokemon("chandelure", 50),
-                     Pokemon("blastoise", 50)]
+                     Pokemon("blastoise", 50, {"ability": "torrent", "hp": 50})]
 
         self.Inventory = Inventory()
 

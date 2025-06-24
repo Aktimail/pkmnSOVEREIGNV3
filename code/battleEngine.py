@@ -21,11 +21,13 @@ class BattleEngine:
 
         self.switch_game_state_query = False
 
+        self.movesLogs = []
+
     def init_battle(self):
         self.active_menu = None
         self.Opponent = self.Player.Opponent
-        self.Ui = BattleUi(self.Screen, self.Player, self.Opponent, self.build_battle_context())
-        self.Ai = BattleAi(self.Player, self.Opponent, self.build_battle_context())
+        self.Ui = BattleUi(self.Screen, self.Player, self.Opponent, self.build_battle_context(self.Player))
+        self.Ai = BattleAi(self.Player, self.Opponent, self.build_battle_context(self.Opponent))
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
 
     def end_battle(self):
@@ -49,19 +51,23 @@ class BattleEngine:
             prio_order = self.setup_prio()
 
             for contender in prio_order:
-                if not contender.get_active_pkmn().is_ko():
-                    if contender.battle_choice[0] == "attack":
-                        contender.attack(contender.battle_choice[1],
-                                         prio_order[prio_order.index(contender)-1].get_active_pkmn(),
-                                         self.build_battle_context())
-                    elif contender.battle_choice[0] == "switch":
-                        contender.switch(contender.battle_choice[1])
+                if contender == self.Player:
+                    if not contender.get_active_pkmn().is_ko():
+                        if contender.battle_choice[0] == "attack":
+                            contender.fight(contender.battle_choice[1],
+                                            prio_order[prio_order.index(contender)-1].get_active_pkmn(),
+                                            self.build_battle_context(contender))
+                        elif contender.battle_choice[0] == "switch":
+                            contender.switch(contender.battle_choice[1])
+                    elif contender.get_active_pkmn().is_ko():
+                        pass
+
             self.global_events_update()
 
             self.Player.battle_choice = None
 
     def setup_prio(self):
-        return [self.Player, self.Opponent]
+        return [self.Opponent, self.Player]
 
     def global_events_update(self):
         pass
@@ -105,5 +111,12 @@ class BattleEngine:
             elif self.Cursor.left_click:
                 self.active_menu = None
 
-    def build_battle_context(self):
-        return {}
+    def build_battle_context(self, pov):
+        return {
+            "selfMovesLogs": self.movesLogs,
+            "teamMovesLogs": self.movesLogs,
+            "targetMovesLogs": self.movesLogs,
+            "ally": None,
+            "weather": None,
+            "onFieldCounter": 0
+        }
