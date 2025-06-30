@@ -5,19 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1eec6ba-4e2f-42c3-81b8-3ef763a7716f" name="Changes" comment="general update">
+      <change afterPath="$PROJECT_DIR$/assets/data/other/berriesTable.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/data/other/sheerForceTable.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/abstractOpponent.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/abstractOpponent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/other/gems.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/gemsTable.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/other/plates.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/platesTable.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/other/typeEnhancingIncences.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/typeEnhancingIncences.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/other/typeResistingBerries.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/code/battleEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/battleUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/entity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/modifier.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/move.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/move.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/player.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/pokemon.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/pokemon.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/trainerOpponent.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/trainerOpponent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/type.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/type.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/wildOpponent.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/wildOpponent.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +70,7 @@
     &quot;last_opened_file_path&quot;: &quot;D:/Documents/prog/pkmnSOVEREIGNV2&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.main">
     <configuration name="idGenerator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pkmnSOVEREIGNV3" />
       <option name="ENV_FILES" value="" />
@@ -140,8 +139,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.idGenerator" />
       </list>
     </recent_temporary>
@@ -226,7 +225,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750514978350</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="general update">
+      <option name="closed" value="true" />
+      <created>1750729062881</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1750729062881</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

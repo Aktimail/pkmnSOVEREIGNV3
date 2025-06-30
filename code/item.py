@@ -16,3 +16,4 @@ class Item:
         self.isBattleUsable = data["isBattleUsable"]
         self.isMapUsable = data["isMapUsable"]
         self.isLimited = data["isLimited"]
+        self.flingPower = data["flingPower"]

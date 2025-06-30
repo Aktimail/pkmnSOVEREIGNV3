@@ -116,7 +116,12 @@ class BattleEngine:
             "selfMovesLogs": self.movesLogs,
             "teamMovesLogs": self.movesLogs,
             "targetMovesLogs": self.movesLogs,
-            "ally": None,
+            "selfAlly": None,
             "weather": None,
-            "onFieldCounter": 0
+            "onFieldCounter": 0,
+            "moveUsedByMeFirst": False,
+            "targetJustFainted": False,
+            "selfHelpingHand": False,
+            "fieldStatus": None,
+            "targetGotHit": False
         }

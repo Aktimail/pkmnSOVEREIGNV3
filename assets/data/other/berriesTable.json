@@ -1,0 +1,321 @@
+{
+  "cheri_berry": {
+    "id": 1,
+    "type": "fire",
+    "naturalGiftPower": 60
+  },
+  "chesto_berry": {
+    "id": 2,
+    "type": "water",
+    "naturalGiftPower": 60
+  },
+  "pecha_berry": {
+    "id": 3,
+    "type": "electric",
+    "naturalGiftPower": 60
+  },
+  "rawst_berry": {
+    "id": 4,
+    "type": "grass",
+    "naturalGiftPower": 60
+  },
+  "aspear_berry": {
+    "id": 5,
+    "type": "ice",
+    "naturalGiftPower": 60
+  },
+  "leppa_berry": {
+    "id": 6,
+    "type": "fighting",
+    "naturalGiftPower": 60
+  },"oran_berry": {
+    "id": 7,
+    "type": "poison",
+    "naturalGiftPower": 60
+  },
+  "persim_berry": {
+    "id": 8,
+    "type": "ground",
+    "naturalGiftPower": 60
+  },
+  "lum_berry": {
+    "id": 9,
+    "type": "flying",
+    "naturalGiftPower": 60
+  },
+  "sitrus_berry": {
+    "id": 10,
+    "type": "psychic",
+    "naturalGiftPower": 60
+  },
+  "figy_berry": {
+    "id": 11,
+    "type": "bug",
+    "naturalGiftPower": 60
+  },
+  "wiki_berry": {
+    "id": 12,
+    "type": "rock",
+    "naturalGiftPower": 60
+  },
+  "mago_berry": {
+    "id": 13,
+    "type": "ghost",
+    "naturalGiftPower": 60
+  },
+  "aguav_berry": {
+    "id": 14,
+    "type": "dragon",
+    "naturalGiftPower": 60
+  },
+  "lapapa_berry": {
+    "id": 15,
+    "type": "dark",
+    "naturalGiftPower": 60
+  },
+  "razz_berry": {
+    "id": 16,
+    "type": "steel",
+    "naturalGiftPower": 60
+  },
+  "bluk_berry": {
+    "id": 17,
+    "type": "fire",
+    "naturalGiftPower": 70
+  },
+  "nanab_berry": {
+    "id": 18,
+    "type": "water",
+    "naturalGiftPower": 70
+  },
+  "wepear_berry": {
+    "id": 19,
+    "type": "electric",
+    "naturalGiftPower": 70
+  },
+  "pinap_berry": {
+    "id": 20,
+    "type": "grass",
+    "naturalGiftPower": 70
+  },
+  "pomeg_berry": {
+    "id": 21,
+    "type": "ice",
+    "naturalGiftPower": 70
+  },
+  "kelpsy_berry": {
+    "id": 22,
+    "type": "fighting",
+    "naturalGiftPower": 70
+  },
+  "qualot_berry": {
+    "id": 23,
+    "type": "poison",
+    "naturalGiftPower": 70
+  },
+  "hondew_berry": {
+    "id": 24,
+    "type": "ground",
+    "naturalGiftPower": 70
+  },
+  "grepa_berry": {
+    "id": 25,
+    "type": "flying",
+    "naturalGiftPower": 70
+  },
+  "tamato_berry": {
+    "id": 26,
+    "type": "psychic",
+    "naturalGiftPower": 70
+  },
+  "comn_berry": {
+    "id": 27,
+    "type": "bug",
+    "naturalGiftPower": 70
+  },
+  "magost_berry": {
+    "id": 28,
+    "type": "rock",
+    "naturalGiftPower": 70
+  },
+  "rabuta_berry": {
+    "id": 29,
+    "type": "ghost",
+    "naturalGiftPower": 70
+  },
+  "nomel_berry": {
+    "id": 30,
+    "type": "dragon",
+    "naturalGiftPower": 70
+  },
+  "spelon_berry": {
+    "id": 31,
+    "type": "dark",
+    "naturalGiftPower": 70
+  },
+  "pamtre_berry": {
+    "id": 32,
+    "type": "steel",
+    "naturalGiftPower": 70
+  },
+  "watmel_berry": {
+    "id": 33,
+    "type": "fire",
+    "naturalGiftPower": 80
+  },
+  "durin_berry": {
+    "id": 34,
+    "type": "water",
+    "naturalGiftPower": 80
+  },
+  "belue_berry": {
+    "id": 35,
+    "type": "electric",
+    "naturalGiftPower": 80
+  },
+  "occa_berry": {
+    "id": 36,
+    "type": "fire",
+    "naturalGiftPower": 60
+  },
+  "passho_berry": {
+    "id": 37,
+    "type": "water",
+    "naturalGiftPower": 60
+  },
+  "wacan_berry": {
+    "id": 38,
+    "type": "electric",
+    "naturalGiftPower": 60
+  },
+  "rindo_berry": {
+    "id": 39,
+    "type": "grass",
+    "naturalGiftPower": 60
+  },
+  "yache_berry": {
+    "id": 40,
+    "type": "ice",
+    "naturalGiftPower": 60
+  },
+  "chople_berry": {
+    "id": 41,
+    "type": "fighting",
+    "naturalGiftPower": 60
+  },
+  "kebia_berry": {
+    "id": 42,
+    "type": "poison",
+    "naturalGiftPower": 60
+  },
+  "shuca_berry": {
+    "id": 43,
+    "type": "ground",
+    "naturalGiftPower": 60
+  },
+  "coba_berry": {
+    "id": 44,
+    "type": "flying",
+    "naturalGiftPower": 60
+  },
+  "payapa_berry": {
+    "id": 45,
+    "type": "psychic",
+    "naturalGiftPower": 60
+  },
+  "tanga_berry": {
+    "id": 46,
+    "type": "bug",
+    "naturalGiftPower": 60
+  },
+  "charti_berry": {
+    "id": 47,
+    "type": "rock",
+    "naturalGiftPower": 60
+  },
+  "kasib_berry": {
+    "id": 48,
+    "type": "ghost",
+    "naturalGiftPower": 60
+  },
+  "haban_berry": {
+    "id": 49,
+    "type": "dragon",
+    "naturalGiftPower": 60
+  },
+  "kolbur_berry": {
+    "id": 50,
+    "type": "dark",
+    "naturalGiftPower": 60
+  },
+  "babiri_berry": {
+    "id": 51,
+    "type": "steel",
+    "naturalGiftPower": 60
+  },
+  "chilan_berry": {
+    "id": 52,
+    "type": "normal",
+    "naturalGiftPower": 60
+  },
+  "liechi_berry": {
+    "id": 53,
+    "type": "grass",
+    "naturalGiftPower": 80
+  },
+  "ganlon_berry": {
+    "id": 54,
+    "type": "ice",
+    "naturalGiftPower": 80
+  },
+  "salac_berry": {
+    "id": 55,
+    "type": "fighing",
+    "naturalGiftPower": 80
+  },
+  "petaya_berry": {
+    "id": 56,
+    "type": "poison",
+    "naturalGiftPower": 80
+  },
+  "apicot_berry": {
+    "id": 57,
+    "type": "ground",
+    "naturalGiftPower": 80
+  },
+  "lansat_berry": {
+    "id": 58,
+    "type": "flying",
+    "naturalGiftPower": 80
+  },
+  "starf_berry": {
+    "id": 59,
+    "type": "psychic",
+    "naturalGiftPower": 80
+  },
+  "enigma_berry": {
+    "id": 60,
+    "type": "bug",
+    "naturalGiftPower": 80
+  },
+  "micle_berry": {
+    "id": 61,
+    "type": "rock",
+    "naturalGiftPower": 80
+  },
+  "custap_berry": {
+    "id": 62,
+    "type": "ghost",
+    "naturalGiftPower": 80
+  },
+  "jaboca_berry": {
+    "id": 63,
+    "type": "dragon",
+    "naturalGiftPower": 80
+  },
+  "rowap_berry": {
+    "id": 64,
+    "type": "dark",
+    "naturalGiftPower": 80
+  }
+}
