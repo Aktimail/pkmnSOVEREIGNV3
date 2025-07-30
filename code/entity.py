@@ -16,6 +16,7 @@ class Entity(pygame.sprite.Sprite):
         self.spritesheet = None
         self.image = None
         self.rect = None
+        self.shadow = pygame.image.load("../assets/graphics/spritesheets/shadow.png")
 
         self.team = []
         self.worldCompo = None
@@ -36,14 +37,16 @@ class Entity(pygame.sprite.Sprite):
 
         self.pokedollars = 0
 
-        self.collision = False
         self.inMotion = False
         self.idle = False
+        self.collision = False
         self.idleCounter = 0
         self.interaction = False
 
     def sprite_update(self):
-        spritesheet_img = pygame.image.load(self.spritesheet)
+        shadow = self.shadow.copy()
+        spritesheet_img = shadow
+        spritesheet_img.blit(pygame.image.load(self.spritesheet), (0, 0))
         self.image = Tool.split_entity_spritesheet(spritesheet_img)[self.direction][self.spriteIdx]
         self.rect = self.image.get_rect()
         self.hitbox.topleft = self.position
@@ -51,10 +54,10 @@ class Entity(pygame.sprite.Sprite):
 
     def update(self):
         self.movement_update()
+        self.idle_update()
         self.facing_tile_update()
         self.animation_cycle()
         self.sprite_update()
-        self.idle_update()
 
     def idle_update(self):
         if not self.inMotion:

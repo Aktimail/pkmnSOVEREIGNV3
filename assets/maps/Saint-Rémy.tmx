@@ -3032,7 +3032,7 @@
 </data>
   </layer>
  </group>
- <group id="43" name="object">
+ <group id="43" name="object" visible="0">
   <objectgroup id="49" name="switches">
    <object id="231" name="switch" type="switch" x="800" y="672" width="16" height="16">
     <properties>

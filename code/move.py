@@ -46,6 +46,7 @@ class Move:
         }
         self.effectChance = data["effectChance"]
         self.target = data["battleEngineAimedTarget"]
+        self.stageTargets = []
         self.boosts = self.get_boosts(data["battleStageMod"])
         self.status = data["moveStatus"]
         self.battleEngineMethod = data["battleEngineMethod"]

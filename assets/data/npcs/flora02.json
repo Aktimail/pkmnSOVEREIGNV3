@@ -2,7 +2,7 @@
   "klass": "npc",
   "dbsymbol": "flora02",
   "name": "Flora",
-  "spritesheet": "hero_02",
+  "spritesheet": "giovani",
   "direction": "left",
   "scan": 5
 }

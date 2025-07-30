@@ -2,10 +2,10 @@ import random
 
 
 class BattleAi:
-    def __init__(self, player, opponent, context):
+    def __init__(self, player, opponent, battle_data):
         self.Opponent = opponent
         self.Player = player
-        self.context = context
+        self.battleData = battle_data
 
     def select_option(self):
         if self.consider_switch():

@@ -53,15 +53,11 @@ class Tool:
         pygame.draw.rect(surface, color, pygame.Rect(0, (height / 3) * 2, width, 2))
 
     @staticmethod
-    def random_picker(tab):
+    def wild_pkmn_picker(tab: dict):
         n = random.random()
         p = 0
         for i in range(len(tab)):
-            if i == 0:
-                if 0 <= n < tab[i]["probability"]:
-                    return tab[i]
-            else:
-                if p <= n < p + tab[i]["probability"]:
-                    return tab[i]
+            if p <= n < p + tab[i]["probability"]:
+                return tab[i]
             p += tab[i]["probability"]
         return tab[0]

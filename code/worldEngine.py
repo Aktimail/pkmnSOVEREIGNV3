@@ -188,7 +188,8 @@ class WorldEngine:
                     self.DialogManager.open_dialog(self.Player, npc.dbSymbol,
                                                    context={
                                                        "spkname": npc.name,
-                                                       "spklead": npc.get_active_pkmn().name
+                                                       "spklead": npc.get_active_pkmn().name if npc.get_active_pkmn()
+                                                       else 0
                                                    })
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
@@ -253,12 +254,12 @@ class WorldEngine:
         if not self.Player.inMotion and not self.Player.idle:
             for spawn in self.wildPkmnSpawn:
                 if self.Player.hitbox.colliderect(spawn["rect"]):
-                    spawn_data = json.load(open(f"../assets/data/wildPkmn/{self.Map.dbSymbol}.json"))
-                    spawn_data = spawn_data[spawn["adress"]]
+                    wild_pkmn_data = json.load(open(f"../assets/data/wildPkmn/{self.Map.dbSymbol}.json"))
+                    spawn_data = wild_pkmn_data[spawn["adress"]]
                     if random.random() < spawn_data["probability"]:
                         self.Player.reset_move()
                         self.Player.Keyboard.keys.clear()
-                        pokemon = Tool.random_picker(spawn_data["pokemon"])
+                        pokemon = Tool.wild_pkmn_picker(spawn_data["pokemon"])
                         name = pokemon["name"]
                         lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
                         self.Player.Opponent = WildOpponent(Pokemon(name, lvl))

@@ -5,18 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1eec6ba-4e2f-42c3-81b8-3ef763a7716f" name="Changes" comment="general update">
-      <change afterPath="$PROJECT_DIR$/assets/data/other/berriesTable.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/data/other/sheerForceTable.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/data/other/gems.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/gemsTable.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/data/other/plates.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/platesTable.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/data/other/typeEnhancingIncences.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/other/typeEnhancingIncences.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/data/other/typeResistingBerries.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/battleEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/npcs/flora02.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/data/npcs/flora02.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/0 ombre translucide.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/0 ombre.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/giovani_cycle_roll.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/giovani_run.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/shadow2_m.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/shadow_l.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/shadow_m.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/graphics/spritesheets/shadow_s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/maps/Saint-Rémy.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/battleAi.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleAi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/battleUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/battleUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/entity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/move.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/move.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/pokemon.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/pokemon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/tool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/worldEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/worldEngine.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,7 +239,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750729062881</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="general update">
+      <option name="closed" value="true" />
+      <created>1751245369337</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1751245369337</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

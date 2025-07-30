@@ -187,7 +187,7 @@ class Pokemon:
             elif self.level < 100:
                 return math.floor((self.level ** 3) * (160 - self.level) / 100)
 
-    def can_attack(self, move, target, context):
+    def can_attack(self, move, target, battle_data):
         if self.status["main"] == "asleep" and move.dbSymbol != "sleep_talk":
             return False
 
@@ -213,12 +213,12 @@ class Pokemon:
         move.pp -= pp_losses
         return True
 
-    def check_accuracy(self, move, target, context):
+    def check_accuracy(self, move, target, battle_data):
         if random.randint(0, 100) >= move.accuracy * self.boosts["acc"] * target.boosts["eva"]:
             return True
         return False
 
-    def calcul_damage(self, move: Move, target, context):
+    def calcul_damage(self, move: Move, target, battle_data):
 
         berries = json.load(open("../assets/data/other/berriesTable.json"))
         plates = json.load(open("../assets/data/other/platesTable.json"))
@@ -257,8 +257,8 @@ class Pokemon:
                             self.currentHp <= self.globalStats["hp"] / 3 and
                             move.type.dbSymbol == "grass") else 0x1000
         MODPLMI = 0x1800 if (self.Ability.dbSymbol in ["plus", "minus"] and
-                             context["selfAlly"] and
-                             context["selfAlly"].Ability.dbSymbol in ["plus", "minus"] and
+                             battle_data["selfAlly"] and
+                             battle_data["selfAlly"].Ability.dbSymbol in ["plus", "minus"] and
                              move.category == "special") else 0x1000
         MODBLZ = 0x1800 if (self.Ability.dbSymbol == "blaze" and
                             self.currentHp <= self.globalStats["hp"] / 3 and
@@ -268,7 +268,7 @@ class Pokemon:
         MODPHPW = 0x2000 if (self.Ability.dbSymbol in ["pure_power", "huge_power"] and
                              move.category == "physical") else 0x1000
         MODSLRP = 0x1800 if (self.Ability.dbSymbol == "solar_power" and
-                             context["wheater"] == "intense_sunlight" and
+                             battle_data["wheater"] == "intense_sunlight" and
                              move.category == "special") else 0x1000
         MODHSTL = 0x1800 if (self.Ability.dbSymbol == "hustle" and
                              move.category == "physical") else 0x1000
@@ -276,10 +276,10 @@ class Pokemon:
                              self.Ability.active and
                              move.type.dbSymbol == "fire") else 0x1000
         MODSLST = 0x800 if (self.Ability.dbSymbol == "slow_start" and
-                            context["onFieldCounter"] < 5) else 0x1000
-        MODFLGF = 0x1800 if (context["selfAlly"] and
-                             context["selfAlly"].Ability.dbSymbol == "flower_gift" and
-                             context["wheater"] == "intense_sunlight" and
+                            battle_data["onFieldCounter"] < 5) else 0x1000
+        MODFLGF = 0x1800 if (battle_data["selfAlly"] and
+                             battle_data["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                             battle_data["wheater"] == "intense_sunlight" and
                              move.category == "special") else 0x1000
         MODCLUB = 0x2000 if (self.dbSymbol in ["cubone", "marowak"] and
                              self.Item and
@@ -309,23 +309,23 @@ class Pokemon:
         ATK = apply_mod(ATK, MODATK2)
 
         SPEMOVETRIGGER = True if move.dbSymbol in ["psyshock", "psystrike", "secret_sword"] else False
-        WNDRROOMTRIGGER = True if context["fieldStatus"] == "wonderRoom" else False
+        WNDRROOMTRIGGER = True if battle_data["fieldStatus"] == "wonderRoom" else False
         CHIPAWAYTRIGGER = True if move.dbSymbol == "chip_away" else False
         DEFFCAT = "dspe" if ((move.category == "special" and not WNDRROOMTRIGGER) or
                              not SPEMOVETRIGGER or
                              (WNDRROOMTRIGGER and move.category == "physical")) else "deff"
         PARAMDEFF = target.globalStats[DEFFCAT] if (UNAWARETRIGGER or
                                                     CHIPAWAYTRIGGER) else target.get_stage_stat(DEFFCAT)
-        PARAMDEFF = apply_mod(PARAMDEFF, 0x1800) if (context["weather"] == "sandstorm" and
+        PARAMDEFF = apply_mod(PARAMDEFF, 0x1800) if (battle_data["weather"] == "sandstorm" and
                                                      self.type.count(Type("rock")) and
                                                      ATKCAT == "special") else PARAMDEFF
         MODMRVL = 0x1800 if (target.Ability.dbSymbol == "marvel_scale" and
                              target.status["main"] and
                              move.category == "special") else 0x1000
-        MODTGFG = 0x1800 if (context["selfAlly"] and
-                             context["selfAlly"].dbSymbol == "cherrim" and
-                             context["selfAlly"].Ability.dbSymbol == "flower_gift" and
-                             context["weather"] == "Harsh_sunlight" and
+        MODTGFG = 0x1800 if (battle_data["selfAlly"] and
+                             battle_data["selfAlly"].dbSymbol == "cherrim" and
+                             battle_data["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                             battle_data["weather"] == "Harsh_sunlight" and
                              move.category == "special") else 0x1000
         MODDSS = 0x1800 if (target.dbSymbol == "clamperl" and
                             target.Item and
@@ -349,7 +349,7 @@ class Pokemon:
         BASEPOWER = move.power
         if move.dbSymbol == "frustration":
             BASEPOWER = int(((255 - self.happiness) * 10) / 25)
-        elif move.dbSymbol == "payback" and not context["firstToMove"]:
+        elif move.dbSymbol == "payback" and not battle_data["firstToMove"]:
             BASEPOWER = 100
         elif move.dbSymbol == "return":
             BASEPOWER = int((self.happiness * 10) / 25)
@@ -363,7 +363,7 @@ class Pokemon:
                 deltaSpeed < 1: 40
             }
             BASEPOWER = results[True]
-        elif move.dbSymbol == "avalanche" and context["gotHit"]:
+        elif move.dbSymbol == "avalanche" and battle_data["gotHit"]:
             BASEPOWER = 120
         elif move.dbSymbol == "gyro_ball":
             BASEPOWER = int(min(150, 25 * target.get_stage_stat("spd") / self.get_stage_stat("spd")))
@@ -374,8 +374,8 @@ class Pokemon:
             BASEPOWER = min(120, 60 + 20 * sumboostlvl)
         elif move.dbSymbol == "fury_cutter":
             succes_streak = 0
-            for i in range(len(context["selfMovesLogs"]) - 1, len(context["selfMovesLogs"]) - 4, -1):
-                if context["selfMovesLogs"][i]["move"] == "fury_cutter" and context["selfMovesLogs"][i]["hit"]:
+            for i in range(len(battle_data["selfMovesLogs"]) - 1, len(battle_data["selfMovesLogs"]) - 4, -1):
+                if battle_data["selfMovesLogs"][i]["move"] == "fury_cutter" and battle_data["selfMovesLogs"][i]["hit"]:
                     succes_streak += 1
                 else:
                     break
@@ -393,8 +393,8 @@ class Pokemon:
             BASEPOWER = result[True]
         elif move.dbSymbol == "echoed_voice":
             use_streak = 0
-            for i in range(len(context["teamMovesLogs"]) - 1, len(context["teamMovesLogs"]) - 6, -1):
-                if context["teamMovesLogs"][i]["move"] == "echoed_voice":
+            for i in range(len(battle_data["teamMovesLogs"]) - 1, len(battle_data["teamMovesLogs"]) - 6, -1):
+                if battle_data["teamMovesLogs"][i]["move"] == "echoed_voice":
                     use_streak += 1
                 else:
                     break
@@ -404,7 +404,7 @@ class Pokemon:
             BASEPOWER = 100
         elif move.dbSymbol in ["wring_out", "crush_grip"]:
             BASEPOWER = int(120 * (target.currentHp / target.globalStats["hp"]))
-        elif move.dbSymbol == "assurance" and context["targetGotHit"]:
+        elif move.dbSymbol == "assurance" and battle_data["targetGotHit"]:
             BASEPOWER = 100
         elif move.dbSymbol in ["heavy_slam", "heat_crash"]:
             weight = self.get_weight() / target.get_weight()
@@ -441,21 +441,21 @@ class Pokemon:
                 move.pp == 1: 200
             }
             BASEPOWER = result[True]
-        elif move.dbSymbol == "round" and context["selfAlly"] and context["allyJustUsedRound"]:
+        elif move.dbSymbol == "round" and battle_data["selfAlly"] and battle_data["allyJustUsedRound"]:
             BASEPOWER = 120
-        elif move.dbSymbol == "triple_kick" and "trileKickStreak" in context:
-            BASEPOWER = move.power * context["trileKickStreak"]
+        elif move.dbSymbol == "triple_kick" and "trileKickStreak" in battle_data:
+            BASEPOWER = move.power * battle_data["trileKickStreak"]
         elif move.dbSymbol == "wake_up_slap" and target.status["main"] == "asleep":
             BASEPOWER = 120
         elif move.dbSymbol == "smelling_salts" and target.status["main"] == "paralysis":
             BASEPOWER = 120
-        elif move.dbSymbol == "weather_ball" and context["weather"]:
+        elif move.dbSymbol == "weather_ball" and battle_data["weather"]:
             BASEPOWER = 100
-        elif move.dbSymbol in ["guts", "twister"] and context["targetInSky"]:
+        elif move.dbSymbol in ["guts", "twister"] and battle_data["targetInSky"]:
             BASEPOWER = 80
         elif move.dbSymbol == "beat_up":
             totalatk = [pkmn.baseStats["atk"]
-                        for pkmn in context["selfTrainer"].team
+                        for pkmn in battle_data["selfTrainer"].team
                         if not pkmn.status["main"] or not pkmn.is_ko()]
             BASEPOWER = int(sum(totalatk) / 10 + 5)
         elif move.dbSymbol == "hidden_power":
@@ -466,8 +466,8 @@ class Pokemon:
                 i += 1
             BASEPOWER = int(30 + (40 * ivs_value) / 63)
         elif move.dbSymbol == "spit_up":
-            BASEPOWER = 100 * context["selfSpitUpCounter"]
-        elif move.dbSymbol == "pursuit" and context["targetSwitch"]:
+            BASEPOWER = 100 * battle_data["selfSpitUpCounter"]
+        elif move.dbSymbol == "pursuit" and battle_data["targetSwitch"]:
             BASEPOWER = 80
         elif move.dbSymbol == "present":
             r = random.randint(0, 80)
@@ -494,21 +494,21 @@ class Pokemon:
             BASEPOWER = 10 + 20 * result[True]
         elif move.dbSymbol == "rollout":
             rollout_succes_streak = 0
-            for i in range(len(context["selfMovesLogs"]) - 1, len(context["selfMovesLogs"]) - 6, -1):
-                if context["selfMovesLogs"][i]["move"] == "rollout" and context["selfMovesLogs"][i]["hit"]:
+            for i in range(len(battle_data["selfMovesLogs"]) - 1, len(battle_data["selfMovesLogs"]) - 6, -1):
+                if battle_data["selfMovesLogs"][i]["move"] == "rollout" and battle_data["selfMovesLogs"][i]["hit"]:
                     rollout_succes_streak += 1
                 else:
                     break
             defense_curl = 0
-            for move in context["selfMovesLogs"]:
+            for move in battle_data["selfMovesLogs"]:
                 if move["move"] == "defense_curl":
                     defense_curl = 1
             BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
         elif move.dbSymbol == "fling" and self.Item:
             BASEPOWER = self.Item.flingPower
         elif (move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
-              context["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
-              context["selfAllyHasPlayed"]):
+              battle_data["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
+              battle_data["selfAllyHasPlayed"]):
             BASEPOWER = 150
 
         MODTECH = 0x1800 if (self.Ability.dbSymbol == "technician" and
@@ -518,7 +518,7 @@ class Pokemon:
                              move.category == "special") else 0x1000
         MODANLT = 0x14CD if (self.Ability.dbSymbol == "analytic" and
                              move.dbSymbol not in ["future_sight", "doom_desire"] and
-                             not context["firstToPlay"]) else 0x1000
+                             not battle_data["firstToPlay"]) else 0x1000
         MODRCKL = 0x1333 if (self.Ability.dbSymbol == "reckless" and
                              (move.battleEngineMethod == "s_recoil" or
                               move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
@@ -579,22 +579,22 @@ class Pokemon:
         MODVENO = 0x2000 if (move.dbSymbol == "venoshock" and
                              target.status["main"] in ["poison", "badly_poisoned"]) else 0x1000
         MODRETAL = 0x2000 if (move.dbSymbol == "retaliate" and
-                              context["targetJustFainted"]) else 0x1000
+                              battle_data["targetJustFainted"]) else 0x1000
         MODFUSIO = 0x2000 if (move.dbSymbol in ["fusion_bolt", "fusion_flare"] and
-                              context["selfMovesLogs"][-1]["move"] == move.dbSymbol) else 0x1000
-        MODFRST = 0x1800 if context["moveUsedByMeFirst"] else 0x1000
+                              battle_data["selfMovesLogs"][-1]["move"] == move.dbSymbol) else 0x1000
+        MODFRST = 0x1800 if battle_data["moveUsedByMeFirst"] else 0x1000
         MODSLRB = 0x800 if (move.dbSymbol == "solar_beam" and
-                            context["weather"] and
-                            context["weather"] not in ["harsh_sunlight", "extremely_harsh_sunlight"]) else 0x1000
-        MODCHRG = 0x2000 if (context["selfMovesLogs"] and
-                             context["selfMovesLogs"][-1]["move"] == "charge" and
+                            battle_data["weather"] and
+                            battle_data["weather"] not in ["harsh_sunlight", "extremely_harsh_sunlight"]) else 0x1000
+        MODCHRG = 0x2000 if (battle_data["selfMovesLogs"] and
+                             battle_data["selfMovesLogs"][-1]["move"] == "charge" and
                              move.type.dbSymbol == "electric") else 0x1000
-        MODHH = 0x1800 if context["selfHelpingHand"] else 0x1000
-        MODWTRS = 0x548 if (({"move": "water_sport", "hit": True} in context["selfMovesLogs"] or
-                             {"move": "water_sport", "hit": True} in context["targetMovesLogs"]) and
+        MODHH = 0x1800 if battle_data["selfHelpingHand"] else 0x1000
+        MODWTRS = 0x548 if (({"move": "water_sport", "hit": True} in battle_data["selfMovesLogs"] or
+                             {"move": "water_sport", "hit": True} in battle_data["targetMovesLogs"]) and
                             move.type.dbSymbol == "fire") else 0x1000
-        MODMUDS = 0x548 if (({"move": "mud_sport", "hit": True} in context["selfMovesLogs"] or
-                             {"move": "mud_sport", "hit": True} in context["targetMovesLogs"]) and
+        MODMUDS = 0x548 if (({"move": "mud_sport", "hit": True} in battle_data["selfMovesLogs"] or
+                             {"move": "mud_sport", "hit": True} in battle_data["targetMovesLogs"]) and
                             move.type.dbSymbol == "electric") else 0x1000
         MODPOWER = chain_up(MODTECH, MODFBST, MODANLT, MODRCKL, MODIFST, MODTBST, MODRVLY, MODSNDF, MODHTPR,
                             MODDRYS, MODSHRF, MODTYBS, MODMBND, MODPLK, MODWGLS, MODGRTN, MODOINS, MODDLG, MODGEMS,
@@ -603,12 +603,11 @@ class Pokemon:
         POWER = apply_mod(BASEPOWER, MODPOWER)
 
         PARAMDAMAGE = ((((2 * self.level) / 5 + 2) * POWER * ATK) / DEFF) / 50 + 2
-        print(ATK, self.globalStats["atk"], DEFF, POWER)
-        print(PARAMDAMAGE)
 
-        return 0
+        return PARAMDAMAGE
+    
 
-    def additional_effects(self, move, target, context):
+    def additional_effects(self, move, target, battle_data):
         if random.randint(0, 100) <= move.effectChance:
             if move.boosts:
                 pkmn = self if move.battleEngineMethod == "s_self_stat" else target
@@ -630,18 +629,18 @@ class Pokemon:
                         if not status["status"] in self.status["sec"]:
                             self.status["sec"].append(status["status"])
 
-    def attack(self, move, target, context):
+    def attack(self, move, target, battle_data):
 
-        if self.can_attack(move, target, context):
-            if self.check_accuracy(move, target, context):
+        if self.can_attack(move, target, battle_data):
+            if self.check_accuracy(move, target, battle_data):
 
                 if move.category != "status":
-                    damage = self.calcul_damage(move, target, context)
+                    damage = self.calcul_damage(move, target, battle_data)
                     target.currentHp -= damage
                     if target.currentHp < 0:
                         target.currentHp = 0
 
-                self.additional_effects(move, target, context)
+                self.additional_effects(move, target, battle_data)
 
     def is_ko(self):
         return not self.currentHp
