@@ -1,0 +1,22 @@
+{
+  "klass": "rival",
+  "dbsymbol": "flora01",
+  "name": "Flora",
+  "spritesheet": "hero_02",
+  "direction": "up",
+  "scan": 8,
+  "team": [
+    {
+      "name": "arceus",
+      "lvl": 50,
+      "mod": {
+        "moveset": [
+        "dragon_claw",
+        "water_gun",
+        "earthquake",
+        "electro_ball"
+        ]
+      }
+    }
+  ]
+}

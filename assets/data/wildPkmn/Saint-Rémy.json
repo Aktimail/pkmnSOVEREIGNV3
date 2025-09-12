@@ -1,0 +1,17 @@
+{
+  "1": {
+    "probability": 0.15,
+    "pokemon":[
+      {
+        "name": "garchomp",
+        "lvl": [48, 55],
+        "probability": 0.5
+      },
+      {
+        "name": "rayquaza",
+        "lvl": [60, 70],
+        "probability": 0.5
+      }
+    ]
+  }
+}

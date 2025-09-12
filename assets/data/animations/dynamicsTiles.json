@@ -1,0 +1,27 @@
+{
+  "pokeball": {
+    "nbFrames": 1,
+    "framesDuration": 0,
+    "loop": false
+  },
+  "grassShaking": {
+    "nbFrames": 2,
+    "framesDuration": 30,
+    "loop": false
+  },
+  "grass": {
+    "nbFrames": 8,
+    "framesDuration": 20,
+    "loop": true
+  },
+  "water": {
+    "nbFrames": 11,
+    "framesDuration": 20,
+    "loop": true
+  },
+  "flower": {
+    "nbFrames": 8,
+    "framesDuration": 20,
+    "loop": true
+  }
+}

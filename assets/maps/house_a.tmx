@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="13" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="27" nextobjectid="79">
+ <properties>
+  <property name="bike" type="bool" value="false"/>
+  <property name="zoom" type="int" value="5"/>
+ </properties>
+ <tileset firstgid="1" source="tileset/interieur1.tsx"/>
+ <tileset firstgid="4625" source="tileset/tileset4g.tsx"/>
+ <layer id="1" name="Calque de Tuiles 1" width="13" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,19,19,19,19,19,19,19,19,17,17,17,0,
+0,19,19,19,19,19,19,19,19,19,19,19,0,
+0,17,17,17,17,17,19,19,17,17,17,17,0,
+0,19,19,19,19,19,19,19,26,19,19,19,0,
+0,19,19,19,18,19,19,19,19,19,19,19,0,
+0,17,25,25,26,19,19,19,19,19,19,19,0,
+0,17,19,19,19,19,19,19,19,19,19,19,0,
+0,17,19,17,17,19,19,19,19,19,19,19,0,
+0,17,19,17,17,19,19,19,19,19,19,19,0,
+0,17,19,19,19,19,19,19,19,19,19,19,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="Calque de Tuiles 2" width="13" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,34,35,35,35,35,35,35,35,35,35,0,0,
+0,42,43,43,43,43,43,43,43,43,43,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,226,129,130,0,49,50,50,51,0,0,0,
+0,0,0,137,138,0,57,58,58,59,0,0,0,
+0,0,0,0,0,0,65,66,66,67,0,0,0,
+0,217,0,0,0,0,0,0,0,0,0,217,0,
+0,0,0,0,0,73,74,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="Calque de Tuiles 3" width="13" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,77,78,0,36,0,
+0,0,0,0,0,182,0,0,85,86,98,44,0,
+0,0,0,0,0,190,34,36,93,94,106,0,0,
+0,0,0,0,0,0,42,44,0,0,0,0,0,
+0,156,157,158,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,230,230,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="4" name="Calque de Tuiles 4" width="13" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,72,72,0,0,0,0,0,
+0,180,181,0,0,0,72,72,0,0,0,0,0,
+0,188,189,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,193,194,0,0,0,0,0,
+0,0,0,0,0,0,201,202,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="23" name="entityLayer" width="13" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <group id="26" name="upperLayer">
+  <layer id="25" name="upperLayer" width="13" height="12">
+   <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,148,149,150,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,121,122,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,209,0,0,0,0,0,0,0,0,0,209,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+  </layer>
+ </group>
+ <group id="16" name="object">
+  <objectgroup id="17" name="switches">
+   <object id="46" name="switch " type="switch" x="80" y="176" width="32" height="16">
+    <properties>
+     <property name="destination" value="Saint-Rémy"/>
+     <property name="port" type="int" value="0"/>
+    </properties>
+   </object>
+   <object id="48" name="spawn" type="spawn" x="80" y="176">
+    <properties>
+     <property name="map" value="house_a"/>
+     <property name="port" type="int" value="0"/>
+    </properties>
+    <point/>
+   </object>
+  </objectgroup>
+  <objectgroup id="19" name="collisions">
+   <object id="60" name="collision" type="collision" x="48" y="32" width="32" height="16"/>
+   <object id="61" name="collision" type="collision" x="80" y="48" width="16" height="16"/>
+   <object id="62" name="collision" type="collision" x="96" y="64" width="32" height="32"/>
+   <object id="63" name="collision" type="collision" x="128" y="48" width="32" height="16"/>
+   <object id="64" name="collision" type="collision" x="160" y="32" width="32" height="16"/>
+   <object id="67" name="collision" type="collision" x="16" y="80" width="48" height="16"/>
+   <object id="68" name="collision" type="collision" x="48" y="112" width="32" height="32"/>
+   <object id="72" name="collision" type="collision" x="16" y="160" width="16" height="16"/>
+   <object id="73" name="collision" type="collision" x="176" y="160" width="16" height="16"/>
+   <object id="74" name="collision" type="collision" x="0" y="64" width="16" height="96"/>
+   <object id="75" name="collision" type="collision" x="32" y="176" width="48" height="16"/>
+   <object id="76" name="collision" type="collision" x="112" y="176" width="64" height="16"/>
+   <object id="77" name="collision" type="collision" x="192" y="48" width="16" height="112"/>
+   <object id="78" name="collision" type="collision" x="16" y="48" width="32" height="16"/>
+  </objectgroup>
+  <objectgroup id="18" name="npc">
+   <object id="50" name="flora01" type="npc" x="128" y="128">
+    <point/>
+   </object>
+  </objectgroup>
+ </group>
+</map>

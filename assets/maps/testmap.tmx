@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="8">
+ <properties>
+  <property name="bike" type="bool" value="true"/>
+  <property name="entityLayer" type="int" value="50"/>
+  <property name="zoom" type="int" value="4"/>
+ </properties>
+ <tileset firstgid="1" source="../../../PWTV6/assets/maps/tileset/tileset_pkmn.tsx"/>
+ <layer id="1" name="bg" width="10" height="10">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <objectgroup id="6" name="tileType">
+  <object id="4" name="grass" type="tileType" x="16" y="16" width="128" height="128">
+   <properties>
+    <property name="tileType" value="grass"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

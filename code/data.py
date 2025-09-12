@@ -1,0 +1,3 @@
+class DATA:
+
+    ENTITIES_DESTINATIONS = {}

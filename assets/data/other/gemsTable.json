@@ -1,0 +1,20 @@
+{
+        "bug_gem": "bug",
+        "dark_gem": "dark",
+        "dragon_gem": "dragon",
+        "electric_gem": "electric",
+        "fairy_gem": "fairy",
+        "fighting_gem": "fighting",
+        "fire_gem": "fire",
+        "flying_gem": "flying",
+        "ghost_gem": "ghost",
+        "grass_gem": "grass",
+        "ground_gem": "ground",
+        "ice_gem": "ice",
+        "normal_gem": "normal",
+        "poison_gem": "poison",
+        "psychic_gem": "psychic",
+        "rock_gem": "rock",
+        "steel_gem": "steel",
+        "water_gem": "water"
+}
