@@ -58,8 +58,7 @@ class BattleDataBase:
         return result
 
     def get_pkmn_last_move(self, pkmn):
-        all_logs = self.get_pkmn_logs(pkmn)
-        if all_logs[self]
+        pass
 
     def get_active_pkmn_on_field_counter(self, player):
         counter = 1

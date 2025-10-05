@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="67" nextobjectid="428">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="67" nextobjectid="429">
  <properties>
   <property name="bike" type="bool" value="true"/>
   <property name="env" value="plain"/>
@@ -3090,13 +3090,20 @@
    <object id="420" name="collision" type="collision" x="736" y="848" width="64" height="16"/>
   </objectgroup>
   <objectgroup id="51" name="npcs">
-   <object id="289" name="flora01" type="npc" x="848" y="736">
+   <object id="289" name="flora01" type="npc" x="816" y="784">
     <point/>
    </object>
-   <object id="342" name="flora02" type="npc" x="912" y="704">
+   <object id="342" name="flora02" type="npc" x="896" y="704">
     <point/>
    </object>
-   <object id="343" name="flora02 path" type="npcPath" x="912" y="768">
+   <object id="343" name="flora01 path" type="npcPath" x="912" y="784">
+    <properties>
+     <property name="checkpoint" type="int" value="2"/>
+     <property name="npc_dbsymbol" value="flora01"/>
+    </properties>
+    <point/>
+   </object>
+   <object id="428" name="flora02 path" type="npcPath" x="896" y="800">
     <properties>
      <property name="checkpoint" type="int" value="2"/>
      <property name="npc_dbsymbol" value="flora02"/>

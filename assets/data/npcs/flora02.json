@@ -3,6 +3,5 @@
   "dbsymbol": "flora02",
   "name": "Flora",
   "spritesheet": "hero_02",
-  "direction": "left",
-  "scan": 5
+  "direction": "left"
 }

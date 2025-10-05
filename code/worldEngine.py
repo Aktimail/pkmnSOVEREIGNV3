@@ -5,6 +5,7 @@ import pygame
 import pytmx
 import pyscroll
 
+from data import DATA
 from pokemon import Pokemon
 from dialogManager import DialogManager
 from animationManager import AnimationManager
@@ -14,7 +15,6 @@ from item import Item
 from dynamicTile import DynamicTile
 from wildOpponent import WildOpponent
 from trainerOpponent import TrainerOpponent
-from data import DATA
 from tool import Tool
 
 
@@ -30,6 +30,7 @@ class WorldEngine:
         self.tilesTypes = {}
         self.dynamicsTiles = []
 
+        self.gridMap = {}
         self.collisions = []
         self.spawns = []
         self.switches = []

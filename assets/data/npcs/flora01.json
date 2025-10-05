@@ -4,7 +4,6 @@
   "name": "Flora",
   "spritesheet": "hero_02",
   "direction": "up",
-  "scan": 8,
   "team": [
     {
       "name": "arceus",
