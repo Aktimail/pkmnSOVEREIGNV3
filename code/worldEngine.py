@@ -39,7 +39,7 @@ class WorldEngine:
         self.wildPkmnSpawn = []
         self.gate = None
 
-        self.switch_game_state_query = False
+        self.switchGameStateQuery = False
 
         self.entityLayer = 0
 
@@ -53,6 +53,7 @@ class WorldEngine:
         for layer in self.Map.TmxData.layers:
             if layer.name == "entityLayer":
                 self.entityLayer = self.Map.TmxData.layers.index(layer)
+                break
         self.Map.Group = pyscroll.PyscrollGroup(map_layer=self.Map.MapLayer, default_layer=self.entityLayer)
 
         self.init_object()
@@ -199,7 +200,7 @@ class WorldEngine:
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
                         self.Player.Opponent = TrainerOpponent(npc)
-                        self.switch_game_state_query = True
+                        self.switchGameStateQuery = True
 
             for item in self.items:
                 spot = self.Player.facingTile if item["shown"] else self.Player.hitbox
@@ -268,7 +269,7 @@ class WorldEngine:
                         name = pokemon["name"]
                         lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
                         self.Player.Opponent = WildOpponent(Pokemon(name, lvl))
-                        self.switch_game_state_query = True
+                        self.switchGameStateQuery = True
 
     def check_bike(self):
         if self.Player.bike:
