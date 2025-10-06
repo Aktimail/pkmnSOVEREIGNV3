@@ -80,6 +80,9 @@ class BattleDataBase:
     def get_side_effects(self):
         pass
 
+    def is_first_to_move(self):
+        pass
+
 
 BDB = BattleDataBase()
 Bob = Entity(None, "bob", 0, 0)
@@ -94,7 +97,6 @@ BDB.compile_player_turn(Bob, activePkmn="pikachu", action="fight", move="dragon_
 BDB.compile_player_turn(Baobab, activePkmn="palkia", action="switch", switchPkmn="pikachu")
 BDB.next_turn()
 BDB.compile_player_turn(Bob, activePkmn="haxorus", action="fight", move="raaarr")
-BDB.compile_player_turn(Baobab, activePkmn="pikachu", action="switch", switchPkmn="grossevache")
 BDB.next_turn()
 print(BDB.logs)
 print(BDB.get_pkmn_logs("haxorus"))
