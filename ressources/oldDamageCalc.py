@@ -297,7 +297,8 @@ class DamageCalculator:
         elif self.move.dbSymbol == "rollout":
             rollout_succes_streak = 0
             for i in range(len(self.battleData["selfMovesLogs"]) - 1, len(self.battleData["selfMovesLogs"]) - 6, -1):
-                if self.battleData["selfMovesLogs"][i]["move"] == "rollout" and self.battleData["selfMovesLogs"][i]["hit"]:
+                if self.battleData["selfMovesLogs"][i]["move"] == "rollout" and self.battleData["selfMovesLogs"][i][
+                    "hit"]:
                     rollout_succes_streak += 1
                 else:
                     break
@@ -389,7 +390,8 @@ class DamageCalculator:
         MODFRST = 0x1800 if self.battleData["moveUsedByMeFirst"] else 0x1000
         MODSLRB = 0x800 if (self.move.dbSymbol == "solar_beam" and
                             self.battleData["weather"] and
-                            self.battleData["weather"] not in ["harsh_sunlight", "extremely_harsh_sunlight"]) else 0x1000
+                            self.battleData["weather"] not in ["harsh_sunlight",
+                                                               "extremely_harsh_sunlight"]) else 0x1000
         MODCHRG = 0x2000 if (self.battleData["selfMovesLogs"] and
                              self.battleData["selfMovesLogs"][-1]["move"] == "charge" and
                              self.move.type.dbSymbol == "electric") else 0x1000
@@ -401,9 +403,9 @@ class DamageCalculator:
                              {"move": "mud_sport", "hit": True} in self.battleData["targetMovesLogs"]) and
                             self.move.type.dbSymbol == "electric") else 0x1000
         MODPOWER = self.chain_up(MODTECH, MODFBST, MODANLT, MODRCKL, MODIFST, MODTBST, MODRVLY, MODSNDF, MODHTPR,
-                            MODDRYS, MODSHRF, MODTYBS, MODMBND, MODPLK, MODWGLS, MODGRTN, MODOINS, MODDLG, MODGEMS,
-                            MODFCD, MODBRN, MODVENO, MODRETAL, MODFUSIO, MODFRST, MODSLRB, MODCHRG, MODHH, MODWTRS,
-                            MODMUDS)
+                                 MODDRYS, MODSHRF, MODTYBS, MODMBND, MODPLK, MODWGLS, MODGRTN, MODOINS, MODDLG, MODGEMS,
+                                 MODFCD, MODBRN, MODVENO, MODRETAL, MODFUSIO, MODFRST, MODSLRB, MODCHRG, MODHH, MODWTRS,
+                                 MODMUDS)
         POWER = self.apply_mod(BASEPOWER, MODPOWER)
         return POWER
 
@@ -449,7 +451,6 @@ class DamageCalculator:
 
     def get_burn_mod(self):
         if (self.move.category == "physical" and
-            self.pkmn1.get_main_status() == "burn" and
-            self.pkmn1.get_ability != "guts"):
+                self.pkmn1.get_main_status() == "burn" and
+                self.pkmn1.get_ability != "guts"):
             return 1
-

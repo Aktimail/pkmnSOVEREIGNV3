@@ -49,7 +49,7 @@ class BattleDataBase:
             result[i] = last_turns_logs[i]
         return result
 
-    def get_pkmn_logs(self, pkmn):
+    def get_pkmn_logs(self, pkmn, successive):
         result = {}
         for i, turn in self.logs.items():
             for player in turn.values():
@@ -80,7 +80,13 @@ class BattleDataBase:
     def get_side_effects(self):
         pass
 
-    def is_first_to_move(self):
+    def is_first_to_move(self, pkmn):
+        pass
+
+    def got_hit_this_round(self, pkmn):
+        pass
+
+    def move_counter(self, pkmn, move, successive=False, successfull=False):
         pass
 
 
