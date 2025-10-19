@@ -42,10 +42,13 @@ class DamageCalculator:
     def check_power_trigger(self):
         if self.move.dbSymbol == "frustration":
             return max(int(((255 - self.attacker.happiness) * 10) / 25), 1)
+
         elif self.move.dbSymbol == "payback" and not self.battleData.is_first_to_move():
             return 100
+
         elif self.move.dbSymbol == "return":
             return max(int((self.attacker.happiness * 10) / 25), 1)
+
         elif self.move.dbSymbol == "electro_ball":
             d_speed = self.attacker.get_stage_stat("spd") / self.defender.get_stage_stat("spd")
             if d_speed >= 4:
@@ -61,16 +64,21 @@ class DamageCalculator:
         elif self.move.dbSymbol == "avalanche" and 1:  # 120 if the target has inflicted non-effect damage to the user
             # this turn
             return 120
+
         elif self.move.dbSymbol == "gyro_ball":
             return min(int(25 * self.defender.get_stage_stat("spd") / self.attacker.get_stage_stat("spd")), 150)
+
         elif self.move.dbSymbol in ["eruption", "water_spout"]:
             return max(int((150 * self.attacker.currentHp) / self.attacker.globalStats["hp"]), 1)
+
         elif self.move.dbSymbol == "punishment":
             sum_boost_lvl = sum(val for val in self.defender.boosts.values() if val >= 0)
             return min(120, 60 + 20 * sum_boost_lvl)
+
         elif self.move.dbSymbol == "fury_cutter":
             use_counter = 0  # counts successive and successful previous uses up to a maximum of 3
             return 20 * 2 ** use_counter
+
         elif self.move.dbSymbol in ["low_kick", "grass_knot"]:
             if self.defender.get_weight() >= 200:
                 return 120
@@ -88,13 +96,17 @@ class DamageCalculator:
         elif self.move.dbSymbol == "echoed_voice":
             pass  # BP increases in the listed order every turn this move is used successively on the user's side of
             # the field
+
         elif self.move.dbSymbol == "hex" and self.defender.status["main"]:
             return 100
+
         elif self.move.dbSymbol in ["wring_out", "crush_grip"]:
             return int(120 * (self.defender.currentHp / self.defender.globalStats["hp"]))
+
         elif self.move.dbSymbol == "assurance":  # BP is doubled to 100 if target has already been inflicted
             # non-effect damage this turn
             return 100
+
         elif self.move.dbSymbol in ["heavy_slam", "heat_crash"]:
             d_weight = self.attacker.get_weight() / self.defender.get_weight()
             if d_weight >= 5:
@@ -107,11 +119,14 @@ class DamageCalculator:
                 return 60
             else:
                 return 40
+
         elif self.move.dbSymbol == "stored_power":
             sum_boost_lvl2 = sum(val for val in self.attacker.boosts.values() if val >= 0)
             return 20 + 20 * sum_boost_lvl2
+
         elif self.move.dbSymbol == "acrobatics" and not self.attacker.get_item():
             return 110
+
         elif self.move.dbSymbol in ["flail", "reversal"]:
             p = (48 * self.attacker.currentHp) / self.attacker.globalStats["hp"]
             if p <= 1:
@@ -126,6 +141,7 @@ class DamageCalculator:
                 return 40
             else:
                 return 20
+
         elif self.move.dbSymbol == "trump_card":
             if self.move.pp >= 5:
                 return 40
@@ -137,23 +153,29 @@ class DamageCalculator:
                 return 80
             else:
                 return 200
-        elif self.move.dbSymbol == "round" and battle_data["selfAlly"] and battle_data["allyJustUsedRound"]:
-            BASEPOWER = 120
-        elif self.move.dbSymbol == "triple_kick" and "trileKickStreak" in battle_data:
-            BASEPOWER = move.power * battle_data["trileKickStreak"]
-        elif self.move.dbSymbol == "wake_up_slap" and target.status["main"] == "asleep":
-            BASEPOWER = 120
-        elif self.move.dbSymbol == "smelling_salts" and target.status["main"] == "paralysis":
-            BASEPOWER = 120
-        elif self.move.dbSymbol == "weather_ball" and battle_data["weather"]:
-            BASEPOWER = 100
-        elif self.move.dbSymbol in ["guts", "twister"] and battle_data["targetInSky"]:
-            BASEPOWER = 80
+
+        elif self.move.dbSymbol == "round":  # BP is doubled to 120 if used in direct succession of an ally
+            return 60
+
+        elif self.move.dbSymbol == "triple_kick":  # BP is listed for the successive hits
+            return 10
+
+        elif self.move.dbSymbol == "wake_up_slap" and self.defender.status["main"] == "asleep":
+            return 120
+
+        elif self.move.dbSymbol == "smelling_salts" and self.defender.status["main"] == "paralysis":
+            return 120
+
+        elif self.move.dbSymbol == "weather_ball":  # BP is doubled to 100 in any non-default weather
+            return 100
+
+        elif self.move.dbSymbol in ["guts", "twister"]:  # BP is doubled to 80 is target is in the charging turn of
+            # Bounce, Fly or Sky Drop / personals flags for pkmn instead
+            return 80
+
         elif self.move.dbSymbol == "beat_up":
-            totalatk = [pkmn.baseStats["atk"]
-                        for pkmn in battle_data["selfTrainer"].team
-                        if not pkmn.status["main"] or not pkmn.is_ko()]
-            BASEPOWER = int(sum(totalatk) / 10 + 5)
+            return 1
+
         elif self.move.dbSymbol == "hidden_power":
             ivs_value = 0
             i = 0
@@ -161,10 +183,13 @@ class DamageCalculator:
                 ivs_value += ((iv >> 1) & 1) << i
                 i += 1
             BASEPOWER = int(30 + (40 * ivs_value) / 63)
+
         elif self.move.dbSymbol == "spit_up":
             BASEPOWER = 100 * battle_data["selfSpitUpCounter"]
+
         elif self.move.dbSymbol == "pursuit" and battle_data["targetSwitch"]:
             BASEPOWER = 80
+
         elif self.move.dbSymbol == "present":
             r = random.randint(0, 80)
             result = {
@@ -173,9 +198,11 @@ class DamageCalculator:
                 r >= 70: 120
             }
             BASEPOWER = result[True]
+
         elif self.move.dbSymbol == "natural_gift":
             if self.Item and self.Item.dbSymbol in berries:
                 BASEPOWER = berries[self.Item.dbSymbol]["naturalGiftPower"]
+
         elif self.move.dbSymbol == "magnitude":
             r = random.randint(0, 100)
             result = {
@@ -188,6 +215,7 @@ class DamageCalculator:
                 95 <= r: 7
             }
             BASEPOWER = 10 + 20 * result[True]
+
         elif self.move.dbSymbol == "rollout":
             rollout_succes_streak = 0
             for i in range(len(battle_data["selfMovesLogs"]) - 1, len(battle_data["selfMovesLogs"]) - 6, -1):
@@ -200,8 +228,10 @@ class DamageCalculator:
                 if move["move"] == "defense_curl":
                     defense_curl = 1
             BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
+
         elif self.move.dbSymbol == "fling" and self.Item:
             BASEPOWER = self.Item.flingPower
+
         elif (self.move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
               battle_data["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
               battle_data["selfAllyHasPlayed"]):
