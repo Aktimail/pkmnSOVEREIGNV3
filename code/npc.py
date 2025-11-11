@@ -57,24 +57,25 @@ class NPC(Entity):
                     self.position.x - 16 * self.scanRange, self.position.y, 16 * self.scanRange, 16)
 
     def auto_move(self):
-        if not self.interaction and len(self.checkpoints) > 1:
-            cc_idx = self.checkpointIdx
-            nc_idx = self.checkpointIdx + 1
+        if not self.collision:
+            if not self.interaction and len(self.checkpoints) > 1:
+                cc_idx = self.checkpointIdx
+                nc_idx = self.checkpointIdx + 1
 
-            if nc_idx > len(self.checkpoints):
-                nc_idx = 1
+                if nc_idx > len(self.checkpoints):
+                    nc_idx = 1
 
-            current_checkpoint = self.checkpoints[cc_idx]
-            next_checkpoint = self.checkpoints[nc_idx]
+                current_checkpoint = self.checkpoints[cc_idx]
+                next_checkpoint = self.checkpoints[nc_idx]
 
-            if current_checkpoint.y - next_checkpoint.y > 0:
-                self.move("up")
-            elif current_checkpoint.y - next_checkpoint.y < 0:
-                self.move("down")
-            elif current_checkpoint.x - next_checkpoint.x > 0:
-                self.move("left")
-            elif current_checkpoint.x - next_checkpoint.x < 0:
-                self.move("right")
+                if current_checkpoint.y - next_checkpoint.y > 0:
+                    self.move("up")
+                elif current_checkpoint.y - next_checkpoint.y < 0:
+                    self.move("down")
+                elif current_checkpoint.x - next_checkpoint.x > 0:
+                    self.move("left")
+                elif current_checkpoint.x - next_checkpoint.x < 0:
+                    self.move("right")
 
-            if self.hitbox.colliderect(next_checkpoint):
-                self.checkpointIdx = nc_idx
+                if self.hitbox.colliderect(next_checkpoint):
+                    self.checkpointIdx = nc_idx

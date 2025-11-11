@@ -5,7 +5,7 @@ import pygame
 import pytmx
 import pyscroll
 
-from data import DATA
+from dataManager import DataManager
 from pokemon import Pokemon
 from dialogManager import DialogManager
 from animationManager import AnimationManager
@@ -96,7 +96,7 @@ class WorldEngine:
         self.npcs.clear()
         self.items.clear()
         self.wildPkmnSpawn.clear()
-        DATA.ENTITIES_DESTINATIONS.clear()
+        DataManager.ENTITIES_DESTINATIONS.clear()
 
         for obj in self.Map.TmxData.objects:
             if obj.type == "collision":
@@ -177,6 +177,10 @@ class WorldEngine:
             if npc.facingTile.colliderect(self.Player.hitbox):
                 npc.collision = True
 
+            for collision in self.collisions:
+                if npc.facingTile.colliderect(collision):
+                    npc.collision = True
+
     def check_switch(self):
         for switch in self.switches:
             if self.Player.hitbox.colliderect(switch["rect"]):
@@ -220,8 +224,7 @@ class WorldEngine:
                     self.DialogManager.open_dialog(self.Player, "item",
                                                    context={
                                                        "itemname": item["item"].dbSymbol
-                                                   }
-                                                   )
+                                                   })
 
             for tile in self.dynamicsTiles:
                 if tile.dbSymbol == "water":

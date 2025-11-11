@@ -1,3 +1,4 @@
+import random
 import json
 
 
@@ -9,6 +10,7 @@ class DamageCalculator:
         self.battleData = None
 
         self.calcData = {}
+        self.debugReport = {}
 
         self.berries = json.load(open("../assets/data/other/berriesTable.json"))
         self.plates = json.load(open("../assets/data/other/platesTable.json"))
@@ -61,7 +63,7 @@ class DamageCalculator:
                 return 60
             else:
                 return 40
-        elif self.move.dbSymbol == "avalanche" and 1:  # 120 if the target has inflicted non-effect damage to the user
+        elif self.move.dbSymbol == "avalanche":  # 120 if the target has inflicted non-effect damage to the user
             # this turn
             return 120
 
@@ -173,69 +175,65 @@ class DamageCalculator:
             # Bounce, Fly or Sky Drop / personals flags for pkmn instead
             return 80
 
-        elif self.move.dbSymbol == "beat_up":
+        elif self.move.dbSymbol == "beat_up":  # this move attacks once for every non fainted member in the user's
+            # party, including the user
             return 1
 
         elif self.move.dbSymbol == "hidden_power":
             ivs_value = 0
             i = 0
-            for iv in self.ivs.values():
+            for iv in self.attacker.ivs.values():
                 ivs_value += ((iv >> 1) & 1) << i
                 i += 1
-            BASEPOWER = int(30 + (40 * ivs_value) / 63)
+            return int(30 + (40 * ivs_value) / 63)
 
-        elif self.move.dbSymbol == "spit_up":
-            BASEPOWER = 100 * battle_data["selfSpitUpCounter"]
+        elif self.move.dbSymbol == "spit_up":  # stockpile is the stockpile counter ranging from 0 to 3
+            return 100
 
-        elif self.move.dbSymbol == "pursuit" and battle_data["targetSwitch"]:
-            BASEPOWER = 80
+        elif self.move.dbSymbol == "pursuit":  # BP is doubled to 80 if target is switching out
+            return 80
 
         elif self.move.dbSymbol == "present":
             r = random.randint(0, 80)
-            result = {
-                r < 40: 40,
-                40 <= r < 70: 80,
-                r >= 70: 120
-            }
-            BASEPOWER = result[True]
+            if r < 40:
+                return 40
+            elif 40 <= r < 70:
+                return 80
+            else:
+                return 120
 
         elif self.move.dbSymbol == "natural_gift":
-            if self.Item and self.Item.dbSymbol in berries:
-                BASEPOWER = berries[self.Item.dbSymbol]["naturalGiftPower"]
+            if self.attacker.get_item() in self.berries:
+                return self.berries[self.attacker.get_item()]["naturalGiftPower"]
 
         elif self.move.dbSymbol == "magnitude":
             r = random.randint(0, 100)
-            result = {
-                r < 5: 0,
-                5 <= r < 15: 1,
-                15 <= r < 35: 2,
-                35 <= r < 65: 3,
-                65 <= r < 85: 4,
-                85 <= r < 95: 5,
-                95 <= r: 7
-            }
-            BASEPOWER = 10 + 20 * result[True]
+            if r < 5:
+                result = 0
+            elif 5 <= r < 15:
+                result = 1
+            elif 15 <= r < 35:
+                result = 2
+            elif 35 <= r < 65:
+                result = 3
+            elif 65 <= r < 85:
+                result = 4
+            elif 85 <= r < 95:
+                result = 5
+            else:
+                result = 7
+            return 10 + 20 * result
 
-        elif self.move.dbSymbol == "rollout":
-            rollout_succes_streak = 0
-            for i in range(len(battle_data["selfMovesLogs"]) - 1, len(battle_data["selfMovesLogs"]) - 6, -1):
-                if battle_data["selfMovesLogs"][i]["move"] == "rollout" and battle_data["selfMovesLogs"][i]["hit"]:
-                    rollout_succes_streak += 1
-                else:
-                    break
-            defense_curl = 0
-            for move in battle_data["selfMovesLogs"]:
-                if move["move"] == "defense_curl":
-                    defense_curl = 1
-            BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
+        elif self.move.dbSymbol == "rollout":  # use_counter counts successive and successful previous uses up to a
+            # maximum of 5, defense_curl is 1 if user used Defense Curl previously on field, 0 otherwise
+            return 30 * 2 ** 1
 
-        elif self.move.dbSymbol == "fling" and self.Item:
-            BASEPOWER = self.Item.flingPower
+        elif self.move.dbSymbol == "fling" and self.attacker.get_item():
+            return self.attacker.get_item().flingPower
 
-        elif (self.move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
-              battle_data["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
-              battle_data["selfAllyHasPlayed"]):
-            BASEPOWER = 150
+        elif self.move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"]:  # if a slower ally used a different
+            # Pledge move this turn, it will skip its turn and this move's base power will be set to 150
+            return 150
 
     def get_power_mod(self):
         pass

@@ -1,7 +1,7 @@
 import pygame
 
 from settings import SETTINGS
-from data import DATA
+from dataManager import DataManager
 from tool import Tool
 
 
@@ -28,7 +28,6 @@ class Entity(pygame.sprite.Sprite):
         self.stepProgression = 0
         self.speed = SETTINGS.WALK_SPEED
         self.facingTile = pygame.Rect(0, 0, 16, 16)
-        self.lastTile = None
 
         self.spriteIdx = 0
         self.animCycle = 0
@@ -39,8 +38,8 @@ class Entity(pygame.sprite.Sprite):
 
         self.inMotion = False
         self.idle = False
-        self.collision = False
         self.idleCounter = 0
+        self.collision = False
         self.interaction = False
 
     def sprite_update(self):
@@ -149,8 +148,8 @@ class Entity(pygame.sprite.Sprite):
             return False
 
     def grid_check(self):
-        if not (self.facingTile.x, self.facingTile.y) in DATA.ENTITIES_DESTINATIONS.values():
-            DATA.ENTITIES_DESTINATIONS[self.dbSymbol] = (self.facingTile.x, self.facingTile.y)
+        if not (self.facingTile.x, self.facingTile.y) in DataManager.ENTITIES_DESTINATIONS.values():
+            DataManager.ENTITIES_DESTINATIONS[self.dbSymbol] = (self.facingTile.x, self.facingTile.y)
             return True
         return False
 

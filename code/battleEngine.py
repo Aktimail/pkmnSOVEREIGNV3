@@ -19,7 +19,7 @@ class BattleEngine:
 
         self.active_menu = None
 
-        self.switch_game_state_query = False
+        self.switchGameStateQuery = False
 
         self.logs = []
 
@@ -32,7 +32,7 @@ class BattleEngine:
 
     def end_battle(self):
         self.Player.get_back_world_comp()
-        self.switch_game_state_query = True
+        self.switchGameStateQuery = True
 
         if self.Opponent.get_trainer():
             if self.Opponent.lost():

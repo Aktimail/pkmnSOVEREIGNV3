@@ -1,3 +1,3 @@
-class DATA:
+class DataManager:
 
     ENTITIES_DESTINATIONS = {}
