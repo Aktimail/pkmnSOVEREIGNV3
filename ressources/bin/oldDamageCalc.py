@@ -9,12 +9,12 @@ class DamageCalculator:
         self.move = move
         self.battleData = battle_data
 
-        self.berries = json.load(open("../assets/data/other/berriesTable.json"))
-        self.plates = json.load(open("../assets/data/other/platesTable.json"))
-        self.gems = json.load(open("../assets/data/other/gemsTable.json"))
-        self.incenses = json.load(open("../assets/data/other/typeEnhancingIncences.json"))
-        self.items = json.load(open("../assets/data/other/typeEnhancingItems.json"))
-        self.sheerforce_moves = json.load(open("../assets/data/other/sheerForceTable.json"))
+        self.berries = json.load(open("../../assets/data/other/berriesTable.json"))
+        self.plates = json.load(open("../../assets/data/other/platesTable.json"))
+        self.gems = json.load(open("../../assets/data/other/gemsTable.json"))
+        self.incenses = json.load(open("../../assets/data/other/typeEnhancingIncences.json"))
+        self.items = json.load(open("../../assets/data/other/typeEnhancingItems.json"))
+        self.sheerforce_moves = json.load(open("../../assets/data/other/sheerForceTable.json"))
 
     @staticmethod
     def apply_mod(value, mod):

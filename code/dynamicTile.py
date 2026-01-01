@@ -8,7 +8,7 @@ class DynamicTile(pygame.sprite.Sprite):
     def __init__(self, dbsymbol, x, y):
         super().__init__()
         self.dbSymbol = dbsymbol
-        data = json.load(open("../assets/data/animations/dynamicsTiles.json"))[dbsymbol]
+        data = json.load(open(f"../assets/data/dynamicsTiles/{dbsymbol}.json"))
         self.nbFrames = data["nbFrames"]
         self.framesDuration = data["framesDuration"]
         if type(self.framesDuration) is int:

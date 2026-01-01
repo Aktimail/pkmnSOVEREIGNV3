@@ -4,7 +4,9 @@ import json
 
 class DamageCalculator:
     def __init__(self):
+        self.atKTrainer = None
         self.attacker = None
+        self.defeTrainer = None
         self.defender = None
         self.move = None
         self.battleData = None
@@ -12,16 +14,18 @@ class DamageCalculator:
         self.calcData = {}
         self.debugReport = {}
 
-        self.berries = json.load(open("../assets/data/other/berriesTable.json"))
-        self.plates = json.load(open("../assets/data/other/platesTable.json"))
-        self.gems = json.load(open("../assets/data/other/gemsTable.json"))
-        self.incenses = json.load(open("../assets/data/other/typeEnhancingIncences.json"))
-        self.items = json.load(open("../assets/data/other/typeEnhancingItems.json"))
-        self.sheerforce_moves = json.load(open("../assets/data/other/sheerForceTable.json"))
+        self.berries = json.load(open("../../assets/data/other/berriesTable.json"))
+        self.plates = json.load(open("../../assets/data/other/platesTable.json"))
+        self.gems = json.load(open("../../assets/data/other/gemsTable.json"))
+        self.incenses = json.load(open("../../assets/data/other/typeEnhancingIncences.json"))
+        self.items = json.load(open("../../assets/data/other/typeEnhancingItems.json"))
+        self.sheerforce_moves = json.load(open("../../assets/data/other/sheerForceTable.json"))
 
-    def init_calcul(self, attacker, defender, move, battle_data):
-        self.attacker = attacker
-        self.defender = defender
+    def init_calcul(self, atk_trainer, defe_trainer, move, battle_data):
+        self.atKTrainer = atk_trainer
+        self.defeTrainer = defe_trainer
+        self.attacker = atk_trainer.get_lead()
+        self.defender = defe_trainer.get_lead()
         self.move = move
         self.battleData = battle_data
 
@@ -236,7 +240,7 @@ class DamageCalculator:
             return 150
 
     def get_power_mod(self):
-        mods = []
+        pass
 
 
     def get_atk(self):

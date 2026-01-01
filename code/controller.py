@@ -13,3 +13,6 @@ class Controller:
             "interact": pygame.K_SPACE,
             "menu": pygame.K_ESCAPE
         }
+
+    def new_bind(self, action, key):
+        self.keybinds[action] = key

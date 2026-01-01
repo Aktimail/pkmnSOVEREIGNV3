@@ -3,7 +3,6 @@ import pygame
 from entity import Entity
 from pokemon import Pokemon
 from inventory import Inventory
-from PC import PC
 from questManager import QuestManager
 from settings import SETTINGS
 
@@ -28,7 +27,6 @@ class Player(Entity):
         self.team = [Pokemon("haxorus", 50, {"moveset": ["earth_power", "dragon_claw"]})]
 
         self.Inventory = Inventory()
-        self.PC = PC()
 
         self.QuestManager = QuestManager()
 
