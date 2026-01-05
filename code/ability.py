@@ -7,5 +7,8 @@ class Ability:
 
         self.dbSymbol = data["dbSymbol"]
         self.id = data["id"]
+        self.battleEngineMethod = data["dbSymbol"]
 
         self.active = False
+
+

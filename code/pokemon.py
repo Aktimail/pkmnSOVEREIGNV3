@@ -122,6 +122,23 @@ class Pokemon:
             return Item(final_item)
         return None
 
+    def init_moveset(self):
+        moveset = []
+        for move in self.movepool:
+            if move["klass"] == "LevelLearnableMove":
+                if move["level"] <= self.level:
+                    if len(moveset) >= 4:
+                        moveset.remove(random.choice(moveset))
+                    moveset.append(Move(move["move"]))
+        return moveset
+
+    def init_stat(self, stat):
+        if stat == "hp":
+            return math.floor(((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
+                               self.level / 100) + self.level + 10)
+        return math.floor((((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
+                            self.level / 100) + 5) * self.nature[stat])
+
     def get_name(self):
         return self.name
 
@@ -152,15 +169,21 @@ class Pokemon:
         return self.status["sec"]
 
     def get_stage_stat(self, stat):
-        boost_factors = json.load(open("../assets/data/other/boostFactors.json"))
-        gen_boost = boost_factors["general"]
-        eva_boost = boost_factors["evasion"]
-        acc_boost = boost_factors["accuracy"]
+        boost_levels = {
+            "eva": [3, 8 / 3, 7 / 3, 2, 5 / 3, 4 / 3, 1, 0.75, 0.6, 0.5, 3 / 7, 3 / 8, 1 / 3],
+            "acc": [1 / 3, 3 / 8, 3 / 7, 0.5, 0.6, 0.75, 1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3],
+            "general": [0.25, 2 / 7, 1 / 3, 0.4, 0.5, 2 / 3, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+        }
         if stat == "eva":
+            eva_boost = [3, 8 / 3, 7 / 3, 2, 5 / 3, 4 / 3, 1, 0.75, 0.6, 0.5, 3 / 7, 3 / 8, 1 / 3]
             return int(self.globalStats[stat] * eval(eva_boost[self.boosts[stat] + 6]))
+
         elif stat == "acc":
+            acc_boost = [1 / 3, 3 / 8, 3 / 7, 0.5, 0.6, 0.75, 1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3]
             return int(self.globalStats[stat] * eval(acc_boost[self.boosts[stat] + 6]))
+
         else:
+            gen_boost = [0.25, 2 / 7, 1 / 3, 0.4, 0.5, 2 / 3, 1, 1.5, 2, 2.5, 3, 3.5, 4]
             return int(self.globalStats[stat] * eval(gen_boost[self.boosts[stat] + 6]))
 
     def get_sprite_path(self, direction):
@@ -172,23 +195,6 @@ class Pokemon:
                 path += "female/"
 
         return path + f"{self.id}.png"
-
-    def init_moveset(self):
-        moveset = []
-        for move in self.movepool:
-            if move["klass"] == "LevelLearnableMove":
-                if move["level"] <= self.level:
-                    if len(moveset) >= 4:
-                        moveset.remove(random.choice(moveset))
-                    moveset.append(Move(move["move"]))
-        return moveset
-
-    def init_stat(self, stat):
-        if stat == "hp":
-            return math.floor(((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
-                               self.level / 100) + self.level + 10)
-        return math.floor((((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
-                            self.level / 100) + 5) * self.nature[stat])
 
     def exp_to_nxt_lvl(self):
         if self.level == 100:
@@ -588,7 +594,7 @@ class Pokemon:
                                  move.dbSymbol not in ["future_sight", "doom_desire"] and
                                  not battle_data["firstToPlay"]) else 0x1000
             MODRCKL = 0x1333 if (self.Ability.dbSymbol == "reckless" and
-                                 (move.battleEngineMethod == "s_recoil" or
+                                 (move.battleModifier == "s_recoil" or
                                   move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
             MODIFST = 0x1333 if (self.Ability.dbSymbol == "iron_fist" and
                                  move.flags["isPunch"]) else 0x1000
@@ -787,7 +793,7 @@ class Pokemon:
     def additional_effects(self, move, target, battle_data):
         if random.randint(0, 100) <= move.effectChance:
             if move.boosts:
-                pkmn = self if move.battleEngineMethod == "s_self_stat" else target
+                pkmn = self if move.battleModifier == "s_self_stat" else target
                 for stat in move.boosts:
                     pkmn.boosts[stat] += move.boosts[stat]
 

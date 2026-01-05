@@ -2,6 +2,8 @@ from animationManager import AnimationManager
 from dialogManager import DialogManager
 from battleUi import BattleUi
 from battleAi import BattleAi
+from damageCalcEngine import DamageCalcEngine
+from damageCalcEnv import DamageCalcEnv
 
 
 class BattleEngine:
@@ -10,6 +12,7 @@ class BattleEngine:
         self.Cursor = cursor
         self.DialogManager = DialogManager(screen, keyboard, controller)
         self.AnimationManager = AnimationManager()
+        self.DamageCalcEngine = None
 
         self.Player = player
         self.Opponent = None
@@ -43,7 +46,7 @@ class BattleEngine:
         self.Ui.render()
         self.Ui.render_main_menu()
         self.check_inputs()
-        self.start_round()
+        # self.start_round()
 
     def start_round(self):
         if self.Player.battle_choice:
@@ -81,6 +84,18 @@ class BattleEngine:
                     self.Ui.render_move_info(self.Player.get_active_pkmn().moveset[i], 0, 0)
                     if self.Cursor.left_click:
                         self.Player.battle_choice = ("attack", self.Player.get_active_pkmn().moveset[i])
+
+                        self.DamageCalcEngine = DamageCalcEngine(
+                            DamageCalcEnv(
+                                self.Player.get_active_pkmn(),
+                                self.Opponent.get_active_pkmn(),
+                                self.Player.battle_choice[1],
+                                None))
+                        self.DamageCalcEngine.collect_methods()
+
+                        print(self.DamageCalcEngine.BEMM.registry)
+
+                        print(self.DamageCalcEngine.BEMM.emit("basePower"))
 
         elif self.active_menu == "team":
             self.Ui.render_team_menu()

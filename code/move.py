@@ -1,4 +1,5 @@
 import json
+
 from type import Type
 
 
@@ -48,7 +49,7 @@ class Move:
         self.target = data["battleEngineAimedTarget"]
         self.boosts = self.init_boosts(data["battleStageMod"])
         self.status = data["moveStatus"]
-        self.battleEngineMethod = data["battleEngineMethod"]
+        self.battleEngineMethod = data["dbSymbol"]
 
     @staticmethod
     def init_boosts(data):

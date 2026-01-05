@@ -322,7 +322,7 @@ class DamageCalculator:
                              self.move.dbSymbol not in ["future_sight", "doom_desire"] and
                              not self.battleData["firstToPlay"]) else 0x1000
         MODRCKL = 0x1333 if (self.pkmn1.Ability.dbSymbol == "reckless" and
-                             (self.move.battleEngineMethod == "s_recoil" or
+                             (self.move.battleModifier == "s_recoil" or
                               self.move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
         MODIFST = 0x1333 if (self.pkmn1.Ability.dbSymbol == "iron_fist" and
                              self.move.flags["isPunch"]) else 0x1000

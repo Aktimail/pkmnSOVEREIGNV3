@@ -24,7 +24,7 @@ class Player(Entity):
         self.spritesheet = self.all_spritesheet["walk"]
         self.sprite_update()
 
-        self.team = [Pokemon("haxorus", 50, {"moveset": ["earth_power", "dragon_claw"]})]
+        self.team = [Pokemon("bronzong", 50, {"ability": "heatproof", "moveset": ["frustration"]})]
 
         self.Inventory = Inventory()
 
