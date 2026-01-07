@@ -5,11 +5,42 @@ class DamageCalcEnv:
         self.move = move
         self.battleData = battle_data
 
-        self.basePower = move.basePower
+        self.fullOverride = False
+
+        self.weatherMods = []
+        self.weatherFinalMod = 0
+        self.ignoreWeather = False
+
+        self.criticalHit = False
+        self.criticalHitLevel = move.criticalRate
+        self.ignoreCriticalHit = False
+
+        self.randomFactor = 0
+
+        self.stabFinalMod = 0x1000
+
+        self.typeEffectiveness = 0
+
+        self.burnEffect = False
+
+        self.globalFinalMods = []
+        self.globalFinalModValue = 0
+
+        self.basePowerValue = move.basePower
+        self.basePowerOverride = False
         self.basePowerMods = []
+        self.basePowerFinalMod = 0
 
-        self.atkStat = (attacker.)
+        self.atkStatUser = self.attacker
+        self.atkStat = {"physical": "atk", "special": "aspe"}[self.move.category]
+        self.atkStatIgnoreBoost = False
+        self.atkStatValue = 0
         self.atkStatMods = []
+        self.atkStatFinalMod = 0
 
-        self.defeStat = 0
+        self.defeStatUser = self.defender
+        self.defeStat = {"physical": "atk", "special": "aspe"}[self.move.category]
+        self.defeStatIgnoreBoost = False
+        self.defeStatValue = 0
         self.defeStatMods = []
+        self.defeStatFinalMod = 0

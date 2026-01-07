@@ -148,7 +148,7 @@ class DamageCalculator:
         return DEFE
 
     def get_power(self):
-        BASEPOWER = self.move.power
+        BASEPOWER = self.move.basePower
         if self.move.dbSymbol == "frustration":
             BASEPOWER = int(((255 - self.pkmn1.happiness) * 10) / 25)
         elif self.move.dbSymbol == "payback" and not self.battleData["firstToMove"]:
@@ -246,7 +246,7 @@ class DamageCalculator:
         elif self.move.dbSymbol == "round" and self.battleData["selfAlly"] and self.battleData["allyJustUsedRound"]:
             BASEPOWER = 120
         elif self.move.dbSymbol == "triple_kick" and "trileKickStreak" in self.battleData:
-            BASEPOWER = self.move.power * self.battleData["trileKickStreak"]
+            BASEPOWER = self.move.basePower * self.battleData["trileKickStreak"]
         elif self.move.dbSymbol == "wake_up_slap" and self.pkmn2.status["main"] == "asleep":
             BASEPOWER = 120
         elif self.move.dbSymbol == "smelling_salts" and self.pkmn2.status["main"] == "paralysis":
@@ -314,7 +314,7 @@ class DamageCalculator:
               self.battleData["selfAllyHasPlayed"]):
             BASEPOWER = 150
         MODTECH = 0x1800 if (self.pkmn1.Ability.dbSymbol == "technician" and
-                             self.move.power <= 60) else 0x1000
+                             self.move.basePower <= 60) else 0x1000
         MODFBST = 0x1800 if (self.pkmn1.Ability.dbSymbol == "flare_boost" and
                              self.pkmn1.status["main"] == "burn" and
                              self.move.category == "special") else 0x1000

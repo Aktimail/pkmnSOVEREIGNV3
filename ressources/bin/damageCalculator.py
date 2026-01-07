@@ -43,7 +43,7 @@ class DamageCalculator:
         return chained_mod
 
     def get_power(self):
-        return self.move.power
+        return self.move.basePower
 
     def check_power_trigger(self):
         if self.move.dbSymbol == "frustration":

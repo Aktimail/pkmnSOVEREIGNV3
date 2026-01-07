@@ -14,7 +14,16 @@
         "water_gun",
         "earthquake",
         "electro_ball"
-        ]
+        ],
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "defe": 31,
+          "aspe": 31,
+          "dspe": 31,
+          "spd": 31
+        },
+        "nature": "hasty"
       }
     }
   ]

@@ -168,23 +168,27 @@ class Pokemon:
     def get_sec_status(self):
         return self.status["sec"]
 
-    def get_stage_stat(self, stat):
+    def get_stage_stat(self, stat, ignore_boost=False, crit=False):
+        if ignore_boost:
+            return self.globalStats[stat]
+
+        if crit:
+            if stat == "atk" or stat == "aspe":
+                if self.boosts[stat] < 0:
+                    return self.globalStats[stat]
+            elif stat == "defe" or stat == "dspe":
+                if self.boosts[stat] > 0:
+                    return self.globalStats[stat]
+
         boost_levels = {
             "eva": [3, 8 / 3, 7 / 3, 2, 5 / 3, 4 / 3, 1, 0.75, 0.6, 0.5, 3 / 7, 3 / 8, 1 / 3],
             "acc": [1 / 3, 3 / 8, 3 / 7, 0.5, 0.6, 0.75, 1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3],
             "general": [0.25, 2 / 7, 1 / 3, 0.4, 0.5, 2 / 3, 1, 1.5, 2, 2.5, 3, 3.5, 4]
         }
-        if stat == "eva":
-            eva_boost = [3, 8 / 3, 7 / 3, 2, 5 / 3, 4 / 3, 1, 0.75, 0.6, 0.5, 3 / 7, 3 / 8, 1 / 3]
-            return int(self.globalStats[stat] * eval(eva_boost[self.boosts[stat] + 6]))
-
-        elif stat == "acc":
-            acc_boost = [1 / 3, 3 / 8, 3 / 7, 0.5, 0.6, 0.75, 1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3]
-            return int(self.globalStats[stat] * eval(acc_boost[self.boosts[stat] + 6]))
-
-        else:
-            gen_boost = [0.25, 2 / 7, 1 / 3, 0.4, 0.5, 2 / 3, 1, 1.5, 2, 2.5, 3, 3.5, 4]
-            return int(self.globalStats[stat] * eval(gen_boost[self.boosts[stat] + 6]))
+        return int(
+            self.globalStats[stat] *
+            boost_levels[stat if stat == "eva" or stat == "acc" else "general"][self.boosts[stat] + 6]
+        )
 
     def get_sprite_path(self, direction):
         path = f"../assets/graphics/pokemons/{direction}/"
@@ -421,7 +425,7 @@ class Pokemon:
             MODDEFE = chain_up(MODMRVL, MODTGFG, MODDSS, MODDTTO, MODEVIO, MODTGLA)
             DEFE = apply_mod(PARAMDEFE, MODDEFE)
 
-            BASEPOWER = move.power
+            BASEPOWER = move.basePower
             if move.dbSymbol == "frustration":
                 BASEPOWER = int(((255 - self.happiness) * 10) / 25)
             elif move.dbSymbol == "payback" and not battle_data["firstToMove"]:
@@ -519,7 +523,7 @@ class Pokemon:
             elif move.dbSymbol == "round" and battle_data["selfAlly"] and battle_data["allyJustUsedRound"]:
                 BASEPOWER = 120
             elif move.dbSymbol == "triple_kick" and "trileKickStreak" in battle_data:
-                BASEPOWER = move.power * battle_data["trileKickStreak"]
+                BASEPOWER = move.basePower * battle_data["trileKickStreak"]
             elif move.dbSymbol == "wake_up_slap" and target.status["main"] == "asleep":
                 BASEPOWER = 120
             elif move.dbSymbol == "smelling_salts" and target.status["main"] == "paralysis":
@@ -586,7 +590,7 @@ class Pokemon:
                   battle_data["selfAllyHasPlayed"]):
                 BASEPOWER = 150
             MODTECH = 0x1800 if (self.Ability.dbSymbol == "technician" and
-                                 move.power <= 60) else 0x1000
+                                 move.basePower <= 60) else 0x1000
             MODFBST = 0x1800 if (self.Ability.dbSymbol == "flare_boost" and
                                  self.status["main"] == "burn" and
                                  move.category == "special") else 0x1000

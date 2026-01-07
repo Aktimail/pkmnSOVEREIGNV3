@@ -13,7 +13,7 @@ class Move:
         self.name = data["dbSymbol"].title()
         self.type = Type(data["type"])
 
-        self.power = data["power"]
+        self.basePower = data["power"]
         self.accuracy = data["accuracy"]
         self.pp = data["pp"]
         self.maxPp = self.pp

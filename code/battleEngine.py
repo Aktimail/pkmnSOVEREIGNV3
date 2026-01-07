@@ -93,9 +93,7 @@ class BattleEngine:
                                 None))
                         self.DamageCalcEngine.collect_methods()
 
-                        print(self.DamageCalcEngine.BEMM.registry)
-
-                        print(self.DamageCalcEngine.BEMM.emit("basePower"))
+                        self.DamageCalcEngine.calcul_damage()
 
         elif self.active_menu == "team":
             self.Ui.render_team_menu()

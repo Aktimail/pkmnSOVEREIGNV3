@@ -12,9 +12,9 @@ class BattleEngineMethodManager:
         self.registry = []
 
     def register(self, method):
-        if method in self.BATTLE_ENGINE_METHODS.keys():
+        if self.BATTLE_ENGINE_METHODS.get(method):
             BEM = self.BATTLE_ENGINE_METHODS[method]()
-            if not BEM in self.registry:
+            if BEM not in self.registry:
                 self.registry.append(BEM)
 
     def emit(self, trigger):

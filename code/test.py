@@ -1,7 +1,3 @@
-data ={
-    "nbFrames": 11,
-    "framesDuration": 20,
-    "loop": True
-}
-
-print(data.get("aa"))
+value = 30
+mod = 9000
+print(((value * mod) / 0x1000))
