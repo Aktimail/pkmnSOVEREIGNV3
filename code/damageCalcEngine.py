@@ -47,8 +47,8 @@ class DamageCalcEngine:
 
         self.Env.weatherFinalMod = self.chain_up(self.Env.weatherMods)
 
-    def set_critical_hit(self, rigged=False):
-        if not rigged:
+    def set_critical_hit(self, ignore=False):
+        if not ignore:
             for method in self.BEM_Manager.emit("criticalHitRules"):
                 method.resolve(self.Env)
 
@@ -62,10 +62,12 @@ class DamageCalcEngine:
                 if r <= critical_hit_factors[self.Env.criticalHitLevel]:
                     self.Env.criticalHit = True
 
-    def set_random_factor(self, const=False):
-        if not const:
+    def set_random_factor(self, const="random"):
+        if const == "random":
             r = random.randint(0, 15)
             self.Env.randomFactor = r
+        else:
+            self.Env.randomFactor = const
 
     def set_stab_mod(self):
         if self.Env.move.type in self.Env.attacker.type:
@@ -92,8 +94,6 @@ class DamageCalcEngine:
     def compute_base_power_param(self):
         for method in self.BEM_Manager.emit("basePowerRules"):
             method.resolve(self.Env)
-            if self.Env.basePowerOverride:
-                break
 
         for method in self.BEM_Manager.emit("basePowerMods"):
             method.resolve(self.Env)
@@ -138,19 +138,17 @@ class DamageCalcEngine:
     def compute_base_damage(self):
         self.damageValue = ((((2 * self.atkLvlParam) // 5 + 2)
                              * self.basePowerParam * self.atkStatParam) // self.defeStatParam) // 50 + 2
-        print("firstCompute : " + str(self.damageValue))
 
-    def calcul_damage(self):
+    def calcul_damage(self, ignore_crit=False, r="random"):
         print(self.Env.attacker.globalStats)
         print(self.Env.defender.globalStats)
-        print(self.Env.attacker.ivs)
 
         self.check_special_cases()
 
         if not self.Env.fullOverride:
             self.set_weather_mod()
-            self.set_critical_hit(rigged=True)
-            self.set_random_factor(const=True)
+            self.set_critical_hit(ignore=ignore_crit)
+            self.set_random_factor(const=r)
             self.set_stab_mod()
             self.set_type_effectiveness()
             self.set_burn_effect()

@@ -7,7 +7,7 @@
   "team": [
     {
       "name": "arceus",
-      "lvl": 50,
+      "lvl": 100,
       "mod": {
         "moveset": [
         "dragon_claw",
@@ -23,7 +23,7 @@
           "dspe": 31,
           "spd": 31
         },
-        "nature": "hasty"
+        "nature": "mild"
       }
     }
   ]

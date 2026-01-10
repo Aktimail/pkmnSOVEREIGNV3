@@ -27,7 +27,6 @@ class DamageCalcEnv:
         self.globalFinalModValue = 0
 
         self.basePowerValue = move.basePower
-        self.basePowerOverride = False
         self.basePowerMods = []
         self.basePowerFinalMod = 0
 
@@ -39,7 +38,7 @@ class DamageCalcEnv:
         self.atkStatFinalMod = 0
 
         self.defeStatUser = self.defender
-        self.defeStat = {"physical": "atk", "special": "aspe"}[self.move.category]
+        self.defeStat = {"physical": "defe", "special": "dspe"}[self.move.category]
         self.defeStatIgnoreBoost = False
         self.defeStatValue = 0
         self.defeStatMods = []

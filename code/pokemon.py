@@ -134,10 +134,10 @@ class Pokemon:
 
     def init_stat(self, stat):
         if stat == "hp":
-            return math.floor(((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
-                               self.level / 100) + self.level + 10)
-        return math.floor((((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] / 4)) *
-                            self.level / 100) + 5) * self.nature[stat])
+            return math.floor(((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] // 4)) *
+                               self.level // 100) + self.level + 10)
+        return math.floor((((self.ivs[stat] + 2 * self.baseStats[stat] + math.floor(self.evs[stat] // 4)) *
+                            self.level // 100) + 5) * self.nature[stat])
 
     def get_name(self):
         return self.name

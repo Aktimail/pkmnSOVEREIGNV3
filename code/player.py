@@ -24,10 +24,10 @@ class Player(Entity):
         self.spritesheet = self.all_spritesheet["walk"]
         self.sprite_update()
 
-        self.team = [Pokemon("bronzong", 50, {
+        self.team = [Pokemon("bronzong", 100, {
             "ability": "heatproof",
-            "moveset": ["frustration"],
-            "nature": "docile",
+            "moveset": ["frustration", "fire_punch"],
+            "nature": "adamant",
             "ivs": {
                 "hp": 31,
                 "atk": 31,

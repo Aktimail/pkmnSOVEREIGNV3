@@ -5,7 +5,7 @@ class BattleEngineMethodManager:
 
     BATTLE_ENGINE_METHODS = {
         "frustration": FrustrationMethod,
-        "heatproof": HeatProofMethod
+        "heatproof": HeatproofMethod
     }
 
     def __init__(self):

@@ -93,7 +93,8 @@ class BattleEngine:
                                 None))
                         self.DamageCalcEngine.collect_methods()
 
-                        self.DamageCalcEngine.calcul_damage()
+                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=0)
+                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=15)
 
         elif self.active_menu == "team":
             self.Ui.render_team_menu()
