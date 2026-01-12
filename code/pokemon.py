@@ -75,8 +75,6 @@ class Pokemon:
         }
         self.frontOffsetY = self.forms[0]["frontOffsetY"]
 
-        self.currentHp = self.init_stat("hp")
-
         self.happiness = 0
 
         if mod:
@@ -90,6 +88,12 @@ class Pokemon:
             "dspe": self.init_stat("dspe"),
             "spd": self.init_stat("spd")
         }
+        self.currentHp = self.globalStats["hp"]
+
+        self.multipleHitCounter = 0
+        self.isInTheSky = False
+        self.stockpile = 0
+        self.defenseCurl = False
 
     def init_gender(self):
         if self.forms[0]["femaleRate"] == -1:

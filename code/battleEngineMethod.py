@@ -1,3 +1,7 @@
+import random
+from math import factorial
+
+
 class BattleEngineMethod:
     TRIGGER = None
     PRIORITY = 0
@@ -119,7 +123,7 @@ class EchoedVoiceMethod(BattleEngineMethod):
     PRIORITY = 11
 
     def resolve(self, env):
-        use_counter = env.battleData.successive_uses_counter(env.move, successfull=False)  # to do
+        use_counter = env.battleData.successive_uses_counter(env.move)  # to do
         env.basePowerValue = 40 * use_counter
 
 
@@ -207,6 +211,580 @@ class FlailMethod(BattleEngineMethod):
             env.basePowerValue = 40
         else:
             env.basePowerValue = 20
+
+class TrumpCardMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 19
+
+    def resolve(self, env):
+        if env.move.pp >= 5:
+            env.basePowerValue = 40
+        elif env.move.pp == 4:
+            env.basePowerValue = 50
+        elif env.move.pp == 3:
+            env.basePowerValue = 60
+        elif env.move.pp == 2:
+            env.basePowerValue = 80
+        elif env.move.pp == 1:
+            env.basePowerValue = 200
+
+
+class RoundMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 20
+
+    def resolve(self, env):
+        pass  # BP is doubled to 120 if used in direct succession of an ally
+
+
+class TripleKickMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 21
+
+    def resolve(self, env):
+        if env.attacker.multipleHitCounter == 1:
+            env.basePowerValue = 10
+        elif env.attacker.multipleHitCounter == 2:
+            env.basePowerValue = 20
+        elif env.attacker.multipleHitCounter == 3:
+            env.basePowerValue = 30
+
+
+class WakeUpSlapMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 22
+
+    def resolve(self, env):
+        if env.defender.get_main_status() == "asleep":
+            env.basePowerValue = 120
+
+
+class SmellingSaltMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 23
+
+    def resolve(self, env):
+        if env.defender.get_main_status() == "paralyzed":
+            env.basePowerValue = 120
+
+
+class WeatherBallMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 24
+
+    def resolve(self, env):
+        if env.battleData.weather.status:
+            env.basePowerValue = 100
+
+
+class GustMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 25
+
+    def resolve(self, env):
+        if env.defender.isInTheSky:
+            env.basePowerValue = 80
+
+
+class BeatUpMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 26
+
+    def resolve(self, env):
+        pkmn_remaining = env.battleData.get_team_len(env.attacker)
+        env.basePowerValue = pkmn_remaining // 10 + 5
+
+
+class HiddenPowerMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 27
+
+    def resolve(self, env):
+        ivs = [env.attacker.ivs["hp"],
+               env.attacker.ivs["atk"],
+               env.attacker.ivs["defe"],
+               env.attacker.ivs["spd"],
+               env.attacker.ivs["aspe"],
+               env.attacker.ivs["dspe"]]
+        ivs_sum = 0
+        for i in range(len(ivs)):
+            ivs_sum += ((ivs[i] >> 1) & 1) << i
+
+        env.basePowerValue = 30 + (40 * ivs_sum) // 63
+
+class SpitUpMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 28
+
+    def resolve(self, env):
+        env.basePowerValue = 100 * env.attacker.stockpile
+
+
+class PursuitMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 29
+
+    def resolve(self, env):
+        if env.battleData.check_puirsuit_effect():
+            env.basePowerValue = 80
+
+
+class PresentMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 30
+
+    def resolve(self, env):
+        r = random.randint(0, 79)
+        if r < 40:
+            env.basePowerValue = 40
+        elif 40 <= r < 70:
+            env.basePowerValue = 80
+        else:
+            env.basePowerValue = 120
+
+
+class NaturalGiftMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 31
+
+    def resolve(self, env):
+        berries_table = {
+            "cheri_berry": {
+                "id": 1,
+                "type": "fire",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "chesto_berry": {
+                "id": 2,
+                "type": "water",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "pecha_berry": {
+                "id": 3,
+                "type": "electric",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "rawst_berry": {
+                "id": 4,
+                "type": "grass",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "aspear_berry": {
+                "id": 5,
+                "type": "ice",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "leppa_berry": {
+                "id": 6,
+                "type": "fighting",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "oran_berry": {
+                "id": 7,
+                "type": "poison",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "persim_berry": {
+                "id": 8,
+                "type": "ground",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "lum_berry": {
+                "id": 9,
+                "type": "flying",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "sitrus_berry": {
+                "id": 10,
+                "type": "psychic",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "figy_berry": {
+                "id": 11,
+                "type": "bug",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "wiki_berry": {
+                "id": 12,
+                "type": "rock",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "mago_berry": {
+                "id": 13,
+                "type": "ghost",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "aguav_berry": {
+                "id": 14,
+                "type": "dragon",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "lapapa_berry": {
+                "id": 15,
+                "type": "dark",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "razz_berry": {
+                "id": 16,
+                "type": "steel",
+                "naturalGiftPower": 60,
+                "damageLoweringType": False
+            },
+            "bluk_berry": {
+                "id": 17,
+                "type": "fire",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "nanab_berry": {
+                "id": 18,
+                "type": "water",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "wepear_berry": {
+                "id": 19,
+                "type": "electric",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "pinap_berry": {
+                "id": 20,
+                "type": "grass",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "pomeg_berry": {
+                "id": 21,
+                "type": "ice",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "kelpsy_berry": {
+                "id": 22,
+                "type": "fighting",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "qualot_berry": {
+                "id": 23,
+                "type": "poison",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "hondew_berry": {
+                "id": 24,
+                "type": "ground",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "grepa_berry": {
+                "id": 25,
+                "type": "flying",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "tamato_berry": {
+                "id": 26,
+                "type": "psychic",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "comn_berry": {
+                "id": 27,
+                "type": "bug",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "magost_berry": {
+                "id": 28,
+                "type": "rock",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "rabuta_berry": {
+                "id": 29,
+                "type": "ghost",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "nomel_berry": {
+                "id": 30,
+                "type": "dragon",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "spelon_berry": {
+                "id": 31,
+                "type": "dark",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "pamtre_berry": {
+                "id": 32,
+                "type": "steel",
+                "naturalGiftPower": 70,
+                "damageLoweringType": False
+            },
+            "watmel_berry": {
+                "id": 33,
+                "type": "fire",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "durin_berry": {
+                "id": 34,
+                "type": "water",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "belue_berry": {
+                "id": 35,
+                "type": "electric",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "occa_berry": {
+                "id": 36,
+                "type": "fire",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "passho_berry": {
+                "id": 37,
+                "type": "water",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "wacan_berry": {
+                "id": 38,
+                "type": "electric",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "rindo_berry": {
+                "id": 39,
+                "type": "grass",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "yache_berry": {
+                "id": 40,
+                "type": "ice",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "chople_berry": {
+                "id": 41,
+                "type": "fighting",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "kebia_berry": {
+                "id": 42,
+                "type": "poison",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "shuca_berry": {
+                "id": 43,
+                "type": "ground",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "coba_berry": {
+                "id": 44,
+                "type": "flying",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "payapa_berry": {
+                "id": 45,
+                "type": "psychic",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "tanga_berry": {
+                "id": 46,
+                "type": "bug",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "charti_berry": {
+                "id": 47,
+                "type": "rock",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "kasib_berry": {
+                "id": 48,
+                "type": "ghost",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "haban_berry": {
+                "id": 49,
+                "type": "dragon",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "colbur_berry": {
+                "id": 50,
+                "type": "dark",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "babiri_berry": {
+                "id": 51,
+                "type": "steel",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "chilan_berry": {
+                "id": 52,
+                "type": "normal",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "liechi_berry": {
+                "id": 53,
+                "type": "grass",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "ganlon_berry": {
+                "id": 54,
+                "type": "ice",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "salac_berry": {
+                "id": 55,
+                "type": "fighing",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "petaya_berry": {
+                "id": 56,
+                "type": "poison",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "apicot_berry": {
+                "id": 57,
+                "type": "ground",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "lansat_berry": {
+                "id": 58,
+                "type": "flying",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "starf_berry": {
+                "id": 59,
+                "type": "psychic",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "enigma_berry": {
+                "id": 60,
+                "type": "bug",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "micle_berry": {
+                "id": 61,
+                "type": "rock",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "custap_berry": {
+                "id": 62,
+                "type": "ghost",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "jaboca_berry": {
+                "id": 63,
+                "type": "dragon",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            },
+            "rowap_berry": {
+                "id": 64,
+                "type": "dark",
+                "naturalGiftPower": 80,
+                "damageLoweringType": False
+            }
+        }
+        if env.attacker.get_item() in berries_table:
+            env.basePowerValue = berries_table[env.attacker.get_item()]
+
+
+class MagnitudeMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 32
+
+    def resolve(self, env):
+        r = random.randint(0, 100)
+        if r < 5:
+            factor = 0
+        elif 5 <= r < 15:
+            factor = 1
+        elif 15 <= r < 35:
+            factor = 2
+        elif 35 <= r < 65:
+            factor = 3
+        elif 65 <= r < 85:
+            factor = 4
+        elif 85 <= r < 95:
+            factor = 5
+        else:
+            factor = 7
+        env.basePowerValue = 10 + 20 * factor
+
+
+class RolloutMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 33
+
+    def resolve(self, env):
+        use_counter = env.battleData.successive_uses_counter(env.move, successfull=True, limit=5)
+        defense_curl = 1 if env.attacker.defenseCurl else 0
+        env.basePowerValue = 30 * 2 ** (use_counter + defense_curl)
+
+
+class FlingMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 34
+
+    def resolve(self, env):
+        env.basePowerValue = env.move.flingPower
+
+
+class PledgeMethod(BattleEngineMethod):
+    TRIGGER = "basePowerRules"
+    PRIORITY = 35
+
+    def resolve(self, env):
+        pass  # skip ally turn if its used move is either grass/fire/water pledge and set bp to 150
 
 
 class HeatproofMethod(BattleEngineMethod):
