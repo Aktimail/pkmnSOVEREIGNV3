@@ -18,4 +18,4 @@ class BattleEngineMethodManager:
                 self.registry.append(BEM)
 
     def emit(self, trigger):
-        return sorted([method for method in self.registry if method.TRIGGER == trigger], key=lambda m: m.PRIORITY)
+        return sorted([method for method in self.registry if method.trigger == trigger], key=lambda m: m.priority)

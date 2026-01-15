@@ -50,6 +50,7 @@ class Move:
         self.boosts = self.init_boosts(data["battleStageMod"])
         self.status = data["moveStatus"]
         self.battleEngineMethod = data["dbSymbol"]
+        self.effects = {}
 
     @staticmethod
     def init_boosts(data):

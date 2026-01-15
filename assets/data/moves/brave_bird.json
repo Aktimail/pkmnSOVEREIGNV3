@@ -1,5 +1,4 @@
-{"id":413,"dbSymbol":"brave_bird","klass":"Move","mapUse":0,"type":"flying","power":120,"accuracy":100,"pp":15,"category":"physical",
-  "movecriticalRate":1,
+{"id":413,"dbSymbol":"brave_bird","klass":"Move","mapUse":0,"type":"flying","power":120,"accuracy":100,"pp":15,"category":"physical", "movecriticalRate":1,
   "battleEngineMethod":"s_recoil",
   "priority":0,
   "isDirect":true,
@@ -26,4 +25,5 @@
   "isPowder":false,
   "effectChance":0,
   "battleEngineAimedTarget":"any_other_pokemon",
-  "battleStageMod":[],"moveStatus":[]}
+  "battleStageMod":[],"moveStatus":[]
+}

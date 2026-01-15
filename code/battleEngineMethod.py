@@ -1,25 +1,26 @@
 import random
-from math import factorial
 
 
 class BattleEngineMethod:
-    TRIGGER = None
-    PRIORITY = 0
+    relative = None
+    client = None
+    trigger = None
+    priority = 0
 
     def resolve(self, env): ...
 
 
 class FrustrationMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 1
+    trigger = "basePowerRules"
+    priority = 1
 
     def resolve(self, env):
         env.basePowerValue = max(1, ((255 - env.attacker.happiness) * 10) // 25)
 
 
 class PaybackMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 2
+    trigger = "basePowerRules"
+    priority = 2
 
     def resolve(self, env):
         if env.battleData.has_target_moved():  # to do
@@ -27,16 +28,16 @@ class PaybackMethod(BattleEngineMethod):
 
 
 class ReturnMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 3
+    trigger = "basePowerRules"
+    priority = 3
 
     def resolve(self, env):
         env.basePowerValue = max(1, (env.attacker.happiness * 10) // 25)
 
 
 class ElectroBallMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 4
+    trigger = "basePowerRules"
+    priority = 4
 
     def resolve(self, env):
         speed_delta = env.attacker.get_stage_stat("spd") // env.defender.get_stage_stat("spd")
@@ -53,8 +54,8 @@ class ElectroBallMethod(BattleEngineMethod):
 
 
 class AvalancheMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 5
+    trigger = "basePowerRules"
+    priority = 5
 
     def resolve(self, env):
         if env.battleData.check_avalanche_effect():  # to do
@@ -62,24 +63,24 @@ class AvalancheMethod(BattleEngineMethod):
 
 
 class GyroBallMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 6
+    trigger = "basePowerRules"
+    priority = 6
 
     def resolve(self, env):
         env.basePowerValue = min(150, 25 * env.attacker.get_stage_stat("spd") // env.defender.get_stage_stat("spd"))
 
 
 class EruptionMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 7
+    trigger = "basePowerRules"
+    priority = 7
 
     def resolve(self, env):
         env.basePowerValue = max(1, (150 * env.attacker.currentHp) // env.attacker.globalStats["hp"])
 
 
 class PunishementMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 8
+    trigger = "basePowerRules"
+    priority = 8
 
     def resolve(self, env):
         statup_total = 0
@@ -90,8 +91,8 @@ class PunishementMethod(BattleEngineMethod):
 
 
 class FuryCutterMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 9
+    trigger = "basePowerRules"
+    priority = 9
 
     def resolve(self, env):
         use_counter = env.battleData.successive_uses_counter(env.move, successfull=True)  # to do
@@ -99,8 +100,8 @@ class FuryCutterMethod(BattleEngineMethod):
 
 
 class LowKickMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 10
+    trigger = "basePowerRules"
+    priority = 10
 
     def resolve(self, env):
         target_weight = env.defender.get_weight()
@@ -119,8 +120,8 @@ class LowKickMethod(BattleEngineMethod):
 
 
 class EchoedVoiceMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 11
+    trigger = "basePowerRules"
+    priority = 11
 
     def resolve(self, env):
         use_counter = env.battleData.successive_uses_counter(env.move)  # to do
@@ -128,8 +129,8 @@ class EchoedVoiceMethod(BattleEngineMethod):
 
 
 class HexMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 12
+    trigger = "basePowerRules"
+    priority = 12
 
     def resolve(self, env):
         if env.defender.get_main_status():
@@ -137,17 +138,17 @@ class HexMethod(BattleEngineMethod):
 
 
 class WringOutMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 13
+    trigger = "basePowerRules"
+    priority = 13
 
     def resolve(self, env):
-        target_hp_ratio = env.defender.currentHp / env.defender.globalStats["hp"]
+        target_hp_ratio = env.defender.currentHp * 0x1000 // env.defender.globalStats["hp"] * 0x1000
         env.basePowerValue = round(120 * target_hp_ratio) // 100
 
 
 class AssuranceMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 14
+    trigger = "basePowerRules"
+    priority = 14
 
     def resolve(self, env):
         if env.battleData.check_assurance_effect():  # to do
@@ -155,8 +156,8 @@ class AssuranceMethod(BattleEngineMethod):
 
 
 class HeavySlamMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 15
+    trigger = "basePowerRules"
+    priority = 15
 
     def resolve(self, env):
         weight_delta = env.attacker.get_weight() // env.defender.get_weight()
@@ -173,8 +174,8 @@ class HeavySlamMethod(BattleEngineMethod):
 
 
 class StoredPowerMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 16
+    trigger = "basePowerRules"
+    priority = 16
 
     def resolve(self, env):
         statup_total = 0
@@ -185,8 +186,8 @@ class StoredPowerMethod(BattleEngineMethod):
 
 
 class AcrobaticMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 17
+    trigger = "basePowerRules"
+    priority = 17
 
     def resolve(self, env):
         if not env.attacker.get_item():
@@ -194,8 +195,8 @@ class AcrobaticMethod(BattleEngineMethod):
 
 
 class FlailMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 18
+    trigger = "basePowerRules"
+    priority = 18
 
     def resolve(self, env):
         p = (48 * env.attacker.currentHp) // env.attacker.globalStats["hp"]
@@ -213,8 +214,8 @@ class FlailMethod(BattleEngineMethod):
             env.basePowerValue = 20
 
 class TrumpCardMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 19
+    trigger = "basePowerRules"
+    priority = 19
 
     def resolve(self, env):
         if env.move.pp >= 5:
@@ -230,16 +231,16 @@ class TrumpCardMethod(BattleEngineMethod):
 
 
 class RoundMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 20
+    trigger = "basePowerRules"
+    priority = 20
 
     def resolve(self, env):
         pass  # BP is doubled to 120 if used in direct succession of an ally
 
 
 class TripleKickMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 21
+    trigger = "basePowerRules"
+    priority = 21
 
     def resolve(self, env):
         if env.attacker.multipleHitCounter == 1:
@@ -251,8 +252,8 @@ class TripleKickMethod(BattleEngineMethod):
 
 
 class WakeUpSlapMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 22
+    trigger = "basePowerRules"
+    priority = 22
 
     def resolve(self, env):
         if env.defender.get_main_status() == "asleep":
@@ -260,8 +261,8 @@ class WakeUpSlapMethod(BattleEngineMethod):
 
 
 class SmellingSaltMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 23
+    trigger = "basePowerRules"
+    priority = 23
 
     def resolve(self, env):
         if env.defender.get_main_status() == "paralyzed":
@@ -269,8 +270,8 @@ class SmellingSaltMethod(BattleEngineMethod):
 
 
 class WeatherBallMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 24
+    trigger = "basePowerRules"
+    priority = 24
 
     def resolve(self, env):
         if env.battleData.weather.status:
@@ -278,8 +279,8 @@ class WeatherBallMethod(BattleEngineMethod):
 
 
 class GustMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 25
+    trigger = "basePowerRules"
+    priority = 25
 
     def resolve(self, env):
         if env.defender.isInTheSky:
@@ -287,8 +288,8 @@ class GustMethod(BattleEngineMethod):
 
 
 class BeatUpMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 26
+    trigger = "basePowerRules"
+    priority = 26
 
     def resolve(self, env):
         pkmn_remaining = env.battleData.get_team_len(env.attacker)
@@ -296,8 +297,8 @@ class BeatUpMethod(BattleEngineMethod):
 
 
 class HiddenPowerMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 27
+    trigger = "basePowerRules"
+    priority = 27
 
     def resolve(self, env):
         ivs = [env.attacker.ivs["hp"],
@@ -313,16 +314,16 @@ class HiddenPowerMethod(BattleEngineMethod):
         env.basePowerValue = 30 + (40 * ivs_sum) // 63
 
 class SpitUpMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 28
+    trigger = "basePowerRules"
+    priority = 28
 
     def resolve(self, env):
         env.basePowerValue = 100 * env.attacker.stockpile
 
 
 class PursuitMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 29
+    trigger = "basePowerRules"
+    priority = 29
 
     def resolve(self, env):
         if env.battleData.check_puirsuit_effect():
@@ -330,8 +331,8 @@ class PursuitMethod(BattleEngineMethod):
 
 
 class PresentMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 30
+    trigger = "basePowerRules"
+    priority = 30
 
     def resolve(self, env):
         r = random.randint(0, 79)
@@ -344,8 +345,8 @@ class PresentMethod(BattleEngineMethod):
 
 
 class NaturalGiftMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 31
+    trigger = "basePowerRules"
+    priority = 31
 
     def resolve(self, env):
         berries_table = {
@@ -739,8 +740,8 @@ class NaturalGiftMethod(BattleEngineMethod):
 
 
 class MagnitudeMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 32
+    trigger = "basePowerRules"
+    priority = 32
 
     def resolve(self, env):
         r = random.randint(0, 100)
@@ -762,8 +763,8 @@ class MagnitudeMethod(BattleEngineMethod):
 
 
 class RolloutMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 33
+    trigger = "basePowerRules"
+    priority = 33
 
     def resolve(self, env):
         use_counter = env.battleData.successive_uses_counter(env.move, successfull=True, limit=5)
@@ -772,24 +773,91 @@ class RolloutMethod(BattleEngineMethod):
 
 
 class FlingMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 34
+    trigger = "basePowerRules"
+    priority = 34
 
     def resolve(self, env):
         env.basePowerValue = env.move.flingPower
 
 
 class PledgeMethod(BattleEngineMethod):
-    TRIGGER = "basePowerRules"
-    PRIORITY = 35
+    trigger = "basePowerRules"
+    priority = 35
 
     def resolve(self, env):
         pass  # skip ally turn if its used move is either grass/fire/water pledge and set bp to 150
 
 
+class TechnicianMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 1
+
+    def resolve(self, env):
+        if env.basePowerValue <= 60:
+            env.basePowerMods.append(0x1800)
+
+
+class FlareBoostMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 2
+
+    def resolve(self, env):
+        if env.attacker.get_main_status() == "burn" and env.move.category == "special":
+            env.basePowerMods.append(0x1800)
+
+
+class AnalyticMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 3
+
+    def resolve(self, env):
+        if env.move.dbSymbol not in ["future_sight", "doom_desire"] and env.battleData.has_target_moved():
+            env.basePowerMods.append(0x14CD)
+
+
+class RecklessMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 4
+
+    def resolve(self, env):
+        if env.move.effects.get("recoil") or env.move.dbSymbol in ["jump_kick", "high_jump_kick"]:
+            env.basePowerMods.append(0x1333)
+
+
+class IronFistMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 5
+
+    def resolve(self, env):
+        if env.move.flags["isPunch"]:
+            env.basePowerMods.append(0x1333)
+
+
+class ToxicBoostMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 6
+
+    def resolve(self, env):
+        if env.attacker.get_main_status() == "poison" and env.move.category == "physical":
+            env.basePowerMods.append(0x1800)
+
+
+class RivalryMethod(BattleEngineMethod):
+    trigger = "basePowerModifiers"
+    priority = 7
+
+    def resolve(self, env):
+        if env.attacker.get_gender() == "genderless" or env.defender.get_gender() == "genderless":
+            env.basePowerMods.append(0x1000)
+        elif env.attacker.get_gender() == env.defender.get_gender():
+            env.basePowerMods.append(0x1400)
+        elif env.attacker.get_gender() != env.defender.get_gender():
+            env.basePowerMods.append(0xC00)
+
+
 class HeatproofMethod(BattleEngineMethod):
-    TRIGGER = "basePowerModifiers"
-    PRIORITY = 8
+    trigger = "basePowerModifiers"
+    priority = 8
 
     def resolve(self, env):
         if env.move.get_type() == "fire":
