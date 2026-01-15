@@ -1,6 +1,7 @@
 import json
 
 from type import Type
+from data import Data
 
 
 class Move:
@@ -49,8 +50,17 @@ class Move:
         self.target = data["battleEngineAimedTarget"]
         self.boosts = self.init_boosts(data["battleStageMod"])
         self.status = data["moveStatus"]
-        self.battleEngineMethod = data["dbSymbol"]
+        self.battleEngineMethod = self.init_bem(data["dbSymbol"])
         self.effects = {}
+
+        """au final : seulement le bem 
+        et le dict effects qui regroupe tout le reste (changement de stat, etat main et sec)"""
+
+    @staticmethod
+    def init_bem(bem_title):
+        if Data.BATTLE_ENGINE_METHODS.get(bem_title):
+            return Data.BATTLE_ENGINE_METHODS[bem_title]()
+        return None
 
     @staticmethod
     def init_boosts(data):

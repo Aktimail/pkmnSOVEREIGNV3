@@ -3,7 +3,6 @@ import random
 
 class BattleEngineMethod:
     relative = None
-    client = None
     trigger = None
     priority = 0
 
@@ -11,6 +10,7 @@ class BattleEngineMethod:
 
 
 class FrustrationMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 1
 
@@ -19,6 +19,7 @@ class FrustrationMethod(BattleEngineMethod):
 
 
 class PaybackMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 2
 
@@ -28,6 +29,7 @@ class PaybackMethod(BattleEngineMethod):
 
 
 class ReturnMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 3
 
@@ -36,6 +38,7 @@ class ReturnMethod(BattleEngineMethod):
 
 
 class ElectroBallMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 4
 
@@ -54,6 +57,7 @@ class ElectroBallMethod(BattleEngineMethod):
 
 
 class AvalancheMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 5
 
@@ -63,6 +67,7 @@ class AvalancheMethod(BattleEngineMethod):
 
 
 class GyroBallMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 6
 
@@ -71,6 +76,7 @@ class GyroBallMethod(BattleEngineMethod):
 
 
 class EruptionMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 7
 
@@ -79,6 +85,7 @@ class EruptionMethod(BattleEngineMethod):
 
 
 class PunishementMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 8
 
@@ -91,6 +98,7 @@ class PunishementMethod(BattleEngineMethod):
 
 
 class FuryCutterMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 9
 
@@ -100,6 +108,7 @@ class FuryCutterMethod(BattleEngineMethod):
 
 
 class LowKickMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 10
 
@@ -120,6 +129,7 @@ class LowKickMethod(BattleEngineMethod):
 
 
 class EchoedVoiceMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 11
 
@@ -129,6 +139,7 @@ class EchoedVoiceMethod(BattleEngineMethod):
 
 
 class HexMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 12
 
@@ -138,6 +149,7 @@ class HexMethod(BattleEngineMethod):
 
 
 class WringOutMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 13
 
@@ -147,6 +159,7 @@ class WringOutMethod(BattleEngineMethod):
 
 
 class AssuranceMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 14
 
@@ -156,6 +169,7 @@ class AssuranceMethod(BattleEngineMethod):
 
 
 class HeavySlamMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 15
 
@@ -174,6 +188,7 @@ class HeavySlamMethod(BattleEngineMethod):
 
 
 class StoredPowerMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 16
 
@@ -186,6 +201,7 @@ class StoredPowerMethod(BattleEngineMethod):
 
 
 class AcrobaticMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 17
 
@@ -195,6 +211,7 @@ class AcrobaticMethod(BattleEngineMethod):
 
 
 class FlailMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 18
 
@@ -213,7 +230,9 @@ class FlailMethod(BattleEngineMethod):
         else:
             env.basePowerValue = 20
 
+
 class TrumpCardMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 19
 
@@ -231,6 +250,7 @@ class TrumpCardMethod(BattleEngineMethod):
 
 
 class RoundMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 20
 
@@ -239,6 +259,7 @@ class RoundMethod(BattleEngineMethod):
 
 
 class TripleKickMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 21
 
@@ -252,6 +273,7 @@ class TripleKickMethod(BattleEngineMethod):
 
 
 class WakeUpSlapMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 22
 
@@ -261,6 +283,7 @@ class WakeUpSlapMethod(BattleEngineMethod):
 
 
 class SmellingSaltMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 23
 
@@ -270,6 +293,7 @@ class SmellingSaltMethod(BattleEngineMethod):
 
 
 class WeatherBallMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 24
 
@@ -279,6 +303,7 @@ class WeatherBallMethod(BattleEngineMethod):
 
 
 class GustMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 25
 
@@ -288,6 +313,7 @@ class GustMethod(BattleEngineMethod):
 
 
 class BeatUpMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 26
 
@@ -297,6 +323,7 @@ class BeatUpMethod(BattleEngineMethod):
 
 
 class HiddenPowerMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 27
 
@@ -313,7 +340,9 @@ class HiddenPowerMethod(BattleEngineMethod):
 
         env.basePowerValue = 30 + (40 * ivs_sum) // 63
 
+
 class SpitUpMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 28
 
@@ -322,6 +351,7 @@ class SpitUpMethod(BattleEngineMethod):
 
 
 class PursuitMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 29
 
@@ -331,6 +361,7 @@ class PursuitMethod(BattleEngineMethod):
 
 
 class PresentMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 30
 
@@ -345,6 +376,7 @@ class PresentMethod(BattleEngineMethod):
 
 
 class NaturalGiftMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 31
 
@@ -740,6 +772,7 @@ class NaturalGiftMethod(BattleEngineMethod):
 
 
 class MagnitudeMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 32
 
@@ -763,6 +796,7 @@ class MagnitudeMethod(BattleEngineMethod):
 
 
 class RolloutMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 33
 
@@ -773,6 +807,7 @@ class RolloutMethod(BattleEngineMethod):
 
 
 class FlingMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 34
 
@@ -781,14 +816,16 @@ class FlingMethod(BattleEngineMethod):
 
 
 class PledgeMethod(BattleEngineMethod):
+    relative = "move"
     trigger = "basePowerRules"
     priority = 35
 
     def resolve(self, env):
-        pass  # skip ally turn if its used move is either grass/fire/water pledge and set bp to 150
+        pass  # skip ally's turn if its used move is either grass/fire/water pledge and set bp to 150
 
 
 class TechnicianMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 1
 
@@ -798,6 +835,7 @@ class TechnicianMethod(BattleEngineMethod):
 
 
 class FlareBoostMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 2
 
@@ -807,6 +845,7 @@ class FlareBoostMethod(BattleEngineMethod):
 
 
 class AnalyticMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 3
 
@@ -816,6 +855,7 @@ class AnalyticMethod(BattleEngineMethod):
 
 
 class RecklessMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 4
 
@@ -825,6 +865,7 @@ class RecklessMethod(BattleEngineMethod):
 
 
 class IronFistMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 5
 
@@ -834,6 +875,7 @@ class IronFistMethod(BattleEngineMethod):
 
 
 class ToxicBoostMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 6
 
@@ -843,6 +885,7 @@ class ToxicBoostMethod(BattleEngineMethod):
 
 
 class RivalryMethod(BattleEngineMethod):
+    relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 7
 
@@ -856,9 +899,202 @@ class RivalryMethod(BattleEngineMethod):
 
 
 class HeatproofMethod(BattleEngineMethod):
+    relative = "defender"
     trigger = "basePowerModifiers"
     priority = 8
 
     def resolve(self, env):
         if env.move.get_type() == "fire":
             env.basePowerMods.append(0x800)
+
+
+class DrySkinMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "basePowerModifiers"
+    priority = 9
+
+    def resolve(self, env):
+        if env.move.get_type() == "fire":
+            env.basePowerMods.append(0x1400)
+
+
+class SheerForceMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 10
+
+    def resolve(self, env):
+        if env.move.effects:
+            env.basePowerMods.append(0x1400)
+
+
+class TypeBoostingItemMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 11
+
+    def resolve(self, env):
+        items = {
+            "black_belt": "fighting",
+            "black_glasses": "dark",
+            "charcoal": "fire",
+            "dragon_fang": "dragon",
+            "hard_stone": "rock",
+            "magnet": "electric",
+            "metal_coat": "steel",
+            "miracle_seed": "grass",
+            "mystic_water": "water",
+            "never_melt_ice": "ice",
+            "poison_barb": "poison",
+            "sharp_beak": "flying",
+            "silk_scarf": "normal",
+            "silver_powder": "bug",
+            "soft_sand": "ground",
+            "spell_tag": "ghost",
+            "twisted_spoon": "psychic",
+            "fist_plate": "fighting",
+            "dread_plate": "dark",
+            "flame_plate": "fire",
+            "draco_plate": "dragon",
+            "stone_plate": "rock_type",
+            "zap_plate": "electric",
+            "iron_plate": "steel",
+            "meadow_plate": "grass",
+            "splash_plate": "water",
+            "icicle_plate": "ice",
+            "toxic_plate": "poison",
+            "sky_plate": "flying",
+            "blank_plate": "normal",
+            "insect_plate": "bug",
+            "earth_plate": "ground",
+            "spooky_plate": "ghost",
+            "mind_plate": "psychic",
+            "odd_incense": "psychic",
+            "rock_incense": "rock",
+            "rose_incense": "grass",
+            "sea_incense": "water",
+            "wave_incense": "water"
+        }
+        if env.move.get_type() == items[env.attacker.get_item()]:
+            env.basePowerMods.append(0x1333)
+
+
+class MuscleBandMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 12
+
+    def resolve(self, env):
+        if env.move.category == "physical":
+            env.basePowerMods.append(0x1199)
+
+
+class LustrousOrbMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 13
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "palkia" and env.move.get_type() in ["water", "dragon"]:
+            env.basePowerMods.append(0x1333)
+
+
+class WiseGlassesMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 14
+
+    def resolve(self, env):
+        if env.move.category == "special":
+            env.basePowerMods.append(0x1199)
+
+
+class GriseousOrbMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 15
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "giratina" and env.move.get_type() in ["ghost", "dragon"]:
+            env.basePowerMods.append(0x1333)
+
+
+class OddincenseMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 16
+
+    def resolve(self, env):
+        if env.move.get_type() == "phychic":
+            env.basePowerMods.append(0x1333)
+
+
+class AdamantOrbMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 17
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "dialga" and env.move.get_type() in ["steel", "dragon"]:
+            env.basePowerMods.append(0x1333)
+
+
+class GemMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 18
+
+    def resolve(self, env):
+        gems = {
+            "bug_gem": "bug",
+            "dark_gem": "dark",
+            "dragon_gem": "dragon",
+            "electric_gem": "electric",
+            "fairy_gem": "fairy",
+            "fighting_gem": "fighting",
+            "fire_gem": "fire",
+            "flying_gem": "flying",
+            "ghost_gem": "ghost",
+            "grass_gem": "grass",
+            "ground_gem": "ground",
+            "ice_gem": "ice",
+            "normal_gem": "normal",
+            "poison_gem": "poison",
+            "psychic_gem": "psychic",
+            "rock_gem": "rock",
+            "steel_gem": "steel",
+            "water_gem": "water"
+        }
+        if env.move.get_type() == gems[env.attacker.get_item()]:
+            env.basePowerMods.append(0x1800)
+
+
+class FacadeMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 19
+
+    def resolve(self, env):
+        if env.attacker.get_main_status() in ["paralyzed", "poisoned", "burned"]:
+            env.basePowerMods.append(0x2000)
+
+
+class BrineMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 20
+
+    def resolve(self, env):
+        if env.defender.currentHp <= env.defender.globalStats["hp"] / 2:
+            env.basePowerMods.append(0x2000)
+
+
+class VenoshockMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 20
+
+    def resolve(self, env):
+        if env.defender.get_main_status() == "poisoned":
+            env.basePowerMods.append(0x2000)
+

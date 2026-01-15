@@ -27,10 +27,10 @@ class DamageCalcEngine:
         return chained_mod
 
     def collect_methods(self):
-        for pkmn in [self.Env.attacker, self.Env.defender]:
-            self.BEM_Manager.register(pkmn.Ability.battleEngineMethod)
+        for role, pkmn in {"attacker": self.Env.attacker, "defender": self.Env.defender}.items():
+            self.BEM_Manager.register(pkmn.Ability.battleEngineMethod, relative=role)
             if pkmn.get_item():
-                self.BEM_Manager.register(pkmn.Item.battleEngineMethod)
+                self.BEM_Manager.register(pkmn.Item.battleEngineMethod, relative=role)
 
         self.BEM_Manager.register(self.Env.move.battleEngineMethod)
 
