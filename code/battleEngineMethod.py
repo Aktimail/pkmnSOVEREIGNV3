@@ -1098,3 +1098,32 @@ class VenoshockMethod(BattleEngineMethod):
         if env.defender.get_main_status() == "poisoned":
             env.basePowerMods.append(0x2000)
 
+
+class RetaliateMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 21
+
+    def resolve(self, env):
+        if env.battleData:  # pkmn fainted last round
+            env.basePowerMods.append(0x2000)
+
+
+class FusionMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 22
+
+    def resolve(self, env):
+        if env.battleData:  # last move used was fusion flare / boost
+            env.basePowerMods.append(0x2000)
+
+
+class MeFirstMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 23
+
+    def resolve(self, env):
+        if env.battleData:  # move used with me first
+            env.basePowerMods.append(0x1800)
