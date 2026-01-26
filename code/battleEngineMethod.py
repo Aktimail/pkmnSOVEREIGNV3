@@ -62,7 +62,7 @@ class AvalancheMethod(BattleEngineMethod):
     priority = 5
 
     def resolve(self, env):
-        if env.battleData.check_avalanche_effect():  # to do
+        if env.battleData:  # avalanche_effect
             env.basePowerValue = 120
 
 
@@ -164,7 +164,7 @@ class AssuranceMethod(BattleEngineMethod):
     priority = 14
 
     def resolve(self, env):
-        if env.battleData.check_assurance_effect():  # to do
+        if env.battleData:  # assurance_effect
             env.basePowerValue = 100
 
 
@@ -298,7 +298,7 @@ class WeatherBallMethod(BattleEngineMethod):
     priority = 24
 
     def resolve(self, env):
-        if env.battleData.weather.status:
+        if env.battleData:  # is there any weather status ?
             env.basePowerValue = 100
 
 
@@ -318,7 +318,7 @@ class BeatUpMethod(BattleEngineMethod):
     priority = 26
 
     def resolve(self, env):
-        pkmn_remaining = env.battleData.get_team_len(env.attacker)
+        pkmn_remaining = env.battleData  # get_team_len(env.attacker)
         env.basePowerValue = pkmn_remaining // 10 + 5
 
 
@@ -356,7 +356,7 @@ class PursuitMethod(BattleEngineMethod):
     priority = 29
 
     def resolve(self, env):
-        if env.battleData.check_puirsuit_effect():
+        if env.battleData:  # puirsuit effect
             env.basePowerValue = 80
 
 
@@ -898,10 +898,20 @@ class RivalryMethod(BattleEngineMethod):
             env.basePowerMods.append(0xC00)
 
 
+class SandForceMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 8
+
+    def resolve(self, env):
+        if env.move.get_type() in ["rock", "ground", "steel"]:
+            env.basePowerMods.append(0x14CD)
+
+
 class HeatproofMethod(BattleEngineMethod):
     relative = "defender"
     trigger = "basePowerModifiers"
-    priority = 8
+    priority = 9
 
     def resolve(self, env):
         if env.move.get_type() == "fire":
@@ -911,7 +921,7 @@ class HeatproofMethod(BattleEngineMethod):
 class DrySkinMethod(BattleEngineMethod):
     relative = "defender"
     trigger = "basePowerModifiers"
-    priority = 9
+    priority = 10
 
     def resolve(self, env):
         if env.move.get_type() == "fire":
@@ -921,7 +931,7 @@ class DrySkinMethod(BattleEngineMethod):
 class SheerForceMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 10
+    priority = 11
 
     def resolve(self, env):
         if env.move.effects:
@@ -931,7 +941,7 @@ class SheerForceMethod(BattleEngineMethod):
 class TypeBoostingItemMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 11
+    priority = 12
 
     def resolve(self, env):
         items = {
@@ -982,7 +992,7 @@ class TypeBoostingItemMethod(BattleEngineMethod):
 class MuscleBandMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 12
+    priority = 13
 
     def resolve(self, env):
         if env.move.category == "physical":
@@ -992,7 +1002,7 @@ class MuscleBandMethod(BattleEngineMethod):
 class LustrousOrbMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 13
+    priority = 14
 
     def resolve(self, env):
         if env.attacker.dbSymbol == "palkia" and env.move.get_type() in ["water", "dragon"]:
@@ -1002,7 +1012,7 @@ class LustrousOrbMethod(BattleEngineMethod):
 class WiseGlassesMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 14
+    priority = 15
 
     def resolve(self, env):
         if env.move.category == "special":
@@ -1012,7 +1022,7 @@ class WiseGlassesMethod(BattleEngineMethod):
 class GriseousOrbMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 15
+    priority = 16
 
     def resolve(self, env):
         if env.attacker.dbSymbol == "giratina" and env.move.get_type() in ["ghost", "dragon"]:
@@ -1022,7 +1032,7 @@ class GriseousOrbMethod(BattleEngineMethod):
 class OddincenseMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 16
+    priority = 17
 
     def resolve(self, env):
         if env.move.get_type() == "phychic":
@@ -1032,7 +1042,7 @@ class OddincenseMethod(BattleEngineMethod):
 class AdamantOrbMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 17
+    priority = 18
 
     def resolve(self, env):
         if env.attacker.dbSymbol == "dialga" and env.move.get_type() in ["steel", "dragon"]:
@@ -1042,7 +1052,7 @@ class AdamantOrbMethod(BattleEngineMethod):
 class GemMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 18
+    priority = 19
 
     def resolve(self, env):
         gems = {
@@ -1072,7 +1082,7 @@ class GemMethod(BattleEngineMethod):
 class FacadeMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 19
+    priority = 20
 
     def resolve(self, env):
         if env.attacker.get_main_status() in ["paralyzed", "poisoned", "burned"]:
@@ -1082,7 +1092,7 @@ class FacadeMethod(BattleEngineMethod):
 class BrineMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 20
+    priority = 21
 
     def resolve(self, env):
         if env.defender.currentHp <= env.defender.globalStats["hp"] / 2:
@@ -1092,7 +1102,7 @@ class BrineMethod(BattleEngineMethod):
 class VenoshockMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 20
+    priority = 22
 
     def resolve(self, env):
         if env.defender.get_main_status() == "poisoned":
@@ -1102,7 +1112,7 @@ class VenoshockMethod(BattleEngineMethod):
 class RetaliateMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 21
+    priority = 23
 
     def resolve(self, env):
         if env.battleData:  # pkmn fainted last round
@@ -1112,7 +1122,7 @@ class RetaliateMethod(BattleEngineMethod):
 class FusionMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 22
+    priority = 24
 
     def resolve(self, env):
         if env.battleData:  # last move used was fusion flare / boost
@@ -1122,8 +1132,59 @@ class FusionMethod(BattleEngineMethod):
 class MeFirstMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
-    priority = 23
+    priority = 25
 
     def resolve(self, env):
         if env.battleData:  # move used with me first
             env.basePowerMods.append(0x1800)
+
+
+class SolarBeamMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 26
+
+    def resolve(self, env):
+        if env.battleData:  # if weather not sun or default
+            env.basePowerMods.append(0x800)
+
+
+class ChargeMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 27
+
+    def resolve(self, env):
+        if env.battleData:  # if last move == charge
+            if env.move.get_type() == "electric":
+                env.basePowerMods.append(0x2000)
+
+
+class HelpingHandMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 28
+
+    def resolve(self, env):
+        if env.battleData:  # helping hand effect
+            env.basePowerMods.append(0x1800)
+
+
+class WaterSportMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 29
+
+    def resolve(self, env):
+        if env.battleData:  # water sport effect
+            env.basePowerMods.append(0x548)
+
+
+class MudSportMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "basePowerModifiers"
+    priority = 30
+
+    def resolve(self, env):
+        if env.battleData:  # mud sport effect
+            env.basePowerMods.append(0x548)
