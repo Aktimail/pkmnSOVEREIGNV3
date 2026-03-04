@@ -5,7 +5,7 @@ import pygame
 import pytmx
 import pyscroll
 
-from data import Data
+from entityDestinations import entitiesDestinations
 from pokemon import Pokemon
 from dialogManager import DialogManager
 from animationManager import AnimationManager
@@ -96,7 +96,7 @@ class WorldEngine:
         self.npcs.clear()
         self.items.clear()
         self.wildPkmnSpawn.clear()
-        Data.ENTITIES_DESTINATIONS.clear()
+        entitiesDestinations.clear()
 
         for obj in self.Map.TmxData.objects:
             if obj.type == "collision":

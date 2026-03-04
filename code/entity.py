@@ -1,7 +1,7 @@
 import pygame
 
 from settings import SETTINGS
-from data import Data
+from entityDestinations import entitiesDestinations
 from tool import Tool
 
 
@@ -148,8 +148,8 @@ class Entity(pygame.sprite.Sprite):
             return False
 
     def grid_check(self):
-        if not (self.facingTile.x, self.facingTile.y) in Data.ENTITIES_DESTINATIONS.values():
-            Data.ENTITIES_DESTINATIONS[self.dbSymbol] = (self.facingTile.x, self.facingTile.y)
+        if not (self.facingTile.x, self.facingTile.y) in entitiesDestinations.values():
+            entitiesDestinations[self.dbSymbol] = (self.facingTile.x, self.facingTile.y)
             return True
         return False
 

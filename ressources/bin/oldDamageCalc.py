@@ -30,72 +30,72 @@ class DamageCalculator:
     def get_atk(self):
         ATKCAT = "atk" if self.move.category == "physical" else "aspe"
         ATKSTATUSER = self.pkmn2 if not self.move.dbSymbol == "foul_play" else self.pkmn2
-        PARAMATK = ATKSTATUSER.get_stage_stat(ATKCAT) if not self.pkmn2.Ability.dbSymbol == "unaware" \
+        PARAMATK = ATKSTATUSER.get_stage_stat(ATKCAT) if not self.pkmn2.ability.dbSymbol == "unaware" \
             else ATKSTATUSER.globalStats[ATKCAT]
-        MODTF = 0x800 if (self.pkmn2.Ability.dbSymbol == "thick_fat" and
+        MODTF = 0x800 if (self.pkmn2.ability.dbSymbol == "thick_fat" and
                           self.move.type.dbSymbol in ["ice", "fire"]) else 0x1000
-        MODTRNT = 0x1800 if (self.pkmn1.Ability.dbSymbol == "torrent" and
+        MODTRNT = 0x1800 if (self.pkmn1.ability.dbSymbol == "torrent" and
                              self.pkmn1.currentHp <= self.pkmn1.globalStats["hp"] / 3 and
                              self.move.type.dbSymbol == "water") else 0x1000
-        MODGUTS = 0x1800 if (self.pkmn1.Ability.dbSymbol == "guts" and
+        MODGUTS = 0x1800 if (self.pkmn1.ability.dbSymbol == "guts" and
                              self.pkmn1.status["main"] and
                              self.move.category == "physical") else 0x1000
-        MODSWA = 0x1800 if (self.pkmn1.Ability.dbSymbol == "swarm" and
+        MODSWA = 0x1800 if (self.pkmn1.ability.dbSymbol == "swarm" and
                             self.pkmn1.currentHp <= self.pkmn1.globalStats["hp"] / 3 and
                             self.move.type.dbSymbol == "bug") else 0x1000
-        MODOVG = 0x1800 if (self.pkmn1.Ability.dbSymbol == "overgrow" and
+        MODOVG = 0x1800 if (self.pkmn1.ability.dbSymbol == "overgrow" and
                             self.pkmn1.currentHp <= self.pkmn1.globalStats["hp"] / 3 and
                             self.move.type.dbSymbol == "grass") else 0x1000
-        MODPLMI = 0x1800 if (self.pkmn1.Ability.dbSymbol in ["plus", "minus"] and
+        MODPLMI = 0x1800 if (self.pkmn1.ability.dbSymbol in ["plus", "minus"] and
                              self.battleData["selfAlly"] and
-                             self.battleData["selfAlly"].Ability.dbSymbol in ["plus", "minus"] and
+                             self.battleData["selfAlly"].ability.dbSymbol in ["plus", "minus"] and
                              self.move.category == "special") else 0x1000
-        MODBLZ = 0x1800 if (self.pkmn1.Ability.dbSymbol == "blaze" and
+        MODBLZ = 0x1800 if (self.pkmn1.ability.dbSymbol == "blaze" and
                             self.pkmn1.currentHp <= self.pkmn1.globalStats["hp"] / 3 and
                             self.move.type.dbSymbol == "fire") else 0x1000
-        MODDFT = 0x800 if (self.pkmn1.Ability.dbSymbol == "defeatist" and
+        MODDFT = 0x800 if (self.pkmn1.ability.dbSymbol == "defeatist" and
                            self.pkmn1.currentHp <= self.pkmn1.globalStats["hp"] / 2) else 0x1000
-        MODPHPW = 0x2000 if (self.pkmn1.Ability.dbSymbol in ["pure_power", "huge_power"] and
+        MODPHPW = 0x2000 if (self.pkmn1.ability.dbSymbol in ["pure_power", "huge_power"] and
                              self.move.category == "physical") else 0x1000
-        MODSLRP = 0x1800 if (self.pkmn1.Ability.dbSymbol == "solar_power" and
+        MODSLRP = 0x1800 if (self.pkmn1.ability.dbSymbol == "solar_power" and
                              self.battleData["weather"] == "intense_sunlight" and
                              self.move.category == "special") else 0x1000
         MODATK1 = self.chain_up(MODTF, MODTRNT, MODGUTS, MODSWA, MODOVG, MODPLMI, MODBLZ, MODDFT, MODPHPW, MODSLRP)
         ATK = self.apply_mod(PARAMATK, MODATK1)
 
-        MODHSTL = 0x1800 if (self.pkmn1.Ability.dbSymbol == "hustle" and
+        MODHSTL = 0x1800 if (self.pkmn1.ability.dbSymbol == "hustle" and
                              self.move.category == "physical") else 0x1000
         ATK = self.apply_mod(ATK, MODHSTL)
 
-        MODFLFR = 0x1800 if (self.pkmn1.Ability.dbSymbol == "flash_fire" and
-                             self.pkmn1.Ability.active and
+        MODFLFR = 0x1800 if (self.pkmn1.ability.dbSymbol == "flash_fire" and
+                             self.pkmn1.ability.active and
                              self.move.type.dbSymbol == "fire") else 0x1000
-        MODSLST = 0x800 if (self.pkmn1.Ability.dbSymbol == "slow_start" and
+        MODSLST = 0x800 if (self.pkmn1.ability.dbSymbol == "slow_start" and
                             self.battleData["onFieldCounter"] < 5) else 0x1000
         MODFLGF = 0x1800 if (self.battleData["selfAlly"] and
-                             self.battleData["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                             self.battleData["selfAlly"].ability.dbSymbol == "flower_gift" and
                              self.battleData["wheater"] == "intense_sunlight" and
                              self.move.category == "special") else 0x1000
         MODCLUB = 0x2000 if (self.pkmn1.dbSymbol in ["cubone", "marowak"] and
-                             self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "thick_club" and
+                             self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "thick_club" and
                              self.move.category == "physical") else 0x1000
         MODDST = 0x2000 if (self.pkmn1.dbSymbol == "clamperl" and
-                            self.pkmn1.Item and
-                            self.pkmn1.Item.dbSymbol == "deep_sea_tooth" and
+                            self.pkmn1.item and
+                            self.pkmn1.item.dbSymbol == "deep_sea_tooth" and
                             self.move.category == "special") else 0x1000
         MODPIKA = 0x2000 if (self.pkmn1.dbSymbol == "pikachu" and
-                             self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "light_ball") else 0x1000
+                             self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "light_ball") else 0x1000
         MODLATI = 0x1800 if (self.pkmn1.dbSymbol in ["latios", "latias"] and
-                             self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "soul_dew" and
+                             self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "soul_dew" and
                              self.move.category == "special") else 0x1000
-        MODCHBN = 0x1800 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "choice_band" and
+        MODCHBN = 0x1800 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "choice_band" and
                              self.move.category == "physical") else 0x1000
-        MODCHSP = 0x1800 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "choice_specs" and
+        MODCHSP = 0x1800 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "choice_specs" and
                              self.move.category == "special") else 0x1000
         MODATK2 = self.chain_up(MODFLFR, MODSLST, MODFLGF, MODCLUB, MODDST, MODPIKA, MODLATI, MODCHBN, MODCHSP)
         ATK = self.apply_mod(ATK, MODATK2)
@@ -111,7 +111,7 @@ class DamageCalculator:
             elif self.move.category == "special":
                 DEFECAT = "defe"
         PARAMDEFE = self.pkmn2.get_stage_stat(DEFECAT)
-        if self.pkmn1.Ability.dbSymbol == "unaware":
+        if self.pkmn1.ability.dbSymbol == "unaware":
             PARAMDEFE = self.pkmn2.globalStats[DEFECAT]
         elif self.move.dbSymbol == "chip_away":
             PARAMDEFE = self.pkmn2.globalStats[DEFECAT]
@@ -119,29 +119,29 @@ class DamageCalculator:
                 "rock" in self.pkmn1.get_type() and
                 self.move.category == "special"):
             PARAMDEFE = self.apply_mod(PARAMDEFE, 0x1800)
-        MODMRVL = 0x1800 if (self.pkmn2.Ability.dbSymbol == "marvel_scale" and
+        MODMRVL = 0x1800 if (self.pkmn2.ability.dbSymbol == "marvel_scale" and
                              self.pkmn2.status["main"] and
                              self.move.category == "special") else 0x1000
         MODTGFG = 0x1800 if (self.battleData["selfAlly"] and
                              self.battleData["selfAlly"].dbSymbol == "cherrim" and
-                             self.battleData["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                             self.battleData["selfAlly"].ability.dbSymbol == "flower_gift" and
                              self.battleData["weather"] == "Harsh_sunlight" and
                              self.move.category == "special") else 0x1000
         MODDSS = 0x1800 if (self.pkmn2.dbSymbol == "clamperl" and
-                            self.pkmn2.Item and
-                            self.pkmn2.Item.dbSymbol == "deep_sea_scale" and
+                            self.pkmn2.item and
+                            self.pkmn2.item.dbSymbol == "deep_sea_scale" and
                             self.move.category == "special") else 0x1000
         MODDTTO = 0x2000 if (self.pkmn2.dbSymbol == "ditto" and
-                             not self.pkmn2.Ability.active and
-                             self.pkmn2.Item and
-                             self.pkmn2.Item.dbSymbol == "metal_powder" and
+                             not self.pkmn2.ability.active and
+                             self.pkmn2.item and
+                             self.pkmn2.item.dbSymbol == "metal_powder" and
                              self.move.category == "physical") else 0x1000
-        MODEVIO = 0x1800 if (self.pkmn2.Item and
-                             self.pkmn2.Item.dbSymbol == "eviolite" and
+        MODEVIO = 0x1800 if (self.pkmn2.item and
+                             self.pkmn2.item.dbSymbol == "eviolite" and
                              self.pkmn2.evolution) else 0x1000
         MODTGLA = 0x1800 if (self.pkmn2.dbSymbol in ["latios", "latias"] and
-                             self.pkmn2.Item and
-                             self.pkmn2.Item.dbSymbol == "soul_dew" and
+                             self.pkmn2.item and
+                             self.pkmn2.item.dbSymbol == "soul_dew" and
                              self.move.category == "special") else 0x1000
         MODDEFE = self.chain_up(MODMRVL, MODTGFG, MODDSS, MODDTTO, MODEVIO, MODTGLA)
         DEFE = self.apply_mod(PARAMDEFE, MODDEFE)
@@ -221,7 +221,7 @@ class DamageCalculator:
         elif self.move.dbSymbol == "stored_power":
             sumboostlvl = sum(val for val in self.pkmn1.boosts.values() if val >= 0)
             BASEPOWER = 20 + 20 * sumboostlvl
-        elif self.move.dbSymbol == "acrobatics" and not self.pkmn1.Item:
+        elif self.move.dbSymbol == "acrobatics" and not self.pkmn1.item:
             BASEPOWER = 110
         elif self.move.dbSymbol in ["flail", "reversal"]:
             p = (48 * self.pkmn1.currentHp) / self.pkmn1.globalStats["hp"]
@@ -280,8 +280,8 @@ class DamageCalculator:
             }
             BASEPOWER = result[True]
         elif self.move.dbSymbol == "natural_gift":
-            if self.pkmn1.Item and self.pkmn1.Item.dbSymbol in self.berries:
-                BASEPOWER = self.berries[self.pkmn1.Item.dbSymbol]["naturalGiftPower"]
+            if self.pkmn1.item and self.pkmn1.item.dbSymbol in self.berries:
+                BASEPOWER = self.berries[self.pkmn1.item.dbSymbol]["naturalGiftPower"]
         elif self.move.dbSymbol == "magnitude":
             r = random.randint(0, 100)
             result = {
@@ -307,76 +307,76 @@ class DamageCalculator:
                 if self.move["move"] == "defense_curl":
                     defense_curl = 1
             BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
-        elif self.move.dbSymbol == "fling" and self.pkmn1.Item:
-            BASEPOWER = self.pkmn1.Item.flingPower
+        elif self.move.dbSymbol == "fling" and self.pkmn1.item:
+            BASEPOWER = self.pkmn1.item.flingPower
         elif (self.move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
               self.battleData["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
               self.battleData["selfAllyHasPlayed"]):
             BASEPOWER = 150
-        MODTECH = 0x1800 if (self.pkmn1.Ability.dbSymbol == "technician" and
+        MODTECH = 0x1800 if (self.pkmn1.ability.dbSymbol == "technician" and
                              self.move.basePower <= 60) else 0x1000
-        MODFBST = 0x1800 if (self.pkmn1.Ability.dbSymbol == "flare_boost" and
+        MODFBST = 0x1800 if (self.pkmn1.ability.dbSymbol == "flare_boost" and
                              self.pkmn1.status["main"] == "burn" and
                              self.move.category == "special") else 0x1000
-        MODANLT = 0x14CD if (self.pkmn1.Ability.dbSymbol == "analytic" and
+        MODANLT = 0x14CD if (self.pkmn1.ability.dbSymbol == "analytic" and
                              self.move.dbSymbol not in ["future_sight", "doom_desire"] and
                              not self.battleData["firstToPlay"]) else 0x1000
-        MODRCKL = 0x1333 if (self.pkmn1.Ability.dbSymbol == "reckless" and
+        MODRCKL = 0x1333 if (self.pkmn1.ability.dbSymbol == "reckless" and
                              (self.move.battleModifier == "s_recoil" or
                               self.move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
-        MODIFST = 0x1333 if (self.pkmn1.Ability.dbSymbol == "iron_fist" and
+        MODIFST = 0x1333 if (self.pkmn1.ability.dbSymbol == "iron_fist" and
                              self.move.flags["isPunch"]) else 0x1000
-        MODTBST = 0x1800 if (self.pkmn1.Ability.dbSymbol == "toxic_boost" and
+        MODTBST = 0x1800 if (self.pkmn1.ability.dbSymbol == "toxic_boost" and
                              self.pkmn1.status["main"] in ["poison", "badly_poisoned"] and
                              self.move.category == "physical") else 0x1000
         MODRVLY = 0x1000
-        if self.pkmn1.Ability.dbSymbol == "rivalry":
+        if self.pkmn1.ability.dbSymbol == "rivalry":
             if not self.pkmn1.gender == "genderless" and not self.pkmn2.gender == "genderless":
                 if self.pkmn1.gender == self.pkmn2.gender:
                     MODRVLY = 0x1400
                 elif self.pkmn1.gender != self.pkmn2.gender:
                     MODRVLY = 0xC00
-        MODSNDF = 0x14CD if (self.pkmn1.Ability.dbSymbol == "sand_force" and
+        MODSNDF = 0x14CD if (self.pkmn1.ability.dbSymbol == "sand_force" and
                              self.move.type.dbSymbol in ["rock", "ground", "steel"]) else 0x1000
-        MODHTPR = 0x800 if (self.pkmn1.Ability.dbSymbol == "heatproof" and
+        MODHTPR = 0x800 if (self.pkmn1.ability.dbSymbol == "heatproof" and
                             self.move.type.dbSymbol == "fire") else 0x1000
-        MODDRYS = 0x1400 if (self.pkmn1.Ability.dbSymbol == "dry_skin" and
+        MODDRYS = 0x1400 if (self.pkmn1.ability.dbSymbol == "dry_skin" and
                              self.move.type.dbSymbol == "fire") else 0x1000
-        MODSHRF = 0x14CD if (self.pkmn1.Ability.dbSymbol == "sheer_force" and
+        MODSHRF = 0x14CD if (self.pkmn1.ability.dbSymbol == "sheer_force" and
                              self.move.dbSymbol in self.sheerforce_moves) else 0x1000
-        MODTYBS = 0x1333 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol in self.plates and
-                             self.move.type.dbSymbol == self.plates[self.pkmn1.Item.dbSymbol]) or \
-                            (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol in self.incenses and
-                             self.move.type.dbSymbol == self.incenses[self.pkmn1.Item.dbSymbol]) or \
-                            (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol in self.items and
-                             self.move.type.dbSymbol == self.items[self.pkmn1.Item.dbSymbol]) else 0x1000
-        MODMBND = 0x1199 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "muscle_band" and
+        MODTYBS = 0x1333 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol in self.plates and
+                             self.move.type.dbSymbol == self.plates[self.pkmn1.item.dbSymbol]) or \
+                            (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol in self.incenses and
+                             self.move.type.dbSymbol == self.incenses[self.pkmn1.item.dbSymbol]) or \
+                            (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol in self.items and
+                             self.move.type.dbSymbol == self.items[self.pkmn1.item.dbSymbol]) else 0x1000
+        MODMBND = 0x1199 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "muscle_band" and
                              self.move.category == "physical") else 0x1000
         MODPLK = 0x1333 if (self.pkmn1.dbSymbol == "palkia" and
-                            self.pkmn1.Item and
-                            self.pkmn1.Item.dbSymbol == "lustrous_orb" and
+                            self.pkmn1.item and
+                            self.pkmn1.item.dbSymbol == "lustrous_orb" and
                             self.move.type.dbSymbol in ["water", "dragon"]) else 0x1000
-        MODWGLS = 0x1199 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "wise_glasses" and
+        MODWGLS = 0x1199 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "wise_glasses" and
                              self.move.category == "special") else 0x1000
         MODGRTN = 0x1333 if (self.pkmn1.dbSymbol == "giratina" and
-                             self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "griseous_orb" and
+                             self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "griseous_orb" and
                              self.move.type.dbSymbol in ["ghost", "dragon"]) else 0x1000
-        MODOINS = 0x1333 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol == "odd_incense" and
+        MODOINS = 0x1333 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol == "odd_incense" and
                              self.move.type.dbSymbol == "psychic") else 0x1000
         MODDLG = 0x1333 if (self.pkmn1.dbSymbol == "dialga" and
-                            self.pkmn1.Item and
-                            self.pkmn1.Item.dbSymbol == "adamant_orb" and
+                            self.pkmn1.item and
+                            self.pkmn1.item.dbSymbol == "adamant_orb" and
                             self.move.type.dbSymbol in ["steel", "dragon"]) else 0x1000
-        MODGEMS = 0x1800 if (self.pkmn1.Item and
-                             self.pkmn1.Item.dbSymbol in self.gems and
-                             self.move.type.dbSymbol == self.gems[self.pkmn1.Item.dbSymbol]) else 0x1000
+        MODGEMS = 0x1800 if (self.pkmn1.item and
+                             self.pkmn1.item.dbSymbol in self.gems and
+                             self.move.type.dbSymbol == self.gems[self.pkmn1.item.dbSymbol]) else 0x1000
         MODFCD = 0x2000 if (self.move.dbSymbol == "facade" and
                             self.pkmn1.status["main"] in ["paralysis", "poison", "badly_poisoned", "burn"]) else 0x1000
         MODBRN = 0x2000 if (self.move.dbSymbol == "brine" and

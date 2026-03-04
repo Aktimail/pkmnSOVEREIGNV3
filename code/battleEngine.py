@@ -91,8 +91,6 @@ class BattleEngine:
                                 self.Opponent.get_active_pkmn(),
                                 self.Player.battle_choice[1],
                                 None))
-                        self.DamageCalcEngine.collect_methods()
-                        print(self.DamageCalcEngine.BEM_Manager.registry)
 
                         self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=0)
                         self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=15)

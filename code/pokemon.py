@@ -27,8 +27,8 @@ class Pokemon:
 
         self.gender = self.init_gender()
         self.type = self.init_type()
-        self.Ability = self.init_ability()
-        self.Item = self.init_item()
+        self.ability = self.init_ability()
+        self.item = self.init_item()
 
         self.movepool = self.forms[0]["moveSet"]
         self.moveset = self.init_moveset()
@@ -156,11 +156,11 @@ class Pokemon:
         return self.weight
 
     def get_ability(self):
-        return self.Ability.dbSymbol
+        return self.ability.dbSymbol
 
     def get_item(self):
-        if self.Item:
-            return self.Item.dbSymbol
+        if self.item:
+            return self.item.dbSymbol
         return None
 
     def get_type(self):
@@ -177,11 +177,9 @@ class Pokemon:
             return self.globalStats[stat]
 
         if crit:
-            if stat == "atk" or stat == "aspe":
-                if self.boosts[stat] < 0:
+            if stat in ("atk", "aspe") and self.boosts[stat] < 0:
                     return self.globalStats[stat]
-            elif stat == "defe" or stat == "dspe":
-                if self.boosts[stat] > 0:
+            elif stat in ("defe", "dspe") and self.boosts[stat] > 0:
                     return self.globalStats[stat]
 
         boost_levels = {
@@ -247,7 +245,7 @@ class Pokemon:
             if random.randint(0, 100) <= 50:
                 return False
 
-        pp_losses = 2 if target.Ability.dbSymbol == "pressure" else 1
+        pp_losses = 2 if target.ability.dbSymbol == "pressure" else 1
         move.pp -= pp_losses
         return True
 
@@ -319,67 +317,67 @@ class Pokemon:
 
             ATKCAT = "atk" if move.category == "physical" else "aspe"
             ATKSTATUSER = self if not move.dbSymbol == "foul_play" else target
-            PARAMATK = ATKSTATUSER.get_stage_stat(ATKCAT) if not target.Ability.dbSymbol == "unaware" \
+            PARAMATK = ATKSTATUSER.get_stage_stat(ATKCAT) if not target.ability.dbSymbol == "unaware" \
                 else ATKSTATUSER.globalStats[ATKCAT]
-            MODTF = 0x800 if (target.Ability.dbSymbol == "thick_fat" and
+            MODTF = 0x800 if (target.ability.dbSymbol == "thick_fat" and
                               move.type.dbSymbol in ["ice", "fire"]) else 0x1000
-            MODTRNT = 0x1800 if (self.Ability.dbSymbol == "torrent" and
+            MODTRNT = 0x1800 if (self.ability.dbSymbol == "torrent" and
                                  self.currentHp <= self.globalStats["hp"] / 3 and
                                  move.type.dbSymbol == "water") else 0x1000
-            MODGUTS = 0x1800 if (self.Ability.dbSymbol == "guts" and
+            MODGUTS = 0x1800 if (self.ability.dbSymbol == "guts" and
                                  self.status["main"] and
                                  move.category == "physical") else 0x1000
-            MODSWA = 0x1800 if (self.Ability.dbSymbol == "swarm" and
+            MODSWA = 0x1800 if (self.ability.dbSymbol == "swarm" and
                                 self.currentHp <= self.globalStats["hp"] / 3 and
                                 move.type.dbSymbol == "bug") else 0x1000
-            MODOVG = 0x1800 if (self.Ability.dbSymbol == "overgrow" and
+            MODOVG = 0x1800 if (self.ability.dbSymbol == "overgrow" and
                                 self.currentHp <= self.globalStats["hp"] / 3 and
                                 move.type.dbSymbol == "grass") else 0x1000
-            MODPLMI = 0x1800 if (self.Ability.dbSymbol in ["plus", "minus"] and
+            MODPLMI = 0x1800 if (self.ability.dbSymbol in ["plus", "minus"] and
                                  battle_data["selfAlly"] and
-                                 battle_data["selfAlly"].Ability.dbSymbol in ["plus", "minus"] and
+                                 battle_data["selfAlly"].ability.dbSymbol in ["plus", "minus"] and
                                  move.category == "special") else 0x1000
-            MODBLZ = 0x1800 if (self.Ability.dbSymbol == "blaze" and
+            MODBLZ = 0x1800 if (self.ability.dbSymbol == "blaze" and
                                 self.currentHp <= self.globalStats["hp"] / 3 and
                                 move.type.dbSymbol == "fire") else 0x1000
-            MODDFT = 0x800 if (self.Ability.dbSymbol == "defeatist" and
+            MODDFT = 0x800 if (self.ability.dbSymbol == "defeatist" and
                                self.currentHp <= self.globalStats["hp"] / 2) else 0x1000
-            MODPHPW = 0x2000 if (self.Ability.dbSymbol in ["pure_power", "huge_power"] and
+            MODPHPW = 0x2000 if (self.ability.dbSymbol in ["pure_power", "huge_power"] and
                                  move.category == "physical") else 0x1000
-            MODSLRP = 0x1800 if (self.Ability.dbSymbol == "solar_power" and
+            MODSLRP = 0x1800 if (self.ability.dbSymbol == "solar_power" and
                                  battle_data["weather"] == "intense_sunlight" and
                                  move.category == "special") else 0x1000
-            MODHSTL = 0x1800 if (self.Ability.dbSymbol == "hustle" and
+            MODHSTL = 0x1800 if (self.ability.dbSymbol == "hustle" and
                                  move.category == "physical") else 0x1000
-            MODFLFR = 0x1800 if (self.Ability.dbSymbol == "flash_fire" and
-                                 self.Ability.active and
+            MODFLFR = 0x1800 if (self.ability.dbSymbol == "flash_fire" and
+                                 self.ability.active and
                                  move.type.dbSymbol == "fire") else 0x1000
-            MODSLST = 0x800 if (self.Ability.dbSymbol == "slow_start" and
+            MODSLST = 0x800 if (self.ability.dbSymbol == "slow_start" and
                                 battle_data["onFieldCounter"] < 5) else 0x1000
             MODFLGF = 0x1800 if (battle_data["selfAlly"] and
-                                 battle_data["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                                 battle_data["selfAlly"].ability.dbSymbol == "flower_gift" and
                                  battle_data["wheater"] == "intense_sunlight" and
                                  move.category == "special") else 0x1000
             MODCLUB = 0x2000 if (self.dbSymbol in ["cubone", "marowak"] and
-                                 self.Item and
-                                 self.Item.dbSymbol == "thick_club" and
+                                 self.item and
+                                 self.item.dbSymbol == "thick_club" and
                                  move.category == "physical") else 0x1000
             MODDST = 0x2000 if (self.dbSymbol == "clamperl" and
-                                self.Item and
-                                self.Item.dbSymbol == "deep_sea_tooth" and
+                                self.item and
+                                self.item.dbSymbol == "deep_sea_tooth" and
                                 move.category == "special") else 0x1000
             MODPIKA = 0x2000 if (self.dbSymbol == "pikachu" and
-                                 self.Item and
-                                 self.Item.dbSymbol == "light_ball") else 0x1000
+                                 self.item and
+                                 self.item.dbSymbol == "light_ball") else 0x1000
             MODLATI = 0x1800 if (self.dbSymbol in ["latios", "latias"] and
-                                 self.Item and
-                                 self.Item.dbSymbol == "soul_dew" and
+                                 self.item and
+                                 self.item.dbSymbol == "soul_dew" and
                                  move.category == "special") else 0x1000
-            MODCHBN = 0x1800 if (self.Item and
-                                 self.Item.dbSymbol == "choice_band" and
+            MODCHBN = 0x1800 if (self.item and
+                                 self.item.dbSymbol == "choice_band" and
                                  move.category == "physical") else 0x1000
-            MODCHSP = 0x1800 if (self.Item and
-                                 self.Item.dbSymbol == "choice_specs" and
+            MODCHSP = 0x1800 if (self.item and
+                                 self.item.dbSymbol == "choice_specs" and
                                  move.category == "special") else 0x1000
             MODATK1 = chain_up(MODTF, MODTRNT, MODGUTS, MODSWA, MODOVG, MODPLMI, MODBLZ, MODDFT, MODPHPW, MODSLRP)
             ATK = apply_mod(PARAMATK, MODATK1)
@@ -396,35 +394,35 @@ class Pokemon:
                 elif move.category == "special":
                     DEFECAT = "defe"
             PARAMDEFE = target.get_stage_stat(DEFECAT)
-            if self.Ability.dbSymbol == "unaware":
+            if self.ability.dbSymbol == "unaware":
                 PARAMDEFE = target.globalStats[DEFECAT]
             elif move.dbSymbol == "chip_away":
                 PARAMDEFE = target.globalStats[DEFECAT]
             if battle_data["weather"] == "sandstorm" and self.type.count(Type("rock")) and ATKCAT == "special":
                 PARAMDEFE = apply_mod(PARAMDEFE, 0x1800)
-            MODMRVL = 0x1800 if (target.Ability.dbSymbol == "marvel_scale" and
+            MODMRVL = 0x1800 if (target.ability.dbSymbol == "marvel_scale" and
                                  target.status["main"] and
                                  move.category == "special") else 0x1000
             MODTGFG = 0x1800 if (battle_data["selfAlly"] and
                                  battle_data["selfAlly"].dbSymbol == "cherrim" and
-                                 battle_data["selfAlly"].Ability.dbSymbol == "flower_gift" and
+                                 battle_data["selfAlly"].ability.dbSymbol == "flower_gift" and
                                  battle_data["weather"] == "Harsh_sunlight" and
                                  move.category == "special") else 0x1000
             MODDSS = 0x1800 if (target.dbSymbol == "clamperl" and
-                                target.Item and
-                                target.Item.dbSymbol == "deep_sea_scale" and
+                                target.item and
+                                target.item.dbSymbol == "deep_sea_scale" and
                                 move.category == "special") else 0x1000
             MODDTTO = 0x2000 if (target.dbSymbol == "ditto" and
-                                 not target.Ability.active and
-                                 target.Item and
-                                 target.Item.dbSymbol == "metal_powder" and
+                                 not target.ability.active and
+                                 target.item and
+                                 target.item.dbSymbol == "metal_powder" and
                                  move.category == "physical") else 0x1000
-            MODEVIO = 0x1800 if (target.Item and
-                                 target.Item.dbSymbol == "eviolite" and
+            MODEVIO = 0x1800 if (target.item and
+                                 target.item.dbSymbol == "eviolite" and
                                  target.evolution) else 0x1000
             MODTGLA = 0x1800 if (target.dbSymbol in ["latios", "latias"] and
-                                 target.Item and
-                                 target.Item.dbSymbol == "soul_dew" and
+                                 target.item and
+                                 target.item.dbSymbol == "soul_dew" and
                                  move.category == "special") else 0x1000
             MODDEFE = chain_up(MODMRVL, MODTGFG, MODDSS, MODDTTO, MODEVIO, MODTGLA)
             DEFE = apply_mod(PARAMDEFE, MODDEFE)
@@ -502,7 +500,7 @@ class Pokemon:
             elif move.dbSymbol == "stored_power":
                 sumboostlvl = sum(val for val in self.boosts.values() if val >= 0)
                 BASEPOWER = 20 + 20 * sumboostlvl
-            elif move.dbSymbol == "acrobatics" and not self.Item:
+            elif move.dbSymbol == "acrobatics" and not self.item:
                 BASEPOWER = 110
             elif move.dbSymbol in ["flail", "reversal"]:
                 p = (48 * self.currentHp) / self.globalStats["hp"]
@@ -561,8 +559,8 @@ class Pokemon:
                 }
                 BASEPOWER = result[True]
             elif move.dbSymbol == "natural_gift":
-                if self.Item and self.Item.dbSymbol in berries:
-                    BASEPOWER = berries[self.Item.dbSymbol]["naturalGiftPower"]
+                if self.item and self.item.dbSymbol in berries:
+                    BASEPOWER = berries[self.item.dbSymbol]["naturalGiftPower"]
             elif move.dbSymbol == "magnitude":
                 r = random.randint(0, 100)
                 result = {
@@ -587,76 +585,76 @@ class Pokemon:
                     if move["move"] == "defense_curl":
                         defense_curl = 1
                 BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
-            elif move.dbSymbol == "fling" and self.Item:
-                BASEPOWER = self.Item.flingPower
+            elif move.dbSymbol == "fling" and self.item:
+                BASEPOWER = self.item.flingPower
             elif (move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
                   battle_data["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
                   battle_data["selfAllyHasPlayed"]):
                 BASEPOWER = 150
-            MODTECH = 0x1800 if (self.Ability.dbSymbol == "technician" and
+            MODTECH = 0x1800 if (self.ability.dbSymbol == "technician" and
                                  move.basePower <= 60) else 0x1000
-            MODFBST = 0x1800 if (self.Ability.dbSymbol == "flare_boost" and
+            MODFBST = 0x1800 if (self.ability.dbSymbol == "flare_boost" and
                                  self.status["main"] == "burn" and
                                  move.category == "special") else 0x1000
-            MODANLT = 0x14CD if (self.Ability.dbSymbol == "analytic" and
+            MODANLT = 0x14CD if (self.ability.dbSymbol == "analytic" and
                                  move.dbSymbol not in ["future_sight", "doom_desire"] and
                                  not battle_data["firstToPlay"]) else 0x1000
-            MODRCKL = 0x1333 if (self.Ability.dbSymbol == "reckless" and
+            MODRCKL = 0x1333 if (self.ability.dbSymbol == "reckless" and
                                  (move.battleModifier == "s_recoil" or
                                   move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
-            MODIFST = 0x1333 if (self.Ability.dbSymbol == "iron_fist" and
+            MODIFST = 0x1333 if (self.ability.dbSymbol == "iron_fist" and
                                  move.flags["isPunch"]) else 0x1000
-            MODTBST = 0x1800 if (self.Ability.dbSymbol == "toxic_boost" and
+            MODTBST = 0x1800 if (self.ability.dbSymbol == "toxic_boost" and
                                  self.status["main"] in ["poison", "badly_poisoned"] and
                                  move.category == "physical") else 0x1000
             MODRVLY = 0x1000
-            if self.Ability.dbSymbol == "rivalry":
+            if self.ability.dbSymbol == "rivalry":
                 if not self.gender == "genderless" and not target.gender == "genderless":
                     if self.gender == target.gender:
                         MODRVLY = 0x1400
                     elif self.gender != target.gender:
                         MODRVLY = 0xC00
-            MODSNDF = 0x14CD if (self.Ability.dbSymbol == "sand_force" and
+            MODSNDF = 0x14CD if (self.ability.dbSymbol == "sand_force" and
                                  move.type.dbSymbol in ["rock", "ground", "steel"]) else 0x1000
-            MODHTPR = 0x800 if (self.Ability.dbSymbol == "heatproof" and
+            MODHTPR = 0x800 if (self.ability.dbSymbol == "heatproof" and
                                 move.type.dbSymbol == "fire") else 0x1000
-            MODDRYS = 0x1400 if (self.Ability.dbSymbol == "dry_skin" and
+            MODDRYS = 0x1400 if (self.ability.dbSymbol == "dry_skin" and
                                  move.type.dbSymbol == "fire") else 0x1000
-            MODSHRF = 0x14CD if (self.Ability.dbSymbol == "sheer_force" and
+            MODSHRF = 0x14CD if (self.ability.dbSymbol == "sheer_force" and
                                  move.dbSymbol in sheerforce_moves) else 0x1000
-            MODTYBS = 0x1333 if (self.Item and
-                                 self.Item.dbSymbol in plates and
-                                 move.type.dbSymbol == plates[self.Item.dbSymbol]) or \
-                                (self.Item and
-                                 self.Item.dbSymbol in incenses and
-                                 move.type.dbSymbol == incenses[self.Item.dbSymbol]) or \
-                                (self.Item and
-                                 self.Item.dbSymbol in items and
-                                 move.type.dbSymbol == items[self.Item.dbSymbol]) else 0x1000
-            MODMBND = 0x1199 if (self.Item and
-                                 self.Item.dbSymbol == "muscle_band" and
+            MODTYBS = 0x1333 if (self.item and
+                                 self.item.dbSymbol in plates and
+                                 move.type.dbSymbol == plates[self.item.dbSymbol]) or \
+                                (self.item and
+                                 self.item.dbSymbol in incenses and
+                                 move.type.dbSymbol == incenses[self.item.dbSymbol]) or \
+                                (self.item and
+                                 self.item.dbSymbol in items and
+                                 move.type.dbSymbol == items[self.item.dbSymbol]) else 0x1000
+            MODMBND = 0x1199 if (self.item and
+                                 self.item.dbSymbol == "muscle_band" and
                                  move.category == "physical") else 0x1000
             MODPLK = 0x1333 if (self.dbSymbol == "palkia" and
-                                self.Item and
-                                self.Item.dbSymbol == "lustrous_orb" and
+                                self.item and
+                                self.item.dbSymbol == "lustrous_orb" and
                                 move.type.dbSymbol in ["water", "dragon"]) else 0x1000
-            MODWGLS = 0x1199 if (self.Item and
-                                 self.Item.dbSymbol == "wise_glasses" and
+            MODWGLS = 0x1199 if (self.item and
+                                 self.item.dbSymbol == "wise_glasses" and
                                  move.category == "special") else 0x1000
             MODGRTN = 0x1333 if (self.dbSymbol == "giratina" and
-                                 self.Item and
-                                 self.Item.dbSymbol == "griseous_orb" and
+                                 self.item and
+                                 self.item.dbSymbol == "griseous_orb" and
                                  move.type.dbSymbol in ["ghost", "dragon"]) else 0x1000
-            MODOINS = 0x1333 if (self.Item and
-                                 self.Item.dbSymbol == "odd_incense" and
+            MODOINS = 0x1333 if (self.item and
+                                 self.item.dbSymbol == "odd_incense" and
                                  move.type.dbSymbol == "psychic") else 0x1000
             MODDLG = 0x1333 if (self.dbSymbol == "dialga" and
-                                self.Item and
-                                self.Item.dbSymbol == "adamant_orb" and
+                                self.item and
+                                self.item.dbSymbol == "adamant_orb" and
                                 move.type.dbSymbol in ["steel", "dragon"]) else 0x1000
-            MODGEMS = 0x1800 if (self.Item and
-                                 self.Item.dbSymbol in gems and
-                                 move.type.dbSymbol == gems[self.Item.dbSymbol]) else 0x1000
+            MODGEMS = 0x1800 if (self.item and
+                                 self.item.dbSymbol in gems and
+                                 move.type.dbSymbol == gems[self.item.dbSymbol]) else 0x1000
             MODFCD = 0x2000 if (move.dbSymbol == "facade" and
                                 self.status["main"] in ["paralysis", "poison", "badly_poisoned", "burn"]) else 0x1000
             MODBRN = 0x2000 if (move.dbSymbol == "brine" and
@@ -700,16 +698,16 @@ class Pokemon:
                 elif move.type.count(Type("fire")):
                     PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0x1800)
 
-            if not target.Ability.dbSymbol in ["battle_armor","shell_armor"] or battle_data["selfLuckyChant"]:
+            if not target.ability.dbSymbol in ["battle_armor", "shell_armor"] or battle_data["selfLuckyChant"]:
                 critical_hit_factors = [1/16, 1/8, 1/4, 1/3, 1/2]
                 critical_rate = move.criticalRate
-                if self.Ability.dbSymbol == "super_luck":
+                if self.ability.dbSymbol == "super_luck":
                     critical_rate += 1
-                if self.dbSymbol == "Farfetch_d" and self.Item and self.Item.dbSymbol == "leek":
+                if self.dbSymbol == "Farfetch_d" and self.item and self.item.dbSymbol == "leek":
                     critical_rate += 2
-                elif self.dbSymbol == "chansey" and self.Item and self.Item.dbSymbol == "lucky_punch":
+                elif self.dbSymbol == "chansey" and self.item and self.item.dbSymbol == "lucky_punch":
                     critical_rate += 2
-                if self.Item and self.Item.dbSymbol == "razor_claw":
+                if self.item and self.item.dbSymbol == "razor_claw":
                     critical_rate += 1
                 if random.random() <= critical_hit_factors[critical_rate-1]:
                     CRIT = True
@@ -718,7 +716,7 @@ class Pokemon:
             PARAMDAMAGE = int((PARAMDAMAGE * (100 - R)) / 100)
 
             MODSTAB = 0x1800
-            if self.Ability.dbSymbol == "adaptability":
+            if self.ability.dbSymbol == "adaptability":
                 MODSTAB = 0x2000
             for t in self.type:
                 if move.type.dbSymbol == t.dbSymbol:
@@ -731,23 +729,23 @@ class Pokemon:
                 elif TYPEEFFECTIVENESS < 0:
                     PARAMDAMAGE = PARAMDAMAGE>>abs(TYPEEFFECTIVENESS)
 
-            if move.category == "physical" and self.status["main"] == "burn" and self.Ability.dbSymbol != "guts":
+            if move.category == "physical" and self.status["main"] == "burn" and self.ability.dbSymbol != "guts":
                 PARAMDAMAGE = PARAMDAMAGE>>1
 
             MODRFLCT = 0x800 if (battle_data["targetReflect"] and move.category == "physical" and
-                    self.Ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
+                                 self.ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
 
             MODLGTSCRN = 0x800 if (battle_data["targetLightScreen"] and move.category == "special" and
-                    self.Ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
+                                   self.ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
 
-            MODMLTSCL = 0x800 if target.Ability.dbSymbol == "multiscale" and target.currentHp == target.globalStats["hp"] \
+            MODMLTSCL = 0x800 if target.ability.dbSymbol == "multiscale" and target.currentHp == target.globalStats["hp"] \
                 else 0x1000
 
-            MODTNTD = 0x2000 if self.Ability.dbSymbol == "tinted" and TYPEEFFECTIVENESS < 0 else 0x1000
+            MODTNTD = 0x2000 if self.ability.dbSymbol == "tinted" and TYPEEFFECTIVENESS < 0 else 0x1000
 
-            MODSNPR = 0x1800 if self.Ability.dbSymbol == "sniper" and CRIT else 0x1000
+            MODSNPR = 0x1800 if self.ability.dbSymbol == "sniper" and CRIT else 0x1000
 
-            MODSLDFLTR = 0xC00 if target.Ability.dbSymbol in ["solid_rock", "filter"] and TYPEEFFECTIVENESS > 0 else 0x1000
+            MODSLDFLTR = 0xC00 if target.ability.dbSymbol in ["solid_rock", "filter"] and TYPEEFFECTIVENESS > 0 else 0x1000
 
             MODMTRNM = 0x1000
             n = 0
@@ -761,15 +759,15 @@ class Pokemon:
             elif n > 4:
                 MODMTRNM = 0x2000
 
-            MODXPRTBLT = 0x1333 if self.Item and self.Item.dbSymbol == "expert_belt" and TYPEEFFECTIVENESS > 0 else 0x1000
+            MODXPRTBLT = 0x1333 if self.item and self.item.dbSymbol == "expert_belt" and TYPEEFFECTIVENESS > 0 else 0x1000
 
-            MODLFORB = 0x14CC if self.Item and self.Item.dbSymbol == "life_orb" else 0x1000
+            MODLFORB = 0x14CC if self.item and self.item.dbSymbol == "life_orb" else 0x1000
 
             MODBRY = 0x1000
             if TYPEEFFECTIVENESS > 0:
-                if target.Item and target.Item.dbSymbol in berries:
-                    if berries[target.Item.dbSymbol]["damageLoweringType"]:
-                        if move.type == berries[target.Item.dbSymbol]["type"]:
+                if target.item and target.item.dbSymbol in berries:
+                    if berries[target.item.dbSymbol]["damageLoweringType"]:
+                        if move.type == berries[target.item.dbSymbol]["type"]:
                             MODBRY = 0x800
 
             MODSTMP = 0x2000 if move.dbSymbol == "stomp" and battle_data["targetMinimize"] else 0x1000
@@ -841,10 +839,10 @@ class Pokemon:
             self.gender = mod["gender"]
 
         if "ability" in mod:
-            self.Ability = Ability(mod["ability"])
+            self.ability = Ability(mod["ability"])
 
         if "item" in mod:
-            self.Item = Item(mod["item"])
+            self.item = Item(mod["item"])
 
         if "moveset" in mod:
             for move in self.moveset:
@@ -886,8 +884,8 @@ class Pokemon:
             "name": self.name,
             "level": self.level,
             "gender": self.gender,
-            "ability": self.Ability.dbSymbol,
-            "item": self.Item.dbSymbol if self.Item else None,
+            "ability": self.ability.dbSymbol,
+            "item": self.item.dbSymbol if self.item else None,
             "moveset": [move.save_move() for move in self.moveset],
             "ivs": self.ivs,
             "evs": self.evs,
@@ -901,8 +899,8 @@ class Pokemon:
     def load_pokemon(self, data):
         self.UID = data["UID"]
         self.gender = data["gender"]
-        self.Ability = Ability(data["ability"])
-        self.Item = Item(data["item"]) if data["item"] else None
+        self.ability = Ability(data["ability"])
+        self.item = Item(data["item"]) if data["item"] else None
         self.moveset.clear()
         for d in data["moveset"]:
             M = Move(d["name"])

@@ -1,12 +1,14 @@
 import random
 
+from damageCalcEnv import DamageCalcEnv
+
 
 class BattleEngineMethod:
     relative = None
     trigger = None
     priority = 0
 
-    def resolve(self, env): ...
+    def resolve(self, env: DamageCalcEnv): ...
 
 
 class FrustrationMethod(BattleEngineMethod):
@@ -72,7 +74,7 @@ class GyroBallMethod(BattleEngineMethod):
     priority = 6
 
     def resolve(self, env):
-        env.basePowerValue = min(150, 25 * env.attacker.get_stage_stat("spd") // env.defender.get_stage_stat("spd"))
+        env.basePowerValue = min(150, 25 * env.defender.get_stage_stat("spd") // env.attacker.get_stage_stat("spd"))
 
 
 class EruptionMethod(BattleEngineMethod):
@@ -154,7 +156,7 @@ class WringOutMethod(BattleEngineMethod):
     priority = 13
 
     def resolve(self, env):
-        target_hp_ratio = env.defender.currentHp * 0x1000 // env.defender.globalStats["hp"] * 0x1000
+        target_hp_ratio = (env.defender.currentHp * 0x1000) // (env.defender.globalStats["hp"] * 0x1000)
         env.basePowerValue = round(120 * target_hp_ratio) // 100
 
 
@@ -768,7 +770,7 @@ class NaturalGiftMethod(BattleEngineMethod):
             }
         }
         if env.attacker.get_item() in berries_table:
-            env.basePowerValue = berries_table[env.attacker.get_item()]
+            env.basePowerValue = berries_table[env.attacker.get_item()]["naturalGiftPower"]
 
 
 class MagnitudeMethod(BattleEngineMethod):
@@ -1035,7 +1037,7 @@ class OddincenseMethod(BattleEngineMethod):
     priority = 17
 
     def resolve(self, env):
-        if env.move.get_type() == "phychic":
+        if env.move.get_type() == "psychic":
             env.basePowerMods.append(0x1333)
 
 
@@ -1049,7 +1051,7 @@ class AdamantOrbMethod(BattleEngineMethod):
             env.basePowerMods.append(0x1333)
 
 
-class GemMethod(BattleEngineMethod):
+class GemsMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "basePowerModifiers"
     priority = 19
@@ -1115,7 +1117,7 @@ class RetaliateMethod(BattleEngineMethod):
     priority = 23
 
     def resolve(self, env):
-        if env.battleData:  # pkmn fainted last round
+        if True:  # pkmn fainted last round
             env.basePowerMods.append(0x2000)
 
 
@@ -1135,7 +1137,7 @@ class MeFirstMethod(BattleEngineMethod):
     priority = 25
 
     def resolve(self, env):
-        if env.battleData:  # move used with me first
+        if True:  # move used with me first
             env.basePowerMods.append(0x1800)
 
 
@@ -1145,7 +1147,7 @@ class SolarBeamMethod(BattleEngineMethod):
     priority = 26
 
     def resolve(self, env):
-        if env.battleData:  # if weather not sun or default
+        if True:  # if weather not sun or default
             env.basePowerMods.append(0x800)
 
 
@@ -1155,7 +1157,7 @@ class ChargeMethod(BattleEngineMethod):
     priority = 27
 
     def resolve(self, env):
-        if env.battleData:  # if last move == charge
+        if True:  # if last move == charge
             if env.move.get_type() == "electric":
                 env.basePowerMods.append(0x2000)
 
@@ -1166,7 +1168,7 @@ class HelpingHandMethod(BattleEngineMethod):
     priority = 28
 
     def resolve(self, env):
-        if env.battleData:  # helping hand effect
+        if True:  # helping hand effect
             env.basePowerMods.append(0x1800)
 
 
@@ -1176,7 +1178,7 @@ class WaterSportMethod(BattleEngineMethod):
     priority = 29
 
     def resolve(self, env):
-        if env.battleData:  # water sport effect
+        if True:  # water sport effect
             env.basePowerMods.append(0x548)
 
 
@@ -1186,5 +1188,251 @@ class MudSportMethod(BattleEngineMethod):
     priority = 30
 
     def resolve(self, env):
-        if env.battleData:  # mud sport effect
+        if True:  # mud sport effect
             env.basePowerMods.append(0x548)
+
+
+class UnawareAtkMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "atkStatRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.atkStatIgnoreBoost = True
+
+
+class FoulPlayMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "atkStatRules"
+    priority = 2
+
+    def resolve(self, env):
+        env.atkStatUser = env.defender
+
+
+class ThickFatMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "atkStatModifiers"
+    priority = 1
+
+    def resolve(self, env):
+        if env.move.get_type() in ["ice", "fire"]:
+            env.atkStatMods.append(0x800)
+
+
+class TorrentMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 2
+
+    def resolve(self, env):
+        if env.attacker.currentHp <= env.attacker.globalStats["hp"] // 3 and env.move.get_type() == "water":
+            env.atkStatMods.append(0x1800)
+
+
+class GutsMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 3
+
+    def resolve(self, env):
+        if env.attacker.get_main_status() and env.move.category == "physical":
+            env.atkStatMods.append(0x1800)
+
+
+class SwarmMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 4
+
+    def resolve(self, env):
+        if env.attacker.currentHp <= env.attacker.globalStats["hp"] // 3 and env.move.get_type() == "bug":
+            env.atkStatMods.append(0x1800)
+
+
+class OvergrowMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 5
+
+    def resolve(self, env):
+        if env.attacker.currentHp <= env.attacker.globalStats["hp"] // 3 and env.move.get_type() == "grass":
+            env.atkStatMods.append(0x1800)
+
+
+class PlusMinusMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 6
+
+    def resolve(self, env):
+        if True:
+            env.atkStatMods.append(0x1800)
+
+
+class BlazeMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 7
+
+    def resolve(self, env):
+        if env.attacker.currentHp <= env.attacker.globalStats["hp"] // 3 and env.move.get_type() == "fire":
+            env.atkStatMods.append(0x1800)
+
+
+class DefeatistMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 8
+
+    def resolve(self, env):
+        if env.attacker.currentHp <= env.attacker.globalStats["hp"] // 2:
+            env.atkStatMods.append(0x800)
+
+
+class PureHugePowertMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 9
+
+    def resolve(self, env):
+        if env.move.category == "physical":
+            env.atkStatMods.append(0x2000)
+
+
+class SolarPowerMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 10
+
+    def resolve(self, env):
+        if env.move.category == "special":  # + weather = sun
+            env.atkStatMods.append(0x1800)
+
+
+class HustleMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 11
+
+    def resolve(self, env):
+        if env.move.category == "physical":  # + weather = sun
+            env.atkStatMods.append(0x1800)
+
+
+class FlashFireMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 12
+
+    def resolve(self, env):
+        if env.move.get_type() == "fire":
+            env.atkStatMods.append(0x1800)
+
+
+class SlowStartMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 13
+
+    def resolve(self, env):
+        if env.battleData and env.move.category == "physical":  # has been on field for less than 5 turns
+            env.atkStatMods.append(0x800)
+
+
+class ThickClubMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 14
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol in ["cubone", "marowak"] and env.move.category == "physical":
+            env.atkStatMods.append(0x2000)
+
+
+class DeepSeaToothMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 15
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "clamperl" and env.move.category == "special":
+            env.atkStatMods.append(0x2000)
+
+class LightBalltMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 16
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "pikachu":
+            env.atkStatMods.append(0x2000)
+
+
+class SoulDewMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 17
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol in ["latios", "latias"] and env.move.category == "special":
+            env.atkStatMods.append(0x1800)
+
+
+class ChoiceBandMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 18
+
+    def resolve(self, env):
+        if env.move.category == "physical":
+            env.atkStatMods.append(0x1800)
+
+
+
+class ChoiceSpecsMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "atkStatModifiers"
+    priority = 19
+
+    def resolve(self, env):
+        if env.move.category == "special":
+            env.atkStatMods.append(0x1800)
+
+
+class UnawareDefeMehod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.defeStatIgnoreBoost = True
+
+
+class FakeSpeMoveMehod(BattleEngineMethod):
+    relative = "move"
+    trigger = "defeStatRules"
+    priority = 2
+
+    def resolve(self, env):
+        env.defeStatId = "defe"
+
+
+class ChipAwayMehod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatRules"
+    priority = 3
+
+    def resolve(self, env):
+        env.defeStatIgnoreBoost = True
+
+
+class WonderRoomMehod(BattleEngineMethod):
+    relative = "field"
+    trigger = "defeStatRules"
+    priority = 4
+
+    def resolve(self, env):
+        env.defeStatId = {"physical": "defe", "special": "dspe"}[env.move.category]
+
+

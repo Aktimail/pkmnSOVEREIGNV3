@@ -1,6 +1,6 @@
 import json
 
-from data import Data
+from battleEngineMethodRegistry import BEMRegistry
 
 
 class Item:
@@ -18,11 +18,4 @@ class Item:
         self.isMapUsable = data["isMapUsable"]
         self.isLimited = data["isLimited"]
         self.flingPower = data["flingPower"]
-        self.battleEngineMethod = (data["dbSymbol"])
-
-    @staticmethod
-    def init_bem(bem_title):
-        if Data.BATTLE_ENGINE_METHODS.get(bem_title):
-            return Data.BATTLE_ENGINE_METHODS[bem_title]()
-        return None
-
+        self.bem = None  # BEMRegistry[data["battleEngineMethod"]] if data["battleEngineMethod"] else None

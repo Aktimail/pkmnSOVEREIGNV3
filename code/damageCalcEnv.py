@@ -31,14 +31,14 @@ class DamageCalcEnv:
         self.basePowerFinalMod = 0
 
         self.atkStatUser = self.attacker
-        self.atkStat = {"physical": "atk", "special": "aspe"}[self.move.category]
+        self.atkStatId = {"physical": "atk", "special": "aspe"}[self.move.category]
         self.atkStatIgnoreBoost = False
         self.atkStatValue = 0
         self.atkStatMods = []
         self.atkStatFinalMod = 0
 
         self.defeStatUser = self.defender
-        self.defeStat = {"physical": "defe", "special": "dspe"}[self.move.category]
+        self.defeStatId = {"physical": "defe", "special": "dspe"}[self.move.category]
         self.defeStatIgnoreBoost = False
         self.defeStatValue = 0
         self.defeStatMods = []
