@@ -1598,7 +1598,7 @@ class PlusMinusMethod(BattleEngineMethod):
     priority = 6
 
     def resolve(self, env):
-        if True:  # If user has ability Plus or Minus and an ally has ability Plus or Minus and move is special.
+        if True and env.move.category == "special":  # If user has ability Plus or Minus and an ally has ability Plus.
             env.atkStatMods.append(0x1800)
 
 
@@ -1648,7 +1648,7 @@ class HustleMethod(BattleEngineMethod):
     priority = 11
 
     def resolve(self, env):
-        if env.move.category == "physical":  # + weather = sun
+        if env.move.category == "physical":  # apply mod alone
             env.atkStatMods.append(0x1800)
 
 

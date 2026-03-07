@@ -1,6 +1,3 @@
-from battleEngineMethod import *
-
-
 class BattleEngineMethodManager:
     def __init__(self):
         self.registry = []
