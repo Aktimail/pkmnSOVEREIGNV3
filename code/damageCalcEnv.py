@@ -5,11 +5,8 @@ class DamageCalcEnv:
         self.move = move
         self.battleData = battle_data
 
-        self.fullOverride = False
-
-        self.weatherMods = []
-        self.weatherFinalMod = 0
         self.ignoreWeather = False
+        self.weatherFinalMod = 0x1000
 
         self.criticalHit = False
         self.criticalHitLevel = move.criticalRate
@@ -24,22 +21,29 @@ class DamageCalcEnv:
         self.burnEffect = False
 
         self.globalFinalMods = []
-        self.globalFinalModValue = 0
+        self.globalFinalMod = 0x1000
+
+        self.ignoreReflectLightScreen = False
 
         self.basePowerValue = move.basePower
         self.basePowerMods = []
-        self.basePowerFinalMod = 0
+        self.basePowerFinalMod = 0x1000
 
         self.atkStatUser = self.attacker
         self.atkStatId = {"physical": "atk", "special": "aspe"}[self.move.category]
-        self.atkStatIgnoreBoost = False
+        self.atkBoostId = self.atkStatId
+        self.atkIgnoreBoost = False
         self.atkStatValue = 0
         self.atkStatMods = []
-        self.atkStatFinalMod = 0
+        self.atkStatFinalMod = 0x1000
 
         self.defeStatUser = self.defender
         self.defeStatId = {"physical": "defe", "special": "dspe"}[self.move.category]
-        self.defeStatIgnoreBoost = False
+        self.defeBoostId = self.defeStatId
+        self.defeIgnoreBoost = False
         self.defeStatValue = 0
         self.defeStatMods = []
-        self.defeStatFinalMod = 0
+        self.defeStatFinalMod = 0x1000
+
+        self.damageValueOverride = None
+        self.damageFactor = 0

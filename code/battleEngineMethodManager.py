@@ -6,7 +6,7 @@ class BattleEngineMethodManager:
         self.registry = []
 
     def register(self, bem):
-        if bem and bem not in self.registry:
+        if bem and type(bem) not in [type(b) for b in self.registry]:
             self.registry.append(bem)
 
     def emit(self, trigger):

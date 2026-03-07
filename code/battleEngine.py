@@ -12,11 +12,11 @@ class BattleEngine:
         self.Cursor = cursor
         self.DialogManager = DialogManager(screen, keyboard, controller)
         self.AnimationManager = AnimationManager()
-        self.DamageCalcEngine = None
 
         self.Player = player
         self.Opponent = None
 
+        self.DamageCalcEngine = None
         self.Ui = None
         self.Ai = None
 
@@ -92,8 +92,8 @@ class BattleEngine:
                                 self.Player.battle_choice[1],
                                 None))
 
-                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=0)
-                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, r=15)
+                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, const_r=True)
+                        self.DamageCalcEngine.calcul_damage(ignore_crit=True, const_r=False)
 
         elif self.active_menu == "team":
             self.Ui.render_team_menu()

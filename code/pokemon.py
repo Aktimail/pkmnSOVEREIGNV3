@@ -91,9 +91,12 @@ class Pokemon:
         self.currentHp = self.globalStats["hp"]
 
         self.multipleHitCounter = 0
-        self.isInTheSky = False
         self.stockpile = 0
         self.defenseCurl = False
+        self.skyChargingTurn = False
+        self.digChargingTurn = False
+        self.diveChargingTurn = False
+        self.minimize = False
 
     def init_gender(self):
         if self.forms[0]["femaleRate"] == -1:
@@ -172,25 +175,27 @@ class Pokemon:
     def get_sec_status(self):
         return self.status["sec"]
 
-    def get_stage_stat(self, stat, ignore_boost=False, crit=False):
+    def get_stage_stat(self, stat_id, boost_id=None, ignore_boost=False, crit=False):
         if ignore_boost:
-            return self.globalStats[stat]
+            return self.globalStats[stat_id]
+
+        if boost_id is None:
+            boost_id = stat_id
 
         if crit:
-            if stat in ("atk", "aspe") and self.boosts[stat] < 0:
-                    return self.globalStats[stat]
-            elif stat in ("defe", "dspe") and self.boosts[stat] > 0:
-                    return self.globalStats[stat]
+            if stat_id in ("atk", "aspe") and self.boosts[stat_id] < 0:
+                return self.globalStats[stat_id]
+            elif stat_id in ("defe", "dspe") and self.boosts[stat_id] > 0:
+                return self.globalStats[stat_id]
 
         boost_levels = {
             "eva": [3, 8 / 3, 7 / 3, 2, 5 / 3, 4 / 3, 1, 0.75, 0.6, 0.5, 3 / 7, 3 / 8, 1 / 3],
             "acc": [1 / 3, 3 / 8, 3 / 7, 0.5, 0.6, 0.75, 1, 4 / 3, 5 / 3, 2, 7 / 3, 8 / 3, 3],
             "general": [0.25, 2 / 7, 1 / 3, 0.4, 0.5, 2 / 3, 1, 1.5, 2, 2.5, 3, 3.5, 4]
         }
-        return int(
-            self.globalStats[stat] *
-            boost_levels[stat if stat == "eva" or stat == "acc" else "general"][self.boosts[stat] + 6]
-        )
+        boost_factor = boost_levels[stat_id if stat_id in ("eva", "acc") else "general"]
+
+        return int(self.globalStats[stat_id] * boost_factor[self.boosts[boost_id] + 6])
 
     def get_sprite_path(self, direction):
         path = f"../assets/graphics/pokemons/{direction}/"

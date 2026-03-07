@@ -208,7 +208,7 @@ class BattleUi:
             self.screen.display.blit(image, asset_pos)
 
             move_name = self.font.render(self.Player.get_active_pkmn().moveset[i].name, True, (0, 0, 0))
-            move_type = self.font.render(self.Player.get_active_pkmn().moveset[i].type.name, True, (0, 0, 0))
+            move_type = self.font.render(self.Player.get_active_pkmn().moveset[i].get_type(), True, (0, 0, 0))
             move_pp = self.font.render(
                 str(self.Player.get_active_pkmn().moveset[i].pp) + " / " + str(self.Player.get_active_pkmn().moveset[i].maxPp),
                 True, (0, 0, 0))
@@ -253,7 +253,7 @@ class BattleUi:
     def render_move_info(self, move, x, y):
         move_name = self.font.render(move.name, True, (0, 0, 0))
         move_pp = self.font.render(str(move.pp) + "/" + str(move.maxPp), True, (0, 0, 0))
-        move_type = self.font.render(move.type.name, True, (0, 0, 0))
+        move_type = self.font.render(move.get_type(), True, (0, 0, 0))
         move_category = self.font.render(move.category, True, (0, 0, 0))
 
         self.screen.display.blit(move_name, (x, y))

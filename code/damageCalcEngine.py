@@ -28,31 +28,39 @@ class DamageCalcEngine:
 
     def collect_methods(self):
         for role, pkmn in {"attacker": self.Env.attacker, "defender": self.Env.defender}.items():
-            if pkmn.ability.bem and role == pkmn.ability.bem.relative:
-                    self.BEM_Manager.register(pkmn.ability.bem)
-            if pkmn.get_item() and pkmn.item.bem and role == pkmn.item.bem.relative:
-                        self.BEM_Manager.register(pkmn.item.bem)
+            if pkmn.ability.bem and role in (pkmn.ability.bem.relative, "pokemons"):
+                self.BEM_Manager.register(pkmn.ability.bem)
+            if pkmn.get_item() and pkmn.item.bem and role in (pkmn.item.bem.relative, "pokemons"):
+                self.BEM_Manager.register(pkmn.item.bem)
 
         if self.Env.move.bem:
             self.BEM_Manager.register(self.Env.move.bem)
 
-    def check_special_cases(self):
-        for method in self.BEM_Manager.emit("specialCases"):
+    def resolve_trigger(self, trigger):
+        for method in self.BEM_Manager.emit(trigger):
             method.resolve(self.Env)
+
+    def check_special_cases(self):
+        self.resolve_trigger("specialCasesRules")
 
     def set_weather_mod(self):
-        for method in self.BEM_Manager.emit("weatherRules"):
-            method.resolve(self.Env)
-
-        for method in self.BEM_Manager.emit("weatherMods"):
-            method.resolve(self.Env)
-
-        self.Env.weatherFinalMod = self.chain_up(self.Env.weatherMods)
+        if self.Env.battleData.weather in ("rain", "sunny") and self.Env.move.get_type() in ("water", "fire"):
+            self.resolve_trigger("weatherRules")
+            weather_mods_table = {
+                "rain": {
+                    "water": 0x1800,
+                    "fire": 0x800
+                },
+                "sunny": {
+                    "water": 0x800,
+                    "fire": 0x1800
+                }
+            }
+            self.Env.weatherFinalMod = weather_mods_table[self.Env.battleData.weather][self.Env.move.get_type()]
 
     def set_critical_hit(self, ignore=False):
         if not ignore:
-            for method in self.BEM_Manager.emit("criticalHitRules"):
-                method.resolve(self.Env)
+            self.resolve_trigger("criticalHitRules")
 
             if not self.Env.ignoreCriticalHit:
                 critical_hit_factors = [1/16, 1/8, 1/4, 1/3, 1/2]
@@ -72,11 +80,10 @@ class DamageCalcEngine:
             self.Env.randomFactor = 0
 
     def set_stab_mod(self):
-        if self.Env.move.type in self.Env.attacker.type:
+        if self.Env.move.get_type() in self.Env.attacker.get_type():
             self.Env.stabFinalMod = 0x1800
 
-        for method in self.BEM_Manager.emit("stabRules"):
-            method.resolve(self.Env)
+            self.resolve_trigger("stabRules")
 
     def set_type_effectiveness(self):
         self.Env.typeEffectiveness = self.Env.move.get_type_effectiveness(self.Env.defender)
@@ -88,17 +95,13 @@ class DamageCalcEngine:
                     self.Env.burnEffect = True
 
     def set_final_mod(self):
-        for method in self.BEM_Manager.emit("finalModifiers"):
-            method.resolve(self.Env)
-
-        self.Env.globalFinalModValue = self.chain_up(self.Env.globalFinalMods)
+        self.resolve_trigger("finalModifiers")
+        self.Env.globalFinalMod = self.chain_up(self.Env.globalFinalMods)
 
     def compute_base_power_param(self):
-        for method in self.BEM_Manager.emit("basePowerRules"):
-            method.resolve(self.Env)
+        self.resolve_trigger("basePowerRules")
 
-        for method in self.BEM_Manager.emit("basePowerModifiers"):
-            method.resolve(self.Env)
+        self.resolve_trigger("basePowerModifiers")
 
         self.Env.basePowerFinalMod = self.chain_up(self.Env.basePowerMods)
         self.basePowerParam = self.apply_mod(self.Env.basePowerValue, self.Env.basePowerFinalMod)
@@ -106,18 +109,16 @@ class DamageCalcEngine:
         print("basePower : " + str(self.basePowerParam))
 
     def compute_atk_stat_param(self):
-        for method in self.BEM_Manager.emit("atkStatRules"):
-            method.resolve(self.Env)
+        self.resolve_trigger("atkStatRules")
 
-        convert_cat_stat_id = {"physical": "atk", "special": "aspe"}
         self.Env.atkStatValue = self.Env.atkStatUser.get_stage_stat(
             self.Env.atkStatId,
-            ignore_boost=self.Env.atkStatIgnoreBoost,
+            boost_id=self.Env.atkBoostId,
+            ignore_boost=self.Env.atkIgnoreBoost,
             crit=self.Env.criticalHit
         )
 
-        for method in self.BEM_Manager.emit("atkStatModifiers"):
-            method.resolve(self.Env)
+        self.resolve_trigger("atkStatModifiers")
 
         self.Env.atkStatFinalMod = self.chain_up(self.Env.atkStatMods)
         self.atkStatParam = self.apply_mod(self.Env.atkStatValue, self.Env.atkStatFinalMod)
@@ -125,18 +126,16 @@ class DamageCalcEngine:
         print("atkStat : " + str(self.atkStatParam))
 
     def compute_defe_stat_param(self):
-        for method in self.BEM_Manager.emit("defeStatRules"):
-            method.resolve(self.Env)
+        self.resolve_trigger("defeStatRules")
 
-        convert_cat_stat_id = {"physical": "defe", "special": "dspe"}
         self.Env.defeStatValue = self.Env.defeStatUser.get_stage_stat(
             self.Env.defeStatId,
-            ignore_boost=self.Env.defeStatIgnoreBoost,
+            boost_id=self.Env.defeBoostId,
+            ignore_boost=self.Env.defeIgnoreBoost,
             crit=self.Env.criticalHit
         )
 
-        for method in self.BEM_Manager.emit("defeStatModifiers"):
-            method.resolve(self.Env)
+        self.resolve_trigger("defeStatModifiers")
 
         self.Env.defeStatFinalMod = self.chain_up(self.Env.defeStatMods)
         self.defeStatParam = self.apply_mod(self.Env.defeStatValue, self.Env.defeStatFinalMod)
@@ -147,15 +146,15 @@ class DamageCalcEngine:
         self.damageValue = ((((2 * self.atkLvlParam) // 5 + 2)
                              * self.basePowerParam * self.atkStatParam) // self.defeStatParam) // 50 + 2
 
-    def calcul_damage(self, ignore_crit=False, r="random"):
+    def calcul_damage(self, ignore_crit=False, const_r=False):
         self.collect_methods()
 
         self.check_special_cases()
 
-        if not self.Env.fullOverride:
+        if self.Env.damageValueOverride is None:
             self.set_weather_mod()
             self.set_critical_hit(ignore=ignore_crit)
-            self.set_random_factor(const=True)
+            self.set_random_factor(const=const_r)
             self.set_stab_mod()
             self.set_type_effectiveness()
             self.set_burn_effect()
@@ -167,7 +166,8 @@ class DamageCalcEngine:
 
             self.compute_base_damage()
 
-            self.damageValue = self.apply_mod(self.damageValue, self.Env.weatherFinalMod)
+            if not self.Env.ignoreWeather:
+                self.damageValue = self.apply_mod(self.damageValue, self.Env.weatherFinalMod)
 
             if self.Env.criticalHit:
                 self.damageValue *= 2
@@ -179,7 +179,7 @@ class DamageCalcEngine:
             if self.Env.typeEffectiveness > 0:
                 self.damageValue = self.damageValue << self.Env.typeEffectiveness
             elif self.Env.typeEffectiveness < 0:
-                self.damageValue = self.damageValue >> self.Env.typeEffectiveness
+                self.damageValue = self.damageValue >> abs(self.Env.typeEffectiveness)
 
             if self.Env.burnEffect:
                 self.damageValue = self.damageValue // 2
@@ -187,4 +187,9 @@ class DamageCalcEngine:
             if self.damageValue < 1:
                 self.damageValue = 1
 
-            self.damageValue = self.apply_mod(self.damageValue, self.Env.globalFinalModValue)
+            self.damageValue = self.apply_mod(self.damageValue, self.Env.globalFinalMod)
+
+            if self.Env.damageFactor:
+                self.damageValue = int(self.damageValue * self.Env.damageFactor)
+
+            print(self.damageValue)

@@ -11,6 +11,338 @@ class BattleEngineMethod:
     def resolve(self, env: DamageCalcEnv): ...
 
 
+class AirLockMethod(BattleEngineMethod):
+    relative = "pokemons"
+    trigger = "weatherRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.ignoreWeather = True
+
+
+class SuperLuckMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "criticalHitRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.criticalHitLevel += 1
+
+
+class BattleArmorMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "criticalHitRules"
+    priority = 2
+
+    def resolve(self, env):
+        env.ignoreCriticalHit = True
+
+
+class StickMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "criticalHitRules"
+    priority = 3
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "farfetch_d":
+            env.criticalHitLevel += 2
+
+
+class LuckyPunchMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "criticalHitRules"
+    priority = 4
+
+    def resolve(self, env):
+        if env.attacker.dbSymbol == "chansey":
+            env.criticalHitLevel += 2
+
+
+class RazorClawMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "criticalHitRules"
+    priority = 5
+
+    def resolve(self, env):
+        env.criticalHitLevel += 1
+
+
+class LuckyChantMethod(BattleEngineMethod):
+    relative = "field"
+    trigger = "criticalHitRules"
+    priority = 6
+
+    def resolve(self, env):
+        env.ignoreCriticalHit = True
+
+
+class AdaptabilityMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "stabRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.stabFinalMod = 0x2000
+
+
+class ReflectMethod(BattleEngineMethod):
+    relative = "field"
+    trigger = "finalModifiers"
+    priority = 1
+
+    def resolve(self, env):
+        if env.move.category == "physical" and env.attacker.get_ability() != "infiltrator" and not env.criticalHit:
+            if not env.ignoreReflectLightScreen:
+                env.globalFinalMods.append(0x800)
+
+
+class LightScreenMethod(BattleEngineMethod):
+    relative = "field"
+    trigger = "finalModifiers"
+    priority = 2
+
+    def resolve(self, env):
+
+        if env.move.category == "special" and env.attacker.get_ability() != "infiltrator" and not env.criticalHit:
+            if not env.ignoreReflectLightScreen:
+                env.globalFinalMods.append(0x800)
+
+
+class MultiscaleMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "finalModifiers"
+    priority = 3
+
+    def resolve(self, env):
+        if env.defender.currentHp == env.defender.globalStats["hp"]:
+            env.globalFinalMods.append(0x800)
+
+
+class TintedLensMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 4
+
+    def resolve(self, env):
+        if env.typeEffectiveness < 0:
+            env.globalFinalMods.append(0x2000)
+
+
+class FriendGuardMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 5
+
+    def resolve(self, env):
+        pass  # If one of the target's allies' ability is Friend Guard.
+
+
+class SniperMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 6
+
+    def resolve(self, env):
+        if env.criticalHit:
+            env.globalFinalMods.append(0x1800)
+
+
+class SolidRockMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "finalModifiers"
+    priority = 7
+
+    def resolve(self, env):
+        if env.typeEffectiveness > 0:
+            env.globalFinalMods.append(0x1800)
+
+
+class MetronomeMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 8
+
+    def resolve(self, env):
+        n = env.battleData.successive_uses_counter(env.move, successfull=True)
+        if n > 4:
+            n = 0x2000
+        result = 0x1000 + n * 0x333
+        env.globalFinalMods.append(result)
+
+
+class ExpertBeltMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 9
+
+    def resolve(self, env):
+        if env.typeEffectiveness > 0:
+            env.globalFinalMods.append(0x1333)
+
+
+class LifeOrbMethod(BattleEngineMethod):
+    relative = "attacker"
+    trigger = "finalModifiers"
+    priority = 10
+
+    def resolve(self, env):
+        env.globalFinalMods.append(0x14CC)
+
+
+class DamageLoweringBerryMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "finalModifiers"
+    priority = 11
+
+    def resolve(self, env):
+        berries_table = {
+            "occa_berry": {
+                "id": 36,
+                "type": "fire",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "passho_berry": {
+                "id": 37,
+                "type": "water",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "wacan_berry": {
+                "id": 38,
+                "type": "electric",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "rindo_berry": {
+                "id": 39,
+                "type": "grass",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "yache_berry": {
+                "id": 40,
+                "type": "ice",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "chople_berry": {
+                "id": 41,
+                "type": "fighting",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "kebia_berry": {
+                "id": 42,
+                "type": "poison",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "shuca_berry": {
+                "id": 43,
+                "type": "ground",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "coba_berry": {
+                "id": 44,
+                "type": "flying",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "payapa_berry": {
+                "id": 45,
+                "type": "psychic",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "tanga_berry": {
+                "id": 46,
+                "type": "bug",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "charti_berry": {
+                "id": 47,
+                "type": "rock",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "kasib_berry": {
+                "id": 48,
+                "type": "ghost",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "haban_berry": {
+                "id": 49,
+                "type": "dragon",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "colbur_berry": {
+                "id": 50,
+                "type": "dark",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "babiri_berry": {
+                "id": 51,
+                "type": "steel",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            },
+            "chilan_berry": {
+                "id": 52,
+                "type": "normal",
+                "naturalGiftPower": 60,
+                "damageLoweringType": True
+            }
+        }
+        if env.move.get_type() == berries_table[env.defender.get_item()]["type"]:
+            env.globalFinalMods.append(0x800)
+
+
+class StompMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "finalModifiers"
+    priority = 12
+
+    def resolve(self, env):
+        if env.defender.minimize:
+            env.globalFinalMods.append(0x2000)
+
+
+class EarthquakeMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "finalModifiers"
+    priority = 13
+
+    def resolve(self, env):
+        if env.defender.digChargingTurn:
+            env.globalFinalMods.append(0x2000)
+
+
+class SurfMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "finalModifiers"
+    priority = 14
+
+    def resolve(self, env):
+        if env.defender.diveChargingTurn:
+            env.globalFinalMods.append(0x2000)
+
+
+class SteamrollerMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "finalModifiers"
+    priority = 15
+
+    def resolve(self, env):
+        if env.defender.minimize:
+            env.globalFinalMods.append(0x2000)
+
+
 class FrustrationMethod(BattleEngineMethod):
     relative = "move"
     trigger = "basePowerRules"
@@ -86,7 +418,7 @@ class EruptionMethod(BattleEngineMethod):
         env.basePowerValue = max(1, (150 * env.attacker.currentHp) // env.attacker.globalStats["hp"])
 
 
-class PunishementMethod(BattleEngineMethod):
+class PunishmentMethod(BattleEngineMethod):
     relative = "move"
     trigger = "basePowerRules"
     priority = 8
@@ -310,7 +642,7 @@ class GustMethod(BattleEngineMethod):
     priority = 25
 
     def resolve(self, env):
-        if env.defender.isInTheSky:
+        if env.defender.skyChargingTurn:
             env.basePowerValue = 80
 
 
@@ -1198,7 +1530,7 @@ class UnawareAtkMethod(BattleEngineMethod):
     priority = 1
 
     def resolve(self, env):
-        env.atkStatIgnoreBoost = True
+        env.atkIgnoreBoost = True
 
 
 class FoulPlayMethod(BattleEngineMethod):
@@ -1266,7 +1598,7 @@ class PlusMinusMethod(BattleEngineMethod):
     priority = 6
 
     def resolve(self, env):
-        if True:
+        if True:  # If user has ability Plus or Minus and an ally has ability Plus or Minus and move is special.
             env.atkStatMods.append(0x1800)
 
 
@@ -1290,7 +1622,7 @@ class DefeatistMethod(BattleEngineMethod):
             env.atkStatMods.append(0x800)
 
 
-class PureHugePowertMethod(BattleEngineMethod):
+class PureHugePowerMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
     priority = 9
@@ -1340,10 +1672,19 @@ class SlowStartMethod(BattleEngineMethod):
             env.atkStatMods.append(0x800)
 
 
+class FlowerGiftAtkMethod(BattleEngineMethod):
+    relative = "ally"
+    trigger = "atkStatModifiers"
+    priority = 14
+
+    def resolve(self, env):
+        pass  # If ally is Cherrim and has ability Flower Gift, weather is intense sunlight and move is physical.
+
+
 class ThickClubMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 14
+    priority = 15
 
     def resolve(self, env):
         if env.attacker.dbSymbol in ["cubone", "marowak"] and env.move.category == "physical":
@@ -1353,26 +1694,27 @@ class ThickClubMethod(BattleEngineMethod):
 class DeepSeaToothMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 15
+    priority = 16
 
     def resolve(self, env):
         if env.attacker.dbSymbol == "clamperl" and env.move.category == "special":
             env.atkStatMods.append(0x2000)
 
-class LightBalltMethod(BattleEngineMethod):
+
+class LightBallMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 16
+    priority = 17
 
     def resolve(self, env):
         if env.attacker.dbSymbol == "pikachu":
             env.atkStatMods.append(0x2000)
 
 
-class SoulDewMethod(BattleEngineMethod):
+class SoulDewAtkMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 17
+    priority = 18
 
     def resolve(self, env):
         if env.attacker.dbSymbol in ["latios", "latias"] and env.move.category == "special":
@@ -1382,57 +1724,230 @@ class SoulDewMethod(BattleEngineMethod):
 class ChoiceBandMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 18
+    priority = 19
 
     def resolve(self, env):
         if env.move.category == "physical":
             env.atkStatMods.append(0x1800)
 
 
-
 class ChoiceSpecsMethod(BattleEngineMethod):
     relative = "attacker"
     trigger = "atkStatModifiers"
-    priority = 19
+    priority = 20
 
     def resolve(self, env):
         if env.move.category == "special":
             env.atkStatMods.append(0x1800)
 
 
-class UnawareDefeMehod(BattleEngineMethod):
+class UnawareDefeMethod(BattleEngineMethod):
     relative = "defender"
     trigger = "defeStatRules"
     priority = 1
 
     def resolve(self, env):
-        env.defeStatIgnoreBoost = True
+        env.defeIgnoreBoost = True
 
 
-class FakeSpeMoveMehod(BattleEngineMethod):
+class FakeSpeMoveMethod(BattleEngineMethod):
     relative = "move"
     trigger = "defeStatRules"
     priority = 2
 
     def resolve(self, env):
         env.defeStatId = "defe"
+        env.defeBoostId = "defe"
 
 
-class ChipAwayMehod(BattleEngineMethod):
+class ChipAwayMethod(BattleEngineMethod):
     relative = "defender"
     trigger = "defeStatRules"
     priority = 3
 
     def resolve(self, env):
-        env.defeStatIgnoreBoost = True
+        env.defeIgnoreBoost = True
 
 
-class WonderRoomMehod(BattleEngineMethod):
+class WonderRoomMethod(BattleEngineMethod):
     relative = "field"
     trigger = "defeStatRules"
     priority = 4
 
     def resolve(self, env):
         env.defeStatId = {"physical": "defe", "special": "dspe"}[env.move.category]
+        if env.defeStatId == "defe":
+            env.defeStatId = "dspe"
+        elif env.defeStatId == "dspe":
+            env.defeStatId = "defe"
 
 
+class MarvelScaleMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatModifiers"
+    priority = 1
+
+    def resolve(self, env):
+        if env.defender.get_main_status() and env.move.category == "physical":
+            env.defeStatMods.append(0x1800)
+
+
+class FlowerGiftDefeMethod(BattleEngineMethod):
+    relative = "ally"
+    trigger = "atkStatModifiers"
+    priority = 2
+
+    def resolve(self, env):
+        pass  # If ally is Cherrim and has ability Flower Gift, weather is intense sunlight and move is special.
+
+
+class DeepSeaScaleMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatModifiers"
+    priority = 3
+
+    def resolve(self, env):
+        if env.defender.dbSymbol == "clamperl" and env.move.category == "special":
+            env.defeStatMods.append(0x1800)
+
+
+class MetalPowderMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatModifiers"
+    priority = 4
+
+    def resolve(self, env):
+        if env.defender.dbSymbol == "ditto" and not env.defender.ability.active and env.move.category == "physical":
+            env.defeStatMods.append(0x2000)
+
+
+class EvioliteMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatModifiers"
+    priority = 5
+
+    def resolve(self, env):
+        if not env.defender.evolution:
+            env.defeStatMods.append(0x1800)
+
+
+class SoulDewDefeMethod(BattleEngineMethod):
+    relative = "defender"
+    trigger = "defeStatModifiers"
+    priority = 6
+
+    def resolve(self, env):
+        if env.defender.dbSymbol in ["latios", "latias"] and env.move.category == "special":
+            env.defeStatMods.append(0x1800)
+
+
+class PsywaveMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 1
+
+    def resolve(self, env):
+        env.damageValueOverride = max(1, ((random.randint(0, 101) + 50) * env.attacker.level) // 100)
+
+
+class NightShadeMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 2
+
+    def resolve(self, env):
+        env.damageValueOverride = env.attacker.level
+
+
+class SonicBoomMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 3
+
+    def resolve(self, env):
+        env.damageValueOverride = 20
+
+
+class SuperFangMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 4
+
+    def resolve(self, env):
+        env.damageValueOverride = max(1, env.defender.currentHp // 2)
+
+
+class DragonRageMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 5
+
+    def resolve(self, env):
+        env.damageValueOverride = 40
+
+
+class EndeavorMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 6
+
+    def resolve(self, env):
+        env.damageValueOverride = max(0, env.defender.currentHp - env.attacker.currentHp)
+
+
+class FinalGambitMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 7
+
+    def resolve(self, env):
+        env.damageValueOverride = env.attacker.currentHp
+
+
+class BrickBreakMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 8
+
+    def resolve(self, env):
+        env.ignoreReflectLightScreen = True
+
+
+class CounterMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 9
+
+    def resolve(self, env):
+        if True:  # counter effect
+            env.damageFactor = 2
+
+
+class MirrorCoatMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 10
+
+    def resolve(self, env):
+        if True:  # mirror coat effect
+            env.damageFactor = 2
+
+
+class MetalBurstMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 11
+
+    def resolve(self, env):
+        if True:  # metal burst effect
+            env.damageFactor = 1.5
+
+
+class BideMethod(BattleEngineMethod):
+    relative = "move"
+    trigger = "specialCasesRules"
+    priority = 12
+
+    def resolve(self, env):
+        if True:  # bide effect
+            env.damageValueOverride = 0
