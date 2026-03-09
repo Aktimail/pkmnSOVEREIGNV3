@@ -35,7 +35,7 @@ class Game:
             self.Controller,
             self.Player
         )
-        self.BattleEngine = BattleManager(
+        self.BattleManager = BattleManager(
             self.Screen,
             self.Keyboard,
             self.Cursor,
@@ -60,14 +60,14 @@ class Game:
         if self.gameState.switchGameStateQuery:
             if not self.gameState.DialogManager.reading:
 
-                self.gameState.switchGameStateQuery = False
-
                 if self.gameState == self.WorldEngine:
-                    self.gameState = self.BattleEngine
-                    self.gameState.config_battle()
+                    self.gameState = self.BattleManager
+                    self.gameState.config_battle(self.Player.battleStations)
 
-                elif self.gameState == self.BattleEngine:
+                elif self.gameState == self.BattleManager:
                     self.gameState = self.WorldEngine
+
+                self.gameState.switchGameStateQuery = False
 
     def inputs_handler(self):
         for event in pygame.event.get():

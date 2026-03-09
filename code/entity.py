@@ -19,9 +19,11 @@ class Entity(pygame.sprite.Sprite):
         self.shadow = pygame.image.load("../assets/graphics/spritesheets/shadow.png")
 
         self.team = []
+        self.battleSide = 0
+        self.battleSlot = 0
+        self.battleAlly = None
         self.worldCompo = None
-        self.Opponent = None
-        self.battle_choice = None
+        self.battleStations = []
         self.publicData = {}
 
         self.direction = "down"

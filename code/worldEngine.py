@@ -6,15 +6,13 @@ import pytmx
 import pyscroll
 
 from entityDestinations import entitiesDestinations
-from pokemon import Pokemon
 from dialogManager import DialogManager
 from animationManager import AnimationManager
 from map import Map
 from npc import NPC
 from item import Item
 from dynamicTile import DynamicTile
-from wildOpponent import WildOpponent
-from trainerOpponent import TrainerOpponent
+from battleStation import BattleStation
 from tool import Tool
 
 
@@ -203,7 +201,13 @@ class WorldEngine:
                                                    })
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
-                        self.Player.Opponent = TrainerOpponent(npc)
+                        self.Player.battleStations.append(BattleStation(self.Player, 0, self.Player.team, npc.battleSlot))
+                        self.Player.battleStations.append(BattleStation(npc, npc.battleSide, npc.team, npc.battleSlot))
+                        if npc.battleAlly:
+                            for ally in self.npcs:
+                                if ally.dbSymbol == npc.battleAlly:
+                                    self.Player.battleStations.append(
+                                        BattleStation(ally, ally.battleSide, ally.team, ally.battleSlot))
                         self.switchGameStateQuery = True
 
             for item in self.items:
@@ -271,7 +275,6 @@ class WorldEngine:
                         pokemon = Tool.wild_pkmn_picker(spawn_data["pokemon"])
                         name = pokemon["name"]
                         lvl = random.randint(pokemon["lvl"][0], pokemon["lvl"][1])
-                        self.Player.Opponent = WildOpponent(Pokemon(name, lvl))
                         self.switchGameStateQuery = True
 
     def check_bike(self):

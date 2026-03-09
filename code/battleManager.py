@@ -12,9 +12,10 @@ class BattleManager:
         self.Cursor = cursor
         self.DialogManager = DialogManager(screen, keyboard, controller)
         self.AnimationManager = AnimationManager()
-
         self.Player = player
-        self.Opponent = None
+
+        self.battleStations = []
+        self.Env = BattleEnv(self.battleStations)
 
         self.Engine = None
         self.Ui = None
@@ -24,21 +25,16 @@ class BattleManager:
 
         self.switchGameStateQuery = False
 
-    def config_battle(self):
-        self.Opponent = self.Player.Opponent
-        self.Engine = BattleEngine(BattleEnv)
-        self.Ui = BattleUi(self.Screen, BattleEnv)
-        self.Ai = BattleAi(BattleEnv)
+    def config_battle(self, battle_stations):
+        self.battleStations = battle_stations
+        self.Engine = BattleEngine(self.Env)
+        self.Ui = BattleUi(self.Screen, self.Env)
+        self.Ai = BattleAi(self.Env)
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
 
     def end_battle(self):
         self.Player.get_back_world_comp()
         self.switchGameStateQuery = True
-
-        if self.Opponent.get_trainer():
-            if self.Opponent.lost():
-                self.Player.npcsEncountered.append(self.Opponent.get_trainer().dbSymbol)
-                self.Player.trainersDefeated.append(self.Opponent.get_trainer().dbSymbol)
 
     def update(self):
         self.Ui.render()

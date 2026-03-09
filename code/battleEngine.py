@@ -3,7 +3,7 @@ from damageCalcEngine import DamageCalcEngine
 
 class BattleEngine:
     def __init__(self, battle_env):
-        self.battleEnv = battle_env
+        self.Env = battle_env
         self.DamageCalcEngine = DamageCalcEngine()
 
         self.active_menu = None

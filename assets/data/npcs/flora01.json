@@ -26,5 +26,8 @@
         "nature": "mild"
       }
     }
-  ]
+  ],
+  "battleSide": 1,
+  "battleSlot": 1,
+  "battleAlly": null
 }
