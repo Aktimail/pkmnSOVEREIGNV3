@@ -1,19 +1,23 @@
 import random
 
+from damageCalcEnv import DamageCalcEnv
 from battleEngineMethodManager import BattleEngineMethodManager
 
 
 class DamageCalcEngine:
-    def __init__(self, env):
-        self.Env = env
+    def __init__(self):
+        self.Env = None
         self.BEM_Manager = BattleEngineMethodManager()
 
-        self.atkLvlParam = self.Env.attacker.level
+        self.atkLvlParam = 0
         self.basePowerParam = 0
         self.atkStatParam = 0
         self.defeStatParam = 0
 
         self.damageValue = 0
+
+    def init_env(self, attacker, defender, move, battle_data):
+        self.Env = DamageCalcEnv(attacker, defender, move, battle_data)
 
     @staticmethod
     def apply_mod(value, mod):
@@ -98,6 +102,9 @@ class DamageCalcEngine:
         self.resolve_trigger("finalModifiers")
         self.Env.globalFinalMod = self.chain_up(self.Env.globalFinalMods)
 
+    def compute_level_param(self):
+        self.atkLvlParam = self.Env.attacker.level
+
     def compute_base_power_param(self):
         self.resolve_trigger("basePowerRules")
 
@@ -160,6 +167,7 @@ class DamageCalcEngine:
             self.set_burn_effect()
             self.set_final_mod()
 
+            self.compute_level_param()
             self.compute_base_power_param()
             self.compute_atk_stat_param()
             self.compute_defe_stat_param()

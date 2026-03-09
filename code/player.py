@@ -36,7 +36,10 @@ class Player(Entity):
                 "dspe": 31,
                 "spd": 31
             },
-        })]
+        }),
+                     Pokemon("pikachu", 50),
+                     Pokemon("chandelure", 75)
+                     ]
 
         self.Inventory = Inventory()
 

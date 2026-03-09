@@ -9,7 +9,7 @@ from cursor import Cursor
 from controller import Controller
 
 from worldEngine import WorldEngine
-from battleEngine import BattleEngine
+from battleManager import BattleManager
 from player import Player
 
 
@@ -35,7 +35,7 @@ class Game:
             self.Controller,
             self.Player
         )
-        self.BattleEngine = BattleEngine(
+        self.BattleEngine = BattleManager(
             self.Screen,
             self.Keyboard,
             self.Cursor,
@@ -64,7 +64,7 @@ class Game:
 
                 if self.gameState == self.WorldEngine:
                     self.gameState = self.BattleEngine
-                    self.gameState.init_battle()
+                    self.gameState.config_battle()
 
                 elif self.gameState == self.BattleEngine:
                     self.gameState = self.WorldEngine

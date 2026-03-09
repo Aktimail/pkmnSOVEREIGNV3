@@ -5,4 +5,4 @@ FanGame Pokemon écrit en Python fabriqué avec Pygame et Tiled
 L'objectif du projet est de construire un jeu Pokemon le plus fidèlement possible, basé sur la cinquième génération.
 Mes moteurs de jeux ne permettent qu'une approche visuelle full 2D, ce qui n'est plus le cas au-delà de la troisième génération, qui sera donc ma référence visuelle.
 
-le scénario n'est pas encore bien clair mais devrait exister dans un contexte de révolution, inspiré par la royauté française.
+le scénario n'est pas encore bien clair mais devrait exister dans un contexte de révolution, inspiré par l'histoire de France.

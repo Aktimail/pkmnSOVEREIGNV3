@@ -2,11 +2,11 @@ import pygame
 
 
 class BattleUi:
-    def __init__(self, screen, player, opponent, battle_data):
+    def __init__(self, screen, battle_data):
         self.screen = screen
-        self.Player = player
-        self.Opponent = opponent
         self.battleData = battle_data
+        self.Player = self.battleData.get_player()
+        self.Opponent = self.battleData.get_opponent()
 
         self.font = pygame.font.Font("../assets/dialogs/PKMN RBYGSC.ttf", 15)
 
@@ -14,10 +14,14 @@ class BattleUi:
             pygame.image.load("../assets/graphics/battle/back_grass.png"), self.screen.get_size())
 
         self.player_hud = {}
+        self.update_player_hud()
         self.opp_hud = {}
+        self.update_opp_hud()
 
         self.player_assets = {}
+        self.update_player_assets()
         self.opp_assets = {}
+        self.update_opp_assets()
 
         self.main_menu_assets = {
             "battle": {
@@ -158,10 +162,9 @@ class BattleUi:
         self.interactive_rect.clear()
         self.render_stage()
         self.render_hud()
+        self.render_main_menu()
 
     def render_hud(self):
-        self.update_player_hud()
-        self.update_opp_hud()
         for asset in self.player_hud.values():
             if asset["image"]:
                 image = asset["image"]
@@ -177,8 +180,6 @@ class BattleUi:
 
     def render_stage(self):
         self.screen.display.blit(self.background, (0, 0))
-        self.update_player_assets()
-        self.update_opp_assets()
         for asset in self.player_assets.values():
             if asset["image"]:
                 image = asset["image"]
