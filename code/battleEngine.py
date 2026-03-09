@@ -2,8 +2,8 @@ from damageCalcEngine import DamageCalcEngine
 
 
 class BattleEngine:
-    def __init__(self, battle_data):
-        self.battleData = battle_data
+    def __init__(self, battle_env):
+        self.battleEnv = battle_env
         self.DamageCalcEngine = DamageCalcEngine()
 
         self.active_menu = None
@@ -11,7 +11,7 @@ class BattleEngine:
         self.switchGameStateQuery = False
 
     def set_priority_ranking(self):
-        return [self.battleData.get_player(), self.battleData.get_opponent()]
+        pass
 
-    def calcul_damage(self, ignore_crit=False, const_r=False):
-        self.DamageCalcEngine.calcul_damage(ignore_crit=ignore_crit, const_r=const_r)
+    def process_turn(self, side):
+        pass

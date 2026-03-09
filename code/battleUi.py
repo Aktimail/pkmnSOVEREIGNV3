@@ -2,11 +2,11 @@ import pygame
 
 
 class BattleUi:
-    def __init__(self, screen, battle_data):
+    def __init__(self, screen, battle_env):
         self.screen = screen
-        self.battleData = battle_data
-        self.Player = self.battleData.get_player()
-        self.Opponent = self.battleData.get_opponent()
+        self.battleEnv = battle_env
+        self.Player = self.battleEnv.get_player()
+        self.Opponent = self.battleEnv.get_opponent()
 
         self.font = pygame.font.Font("../assets/dialogs/PKMN RBYGSC.ttf", 15)
 

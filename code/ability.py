@@ -3,7 +3,6 @@ import json
 from battleEngineMethodRegistry import BEMRegistry
 
 
-
 class Ability:
     def __init__(self, dbsymbol):
         data = json.load(open(f"../assets/data/abilities/{dbsymbol.lower()}.json"))

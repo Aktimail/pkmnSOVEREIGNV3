@@ -2,10 +2,10 @@ import random
 
 
 class BattleAi:
-    def __init__(self, battle_data):
-        self.battleData = battle_data
-        self.Opponent = self.battleData.get_opponent()
-        self.Player = self.battleData.get_player()
+    def __init__(self, battle_env):
+        self.battleEnv = battle_env
+        self.Opponent = self.battleEnv.get_opponent()
+        self.Player = self.battleEnv.get_player()
 
     def eval_strategy(self):
         if self.consider_switch():

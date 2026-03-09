@@ -1,4 +1,4 @@
-class BattleData:
+class BattleEnv:
     def __init__(self):
         self.records = []
         self.field = []

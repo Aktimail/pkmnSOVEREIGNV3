@@ -1,0 +1,609 @@
+    def can_attack(self, move, target, battle_env):
+        if self.status["main"] == "asleep" and move.dbSymbol != "sleep_talk":
+            return False
+
+        elif self.status["main"] == "freeze":
+            return False
+
+        elif self.status["main"] == "paralysis":
+            if random.randint(0, 100) <= 25:
+                return False
+
+        if "flinch" in self.status["sec"]:
+            return False
+
+        if "confusion" in self.status["sec"]:
+            if random.randint(0, 100) <= 33:
+                return False
+
+        if "attract" in self.status["sec"]:
+            if random.randint(0, 100) <= 50:
+                return False
+
+        pp_losses = 2 if target.ability.dbSymbol == "pressure" else 1
+        move.pp -= pp_losses
+        return True
+
+    def check_accuracy(self, move, target, battle_env):
+        if random.randint(0, 100) >= move.accuracy * self.boosts["acc"] * target.boosts["eva"]:
+            return True
+        return False
+
+    def calcul_damage(self, move: Move, target, battle_env):
+        berries = json.load(open("../assets/data/other/berriesTable.json"))
+        plates = json.load(open("../assets/data/other/platesTable.json"))
+        gems = json.load(open("../assets/data/other/gemsTable.json"))
+        incenses = json.load(open("../assets/data/other/typeEnhancingIncences.json"))
+        items = json.load(open("../assets/data/other/typeEnhancingItems.json"))
+        sheerforce_moves = json.load(open("../assets/data/other/sheerForceTable.json"))
+
+        def apply_mod(value, mod):
+            return round((value * mod) / 0x1000)
+
+        def chain_up(*mods):
+            chained_mod = 0X1000
+            for mod in mods:
+                chained_mod = ((chained_mod * mod) + 0x800) >> 12
+            return chained_mod
+
+        ATK = 0
+        DEFE = 0
+        POWER = 0
+        CRIT = False
+        R = random.randint(0, 15)
+        STAB = False
+        TYPEEFFECTIVENESS = move.type.get_type_ratio(target)
+        DAMAGE = 0
+
+        if move.dbSymbol == "psywave":
+            DAMAGE = int(max(1, ((random.randint(0, 101) + 50) * self.level) / 100))
+        elif move.dbSymbol == "night_shade":
+            DAMAGE = self.level
+        elif move.dbSymbol == "sonicboom":
+            DAMAGE = 20
+        elif move.dbSymbol == "super_fang":
+            DAMAGE = int(max(1, target.currentHp / 2))
+
+        elif move.dbSymbol == "dragon_rage":
+            DAMAGE = 40
+        elif move.dbSymbol == "endeavor":
+            DAMAGE = (0, target.currentHp - self.currentHp)
+        elif move.dbSymbol == "final_gambit":
+            DAMAGE = self.currentHp
+        elif move.dbSymbol == "brick_break":
+            if battle_env["targetLightScreen"]:
+                battle_env["targetLightScreen"] = False
+            if battle_env["targetReflect"]:
+                battle_env["targetReflect"] = False
+        elif move.dbSymbol == "counter":
+            if battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["action"] == "fight":
+                if battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["move"].category == "physical":
+                    DAMAGE = battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["damage"] * 2
+        elif move.dbSymbol == "mirror_coat":
+            if battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["action"] == "fight":
+                if battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["move"].category == "special":
+                    DAMAGE = battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["damage"] * 2
+        elif move.dbSymbol == "metal_burst":
+            if battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["action"] == "fight":
+                DAMAGE = battle_env["logs"][battle_env["nb_round"]][battle_env["target"]]["damage"] * 1, 5
+        elif move.dbSymbol == "bide":
+            DAMAGE = 0 * 2
+        else:
+
+            ATKCAT = "atk" if move.category == "physical" else "aspe"
+            ATKSTATUSER = self if not move.dbSymbol == "foul_play" else target
+            PARAMATK = ATKSTATUSER.get_stage_stat(ATKCAT) if not target.ability.dbSymbol == "unaware" \
+                else ATKSTATUSER.globalStats[ATKCAT]
+            MODTF = 0x800 if (target.ability.dbSymbol == "thick_fat" and
+                              move.type.dbSymbol in ["ice", "fire"]) else 0x1000
+            MODTRNT = 0x1800 if (self.ability.dbSymbol == "torrent" and
+                                 self.currentHp <= self.globalStats["hp"] / 3 and
+                                 move.type.dbSymbol == "water") else 0x1000
+            MODGUTS = 0x1800 if (self.ability.dbSymbol == "guts" and
+                                 self.status["main"] and
+                                 move.category == "physical") else 0x1000
+            MODSWA = 0x1800 if (self.ability.dbSymbol == "swarm" and
+                                self.currentHp <= self.globalStats["hp"] / 3 and
+                                move.type.dbSymbol == "bug") else 0x1000
+            MODOVG = 0x1800 if (self.ability.dbSymbol == "overgrow" and
+                                self.currentHp <= self.globalStats["hp"] / 3 and
+                                move.type.dbSymbol == "grass") else 0x1000
+            MODPLMI = 0x1800 if (self.ability.dbSymbol in ["plus", "minus"] and
+                                 battle_env["selfAlly"] and
+                                 battle_env["selfAlly"].ability.dbSymbol in ["plus", "minus"] and
+                                 move.category == "special") else 0x1000
+            MODBLZ = 0x1800 if (self.ability.dbSymbol == "blaze" and
+                                self.currentHp <= self.globalStats["hp"] / 3 and
+                                move.type.dbSymbol == "fire") else 0x1000
+            MODDFT = 0x800 if (self.ability.dbSymbol == "defeatist" and
+                               self.currentHp <= self.globalStats["hp"] / 2) else 0x1000
+            MODPHPW = 0x2000 if (self.ability.dbSymbol in ["pure_power", "huge_power"] and
+                                 move.category == "physical") else 0x1000
+            MODSLRP = 0x1800 if (self.ability.dbSymbol == "solar_power" and
+                                 battle_env["weather"] == "intense_sunlight" and
+                                 move.category == "special") else 0x1000
+            MODHSTL = 0x1800 if (self.ability.dbSymbol == "hustle" and
+                                 move.category == "physical") else 0x1000
+            MODFLFR = 0x1800 if (self.ability.dbSymbol == "flash_fire" and
+                                 self.ability.active and
+                                 move.type.dbSymbol == "fire") else 0x1000
+            MODSLST = 0x800 if (self.ability.dbSymbol == "slow_start" and
+                                battle_env["onFieldCounter"] < 5) else 0x1000
+            MODFLGF = 0x1800 if (battle_env["selfAlly"] and
+                                 battle_env["selfAlly"].ability.dbSymbol == "flower_gift" and
+                                 battle_env["wheater"] == "intense_sunlight" and
+                                 move.category == "special") else 0x1000
+            MODCLUB = 0x2000 if (self.dbSymbol in ["cubone", "marowak"] and
+                                 self.item and
+                                 self.item.dbSymbol == "thick_club" and
+                                 move.category == "physical") else 0x1000
+            MODDST = 0x2000 if (self.dbSymbol == "clamperl" and
+                                self.item and
+                                self.item.dbSymbol == "deep_sea_tooth" and
+                                move.category == "special") else 0x1000
+            MODPIKA = 0x2000 if (self.dbSymbol == "pikachu" and
+                                 self.item and
+                                 self.item.dbSymbol == "light_ball") else 0x1000
+            MODLATI = 0x1800 if (self.dbSymbol in ["latios", "latias"] and
+                                 self.item and
+                                 self.item.dbSymbol == "soul_dew" and
+                                 move.category == "special") else 0x1000
+            MODCHBN = 0x1800 if (self.item and
+                                 self.item.dbSymbol == "choice_band" and
+                                 move.category == "physical") else 0x1000
+            MODCHSP = 0x1800 if (self.item and
+                                 self.item.dbSymbol == "choice_specs" and
+                                 move.category == "special") else 0x1000
+            MODATK1 = chain_up(MODTF, MODTRNT, MODGUTS, MODSWA, MODOVG, MODPLMI, MODBLZ, MODDFT, MODPHPW, MODSLRP)
+            ATK = apply_mod(PARAMATK, MODATK1)
+            ATK = apply_mod(ATK, MODHSTL)
+            MODATK2 = chain_up(MODFLFR, MODSLST, MODFLGF, MODCLUB, MODDST, MODPIKA, MODLATI, MODCHBN, MODCHSP)
+            ATK = apply_mod(ATK, MODATK2)
+
+            DEFECAT = "defe" if move.category == "physical" else "dspe"
+            if move.dbSymbol in ["psyshock", "psystrike", "secret_sword"]:
+                DEFECAT = "defe"
+            if battle_env["fieldStatus"] == "wonderRoom":
+                if move.category == "physical":
+                    DEFECAT = "dspe"
+                elif move.category == "special":
+                    DEFECAT = "defe"
+            PARAMDEFE = target.get_stage_stat(DEFECAT)
+            if self.ability.dbSymbol == "unaware":
+                PARAMDEFE = target.globalStats[DEFECAT]
+            elif move.dbSymbol == "chip_away":
+                PARAMDEFE = target.globalStats[DEFECAT]
+            if battle_env["weather"] == "sandstorm" and self.type.count(Type("rock")) and ATKCAT == "special":
+                PARAMDEFE = apply_mod(PARAMDEFE, 0x1800)
+            MODMRVL = 0x1800 if (target.ability.dbSymbol == "marvel_scale" and
+                                 target.status["main"] and
+                                 move.category == "special") else 0x1000
+            MODTGFG = 0x1800 if (battle_env["selfAlly"] and
+                                 battle_env["selfAlly"].dbSymbol == "cherrim" and
+                                 battle_env["selfAlly"].ability.dbSymbol == "flower_gift" and
+                                 battle_env["weather"] == "Harsh_sunlight" and
+                                 move.category == "special") else 0x1000
+            MODDSS = 0x1800 if (target.dbSymbol == "clamperl" and
+                                target.item and
+                                target.item.dbSymbol == "deep_sea_scale" and
+                                move.category == "special") else 0x1000
+            MODDTTO = 0x2000 if (target.dbSymbol == "ditto" and
+                                 not target.ability.active and
+                                 target.item and
+                                 target.item.dbSymbol == "metal_powder" and
+                                 move.category == "physical") else 0x1000
+            MODEVIO = 0x1800 if (target.item and
+                                 target.item.dbSymbol == "eviolite" and
+                                 target.evolution) else 0x1000
+            MODTGLA = 0x1800 if (target.dbSymbol in ["latios", "latias"] and
+                                 target.item and
+                                 target.item.dbSymbol == "soul_dew" and
+                                 move.category == "special") else 0x1000
+            MODDEFE = chain_up(MODMRVL, MODTGFG, MODDSS, MODDTTO, MODEVIO, MODTGLA)
+            DEFE = apply_mod(PARAMDEFE, MODDEFE)
+
+            BASEPOWER = move.basePower
+            if move.dbSymbol == "frustration":
+                BASEPOWER = int(((255 - self.happiness) * 10) / 25)
+            elif move.dbSymbol == "payback" and not battle_env["firstToMove"]:
+                BASEPOWER = 100
+            elif move.dbSymbol == "return":
+                BASEPOWER = int((self.happiness * 10) / 25)
+            elif move.dbSymbol == "electro_ball":
+                deltaSpeed = self.get_stage_stat("spd") / target.get_stage_stat("spd")
+                results = {
+                    deltaSpeed >= 4: 150,
+                    4 > deltaSpeed >= 3: 120,
+                    3 > deltaSpeed >= 2: 80,
+                    2 > deltaSpeed >= 1: 60,
+                    deltaSpeed < 1: 40
+                }
+                BASEPOWER = results[True]
+            elif move.dbSymbol == "avalanche" and battle_env["gotHit"]:
+                BASEPOWER = 120
+            elif move.dbSymbol == "gyro_ball":
+                BASEPOWER = int(min(150, 25 * target.get_stage_stat("spd") / self.get_stage_stat("spd")))
+            elif move.dbSymbol in ["eruption", "water_spout"]:
+                BASEPOWER = int((150 * self.currentHp) / self.globalStats["hp"])
+            elif move.dbSymbol == "punishment":
+                sumboostlvl = sum(val for val in target.boosts.values() if val >= 0)
+                BASEPOWER = min(120, 60 + 20 * sumboostlvl)
+            elif move.dbSymbol == "fury_cutter":
+                succes_streak = 0
+                for i in range(len(battle_env["selfMovesLogs"]) - 1, len(battle_env["selfMovesLogs"]) - 4, -1):
+                    if battle_env["selfMovesLogs"][i]["move"] == "fury_cutter" and battle_env["selfMovesLogs"][i][
+                        "hit"]:
+                        succes_streak += 1
+                    else:
+                        break
+                BASEPOWER = 20 * 2 ** succes_streak
+            elif move.dbSymbol in ["low_kick", "grass_knot"]:
+                weight = target.init_weight()
+                result = {
+                    weight >= 200: 120,
+                    200 > weight >= 100: 100,
+                    100 > weight >= 50: 80,
+                    50 > weight >= 25: 60,
+                    25 > weight >= 10: 40,
+                    10 > weight: 20
+                }
+                BASEPOWER = result[True]
+            elif move.dbSymbol == "echoed_voice":
+                use_streak = 0
+                for i in range(len(battle_env["teamMovesLogs"]) - 1, len(battle_env["teamMovesLogs"]) - 6, -1):
+                    if battle_env["teamMovesLogs"][i]["move"] == "echoed_voice":
+                        use_streak += 1
+                    else:
+                        break
+                result = [40, 80, 120, 160, 200]
+                BASEPOWER = result[use_streak]
+            elif move.dbSymbol == "hex" and target.status["main"]:
+                BASEPOWER = 100
+            elif move.dbSymbol in ["wring_out", "crush_grip"]:
+                BASEPOWER = int(120 * (target.currentHp / target.globalStats["hp"]))
+            elif move.dbSymbol == "assurance" and battle_env["targetGotHit"]:
+                BASEPOWER = 100
+            elif move.dbSymbol in ["heavy_slam", "heat_crash"]:
+                weight = self.get_weight() / target.get_weight()
+                result = {
+                    weight >= 5: 120,
+                    5 > weight >= 4: 100,
+                    4 > weight >= 3: 80,
+                    3 > weight >= 2: 60,
+                    2 > weight: 40
+                }
+                BASEPOWER = result[True]
+            elif move.dbSymbol == "stored_power":
+                sumboostlvl = sum(val for val in self.boosts.values() if val >= 0)
+                BASEPOWER = 20 + 20 * sumboostlvl
+            elif move.dbSymbol == "acrobatics" and not self.item:
+                BASEPOWER = 110
+            elif move.dbSymbol in ["flail", "reversal"]:
+                p = (48 * self.currentHp) / self.globalStats["hp"]
+                result = {
+                    p <= 1: 200,
+                    2 <= p <= 4: 150,
+                    5 <= p <= 9: 100,
+                    10 <= p <= 16: 80,
+                    17 <= p <= 32: 40,
+                    33 <= p: 20
+                }
+                BASEPOWER = result[True]
+            elif move.dbSymbol == "trump_card":
+                result = {
+                    move.pp == 5: 40,
+                    move.pp == 4: 50,
+                    move.pp == 3: 60,
+                    move.pp == 2: 80,
+                    move.pp == 1: 200
+                }
+                BASEPOWER = result[True]
+            elif move.dbSymbol == "round" and battle_env["selfAlly"] and battle_env["allyJustUsedRound"]:
+                BASEPOWER = 120
+            elif move.dbSymbol == "triple_kick" and "trileKickStreak" in battle_env:
+                BASEPOWER = move.basePower * battle_env["trileKickStreak"]
+            elif move.dbSymbol == "wake_up_slap" and target.status["main"] == "asleep":
+                BASEPOWER = 120
+            elif move.dbSymbol == "smelling_salts" and target.status["main"] == "paralysis":
+                BASEPOWER = 120
+            elif move.dbSymbol == "weather_ball" and battle_env["weather"]:
+                BASEPOWER = 100
+            elif move.dbSymbol in ["guts", "twister"] and battle_env["targetInSky"]:
+                BASEPOWER = 80
+            elif move.dbSymbol == "beat_up":
+                totalatk = [pkmn.baseStats["atk"]
+                            for pkmn in battle_env["selfTrainer"].team
+                            if not pkmn.status["main"] or not pkmn.is_ko()]
+                BASEPOWER = int(sum(totalatk) / 10 + 5)
+            elif move.dbSymbol == "hidden_power":
+                ivs_value = 0
+                i = 0
+                for iv in self.ivs.values():
+                    ivs_value += ((iv >> 1) & 1) << i
+                    i += 1
+                BASEPOWER = int(30 + (40 * ivs_value) / 63)
+            elif move.dbSymbol == "spit_up":
+                BASEPOWER = 100 * battle_env["selfSpitUpCounter"]
+            elif move.dbSymbol == "pursuit" and battle_env["targetSwitch"]:
+                BASEPOWER = 80
+            elif move.dbSymbol == "present":
+                r = random.randint(0, 80)
+                result = {
+                    r < 40: 40,
+                    40 <= r < 70: 80,
+                    r >= 70: 120
+                }
+                BASEPOWER = result[True]
+            elif move.dbSymbol == "natural_gift":
+                if self.item and self.item.dbSymbol in berries:
+                    BASEPOWER = berries[self.item.dbSymbol]["naturalGiftPower"]
+            elif move.dbSymbol == "magnitude":
+                r = random.randint(0, 100)
+                result = {
+                    r < 5: 0,
+                    5 <= r < 15: 1,
+                    15 <= r < 35: 2,
+                    35 <= r < 65: 3,
+                    65 <= r < 85: 4,
+                    85 <= r < 95: 5,
+                    95 <= r: 7
+                }
+                BASEPOWER = 10 + 20 * result[True]
+            elif move.dbSymbol == "rollout":
+                rollout_succes_streak = 0
+                for i in range(len(battle_env["selfMovesLogs"]) - 1, len(battle_env["selfMovesLogs"]) - 6, -1):
+                    if battle_env["selfMovesLogs"][i]["move"] == "rollout" and battle_env["selfMovesLogs"][i]["hit"]:
+                        rollout_succes_streak += 1
+                    else:
+                        break
+                defense_curl = 0
+                for move in battle_env["selfMovesLogs"]:
+                    if move["move"] == "defense_curl":
+                        defense_curl = 1
+                BASEPOWER = 30 * 2 ** (rollout_succes_streak + defense_curl)
+            elif move.dbSymbol == "fling" and self.item:
+                BASEPOWER = self.item.flingPower
+            elif (move.dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
+                  battle_env["selfAllyMove"].dbSymbol in ["grass_pledge", "fire_pledge", "water_pledge"] and
+                  battle_env["selfAllyHasPlayed"]):
+                BASEPOWER = 150
+            MODTECH = 0x1800 if (self.ability.dbSymbol == "technician" and
+                                 move.basePower <= 60) else 0x1000
+            MODFBST = 0x1800 if (self.ability.dbSymbol == "flare_boost" and
+                                 self.status["main"] == "burn" and
+                                 move.category == "special") else 0x1000
+            MODANLT = 0x14CD if (self.ability.dbSymbol == "analytic" and
+                                 move.dbSymbol not in ["future_sight", "doom_desire"] and
+                                 not battle_env["firstToPlay"]) else 0x1000
+            MODRCKL = 0x1333 if (self.ability.dbSymbol == "reckless" and
+                                 (move.battleModifier == "s_recoil" or
+                                  move.dbSymbol in ["jump_kick", "high_jump_kick"])) else 0x1000
+            MODIFST = 0x1333 if (self.ability.dbSymbol == "iron_fist" and
+                                 move.flags["isPunch"]) else 0x1000
+            MODTBST = 0x1800 if (self.ability.dbSymbol == "toxic_boost" and
+                                 self.status["main"] in ["poison", "badly_poisoned"] and
+                                 move.category == "physical") else 0x1000
+            MODRVLY = 0x1000
+            if self.ability.dbSymbol == "rivalry":
+                if not self.gender == "genderless" and not target.gender == "genderless":
+                    if self.gender == target.gender:
+                        MODRVLY = 0x1400
+                    elif self.gender != target.gender:
+                        MODRVLY = 0xC00
+            MODSNDF = 0x14CD if (self.ability.dbSymbol == "sand_force" and
+                                 move.type.dbSymbol in ["rock", "ground", "steel"]) else 0x1000
+            MODHTPR = 0x800 if (self.ability.dbSymbol == "heatproof" and
+                                move.type.dbSymbol == "fire") else 0x1000
+            MODDRYS = 0x1400 if (self.ability.dbSymbol == "dry_skin" and
+                                 move.type.dbSymbol == "fire") else 0x1000
+            MODSHRF = 0x14CD if (self.ability.dbSymbol == "sheer_force" and
+                                 move.dbSymbol in sheerforce_moves) else 0x1000
+            MODTYBS = 0x1333 if (self.item and
+                                 self.item.dbSymbol in plates and
+                                 move.type.dbSymbol == plates[self.item.dbSymbol]) or \
+                                (self.item and
+                                 self.item.dbSymbol in incenses and
+                                 move.type.dbSymbol == incenses[self.item.dbSymbol]) or \
+                                (self.item and
+                                 self.item.dbSymbol in items and
+                                 move.type.dbSymbol == items[self.item.dbSymbol]) else 0x1000
+            MODMBND = 0x1199 if (self.item and
+                                 self.item.dbSymbol == "muscle_band" and
+                                 move.category == "physical") else 0x1000
+            MODPLK = 0x1333 if (self.dbSymbol == "palkia" and
+                                self.item and
+                                self.item.dbSymbol == "lustrous_orb" and
+                                move.type.dbSymbol in ["water", "dragon"]) else 0x1000
+            MODWGLS = 0x1199 if (self.item and
+                                 self.item.dbSymbol == "wise_glasses" and
+                                 move.category == "special") else 0x1000
+            MODGRTN = 0x1333 if (self.dbSymbol == "giratina" and
+                                 self.item and
+                                 self.item.dbSymbol == "griseous_orb" and
+                                 move.type.dbSymbol in ["ghost", "dragon"]) else 0x1000
+            MODOINS = 0x1333 if (self.item and
+                                 self.item.dbSymbol == "odd_incense" and
+                                 move.type.dbSymbol == "psychic") else 0x1000
+            MODDLG = 0x1333 if (self.dbSymbol == "dialga" and
+                                self.item and
+                                self.item.dbSymbol == "adamant_orb" and
+                                move.type.dbSymbol in ["steel", "dragon"]) else 0x1000
+            MODGEMS = 0x1800 if (self.item and
+                                 self.item.dbSymbol in gems and
+                                 move.type.dbSymbol == gems[self.item.dbSymbol]) else 0x1000
+            MODFCD = 0x2000 if (move.dbSymbol == "facade" and
+                                self.status["main"] in ["paralysis", "poison", "badly_poisoned", "burn"]) else 0x1000
+            MODBRN = 0x2000 if (move.dbSymbol == "brine" and
+                                target.currentHp <= target.globalStats["hp"]) else 0x1000
+            MODVENO = 0x2000 if (move.dbSymbol == "venoshock" and
+                                 target.status["main"] in ["poison", "badly_poisoned"]) else 0x1000
+            MODRETAL = 0x2000 if (move.dbSymbol == "retaliate" and
+                                  battle_env["targetJustFainted"]) else 0x1000
+            MODFUSIO = 0x2000 if (move.dbSymbol in ["fusion_bolt", "fusion_flare"] and
+                                  battle_env["selfMovesLogs"][-1]["move"] == move.dbSymbol) else 0x1000
+            MODFRST = 0x1800 if battle_env["moveUsedByMeFirst"] else 0x1000
+            MODSLRB = 0x800 if (move.dbSymbol == "solar_beam" and
+                                battle_env["weather"] and
+                                battle_env["weather"] not in ["harsh_sunlight", "extremely_harsh_sunlight"]) else 0x1000
+            MODCHRG = 0x2000 if (battle_env["selfMovesLogs"] and
+                                 battle_env["selfMovesLogs"][-1]["move"] == "charge" and
+                                 move.type.dbSymbol == "electric") else 0x1000
+            MODHH = 0x1800 if battle_env["selfHelpingHand"] else 0x1000
+            MODWTRS = 0x548 if (({"move": "water_sport", "hit": True} in battle_env["selfMovesLogs"] or
+                                 {"move": "water_sport", "hit": True} in battle_env["targetMovesLogs"]) and
+                                move.type.dbSymbol == "fire") else 0x1000
+            MODMUDS = 0x548 if (({"move": "mud_sport", "hit": True} in battle_env["selfMovesLogs"] or
+                                 {"move": "mud_sport", "hit": True} in battle_env["targetMovesLogs"]) and
+                                move.type.dbSymbol == "electric") else 0x1000
+            MODPOWER = chain_up(MODTECH, MODFBST, MODANLT, MODRCKL, MODIFST, MODTBST, MODRVLY, MODSNDF, MODHTPR,
+                                MODDRYS, MODSHRF, MODTYBS, MODMBND, MODPLK, MODWGLS, MODGRTN, MODOINS, MODDLG, MODGEMS,
+                                MODFCD, MODBRN, MODVENO, MODRETAL, MODFUSIO, MODFRST, MODSLRB, MODCHRG, MODHH, MODWTRS,
+                                MODMUDS)
+            POWER = apply_mod(BASEPOWER, MODPOWER)
+
+            PARAMDAMAGE = int(((((2 * self.level) / 5 + 2) * POWER * ATK) / DEFE) / 50 + 2)
+
+            if battle_env["weather"] == "rain":
+                if move.type.count(Type("water")):
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0x1800)
+                elif move.type.count(Type("fire")):
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0x800)
+            elif battle_env["weather"] in ["harsh_sunlight", "extremely_harsh_sunlight"]:
+                if move.type.count(Type("water")):
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0x800)
+                elif move.type.count(Type("fire")):
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0x1800)
+
+            if not target.ability.dbSymbol in ["battle_armor", "shell_armor"] or battle_env["selfLuckyChant"]:
+                critical_hit_factors = [1 / 16, 1 / 8, 1 / 4, 1 / 3, 1 / 2]
+                critical_rate = move.criticalRate
+                if self.ability.dbSymbol == "super_luck":
+                    critical_rate += 1
+                if self.dbSymbol == "Farfetch_d" and self.item and self.item.dbSymbol == "leek":
+                    critical_rate += 2
+                elif self.dbSymbol == "chansey" and self.item and self.item.dbSymbol == "lucky_punch":
+                    critical_rate += 2
+                if self.item and self.item.dbSymbol == "razor_claw":
+                    critical_rate += 1
+                if random.random() <= critical_hit_factors[critical_rate - 1]:
+                    CRIT = True
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, 0X2000)
+
+            PARAMDAMAGE = int((PARAMDAMAGE * (100 - R)) / 100)
+
+            MODSTAB = 0x1800
+            if self.ability.dbSymbol == "adaptability":
+                MODSTAB = 0x2000
+            for t in self.type:
+                if move.type.dbSymbol == t.dbSymbol:
+                    STAB = True
+                    PARAMDAMAGE = apply_mod(PARAMDAMAGE, MODSTAB)
+
+            if TYPEEFFECTIVENESS:
+                if TYPEEFFECTIVENESS > 0:
+                    PARAMDAMAGE = PARAMDAMAGE << abs(TYPEEFFECTIVENESS)
+                elif TYPEEFFECTIVENESS < 0:
+                    PARAMDAMAGE = PARAMDAMAGE >> abs(TYPEEFFECTIVENESS)
+
+            if move.category == "physical" and self.status["main"] == "burn" and self.ability.dbSymbol != "guts":
+                PARAMDAMAGE = PARAMDAMAGE >> 1
+
+            MODRFLCT = 0x800 if (battle_env["targetReflect"] and move.category == "physical" and
+                                 self.ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
+
+            MODLGTSCRN = 0x800 if (battle_env["targetLightScreen"] and move.category == "special" and
+                                   self.ability.dbSymbol != "Infiltrator" and not CRIT) else 0x1000
+
+            MODMLTSCL = 0x800 if target.ability.dbSymbol == "multiscale" and target.currentHp == target.globalStats[
+                "hp"] \
+                else 0x1000
+
+            MODTNTD = 0x2000 if self.ability.dbSymbol == "tinted" and TYPEEFFECTIVENESS < 0 else 0x1000
+
+            MODSNPR = 0x1800 if self.ability.dbSymbol == "sniper" and CRIT else 0x1000
+
+            MODSLDFLTR = 0xC00 if target.ability.dbSymbol in ["solid_rock",
+                                                              "filter"] and TYPEEFFECTIVENESS > 0 else 0x1000
+
+            MODMTRNM = 0x1000
+            n = 0
+            for i in range(len(battle_env["selfMovesLogs"]) - 1, 0, -1):
+                if battle_env["selfMovesLogs"][i]["move"] == move.dbSymbol and battle_env["selfMovesLogs"][i]["hit"]:
+                    n += 1
+                else:
+                    break
+            if n <= 4:
+                MODMTRNM = 0x1000 + n * 0x333
+            elif n > 4:
+                MODMTRNM = 0x2000
+
+            MODXPRTBLT = 0x1333 if self.item and self.item.dbSymbol == "expert_belt" and TYPEEFFECTIVENESS > 0 else 0x1000
+
+            MODLFORB = 0x14CC if self.item and self.item.dbSymbol == "life_orb" else 0x1000
+
+            MODBRY = 0x1000
+            if TYPEEFFECTIVENESS > 0:
+                if target.item and target.item.dbSymbol in berries:
+                    if berries[target.item.dbSymbol]["damageLoweringType"]:
+                        if move.type == berries[target.item.dbSymbol]["type"]:
+                            MODBRY = 0x800
+
+            MODSTMP = 0x2000 if move.dbSymbol == "stomp" and battle_env["targetMinimize"] else 0x1000
+
+            MODRTHQK = 0x2000 if move.dbSymbol == "earthquake" and battle_env["targetChargingDig"] else 0x1000
+
+            MODSRF = 0x2000 if move.dbSymbol == "surf" and battle_env["targetChargingDive"] else 0x1000
+
+            MODSTMRLR = 0x2000 if move.dbSymbol == "steamroller" and battle_env["targetMinimize"] else 0x1000
+
+            LASTMOD = chain_up(MODRFLCT, MODLGTSCRN, MODMLTSCL, MODTNTD, MODSNPR, MODSLDFLTR, MODMTRNM, MODXPRTBLT,
+                               MODLFORB, MODBRY, MODSTMP, MODRTHQK, MODSRF, MODSTMRLR)
+
+            DAMAGE = apply_mod(PARAMDAMAGE, LASTMOD)
+
+        print("power " + str(POWER))
+        print("atk " + str(ATK))
+        print("defe " + str(DEFE))
+        print("crit " + str(CRIT))
+        print("R " + str(R))
+        print("STAB " + str(STAB))
+        print("type effectiveness " + str(TYPEEFFECTIVENESS))
+        print()
+        print("damage " + str(DAMAGE))
+
+        return DAMAGE
+
+    def additional_effects(self, move, target, battle_env):
+        if random.randint(0, 100) <= move.effectChance:
+            if move.boosts:
+                pkmn = self if move.battleModifier == "s_self_stat" else target
+                for stat in move.boosts:
+                    pkmn.boosts[stat] += move.boosts[stat]
+
+                    if pkmn.boosts[stat] > 6:
+                        pkmn.boosts[stat] = 6
+                    elif pkmn.boosts[stat] < -6:
+                        pkmn.boosts[stat] = -6
+
+        for status in move.status:
+            if status:
+                if random.randint(0, 100) <= status["luckRate"]:
+                    if status["status"] in ["FROZEN", "PARALYZED", "ASLEEP", "BURN", "TOXIC"]:
+                        if not self.status["main"]:
+                            self.status["main"] = status["status"]
+                    else:
+                        if not status["status"] in self.status["sec"]:
+                            self.status["sec"].append(status["status"])
+
+    def attack(self, move, target, battle_data):
+
+        if self.can_attack(move, target, battle_data):
+            if self.check_accuracy(move, target, battle_data):
+
+                if move.category != "status":
+                    damage = self.calcul_damage(move, target, battle_data)
+                    target.currentHp -= damage
+                    if target.currentHp < 0:
+                        target.currentHp = 0
+
+                self.additional_effects(move, target, battle_data)

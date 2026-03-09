@@ -1,6 +1,6 @@
 from animationManager import AnimationManager
 from dialogManager import DialogManager
-from battleData import BattleData
+from battleEnv import BattleEnv
 from battleEngine import BattleEngine
 from battleUi import BattleUi
 from battleAi import BattleAi
@@ -26,9 +26,9 @@ class BattleManager:
 
     def config_battle(self):
         self.Opponent = self.Player.Opponent
-        self.Engine = BattleEngine(BattleData)
-        self.Ui = BattleUi(self.Screen, BattleData)
-        self.Ai = BattleAi(BattleData)
+        self.Engine = BattleEngine(BattleEnv)
+        self.Ui = BattleUi(self.Screen, BattleEnv)
+        self.Ai = BattleAi(BattleEnv)
         self.Player.worldCompo = [pkmn.name for pkmn in self.Player.team]
 
     def end_battle(self):

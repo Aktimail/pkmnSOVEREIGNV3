@@ -16,8 +16,8 @@ class DamageCalcEngine:
 
         self.damageValue = 0
 
-    def init_env(self, attacker, defender, move, battle_data):
-        self.Env = DamageCalcEnv(attacker, defender, move, battle_data)
+    def build_env(self, attacker, defender, move, battle_env):
+        self.Env = DamageCalcEnv(attacker, defender, move, battle_env)
 
     @staticmethod
     def apply_mod(value, mod):
@@ -48,7 +48,7 @@ class DamageCalcEngine:
         self.resolve_trigger("specialCasesRules")
 
     def set_weather_mod(self):
-        if self.Env.battleData.weather in ("rain", "sunny") and self.Env.move.get_type() in ("water", "fire"):
+        if self.Env.battleEnv.weather in ("rain", "sunny") and self.Env.move.get_type() in ("water", "fire"):
             self.resolve_trigger("weatherRules")
             weather_mods_table = {
                 "rain": {
@@ -60,7 +60,7 @@ class DamageCalcEngine:
                     "fire": 0x1800
                 }
             }
-            self.Env.weatherFinalMod = weather_mods_table[self.Env.battleData.weather][self.Env.move.get_type()]
+            self.Env.weatherFinalMod = weather_mods_table[self.Env.battleEnv.weather][self.Env.move.get_type()]
 
     def set_critical_hit(self, ignore=False):
         if not ignore:
@@ -153,7 +153,8 @@ class DamageCalcEngine:
         self.damageValue = ((((2 * self.atkLvlParam) // 5 + 2)
                              * self.basePowerParam * self.atkStatParam) // self.defeStatParam) // 50 + 2
 
-    def calcul_damage(self, ignore_crit=False, const_r=False):
+    def calcul_damage(self, attacker, defender, move, battle_env, ignore_crit=False, const_r=False):
+        self.build_env(attacker, defender, move, battle_env)
         self.collect_methods()
 
         self.check_special_cases()
@@ -199,5 +200,8 @@ class DamageCalcEngine:
 
             if self.Env.damageFactor:
                 self.damageValue = int(self.damageValue * self.Env.damageFactor)
+
+        else:
+            self.damageValue = self.Env.damageValueOverride
 
             print(self.damageValue)
