@@ -21,7 +21,6 @@ class NPC(Entity):
             self.team = self.init_team(data["team"])
             self.battleSide = data["battleSide"]
             self.battleSlot = data["battleSlot"]
-            self.battleAlly = data["battleAlly"]
 
         self.direction = data["direction"]
 

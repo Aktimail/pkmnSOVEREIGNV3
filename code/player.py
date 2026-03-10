@@ -24,22 +24,27 @@ class Player(Entity):
         self.spritesheet = self.all_spritesheet["walk"]
         self.sprite_update()
 
-        self.team = [Pokemon("bronzong", 100, {
-            "ability": "heatproof",
-            "moveset": ["frustration", "fire_punch"],
-            "nature": "adamant",
-            "ivs": {
-                "hp": 31,
-                "atk": 31,
-                "defe": 31,
-                "aspe": 31,
-                "dspe": 31,
-                "spd": 31
-            },
-        }),
+        self.team = [Pokemon("bronzong", 100,
+                             {
+                                 "ability": "heatproof",
+                                 "moveset": ["frustration", "fire_punch"],
+                                 "nature": "adamant",
+                                 "ivs":
+                                     {
+                                         "hp": 31,
+                                         "atk": 31,
+                                         "defe": 31,
+                                         "aspe": 31,
+                                         "dspe": 31,
+                                         "spd": 31
+                                     },
+                             }
+                             ),
                      Pokemon("pikachu", 50),
                      Pokemon("chandelure", 75)
                      ]
+        self.ally = None
+        self.opponent = None
 
         self.Inventory = Inventory()
 

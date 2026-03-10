@@ -1,6 +1,6 @@
 class SETTINGS:
     fr, en = 1, 2
-    LANGUAGE = fr
+    LANGUAGE = en
 
     DISPLAY_SIZE = (1280, 720)
     FRAMERATE = 60

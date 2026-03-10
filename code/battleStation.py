@@ -1,6 +1,6 @@
 class BattleStation:
-    def __init__(self, owner, side, party, pkmn_slots):
+    def __init__(self, owner):
         self.owner = owner
-        self.side = side
-        self.party = party
-        self.pkmnSlots = pkmn_slots
+        self.side = owner.battleSide
+        self.party = owner.battleParty
+        self.pkmnSlots = owner.battleSlots

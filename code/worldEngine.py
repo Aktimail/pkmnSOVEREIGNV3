@@ -12,7 +12,6 @@ from map import Map
 from npc import NPC
 from item import Item
 from dynamicTile import DynamicTile
-from battleStation import BattleStation
 from tool import Tool
 
 
@@ -193,22 +192,11 @@ class WorldEngine:
                 if self.Player.facingTile == npc.hitbox:
                     npc.facing_entity(self.Player)
                     self.Player.npcsEncountered.append(npc.dbSymbol)
-                    self.DialogManager.open_dialog(self.Player, npc.dbSymbol,
-                                                   context={
-                                                       "spkname": npc.name,
-                                                       "spklead": npc.get_active_pkmn().name if npc.get_active_pkmn()
-                                                       else 0
-                                                   })
+                    self.DialogManager.open_dialog(self.Player, npc)
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
-                        self.Player.battleStations.append(BattleStation(self.Player, 0, self.Player.team, npc.battleSlot))
-                        self.Player.battleStations.append(BattleStation(npc, npc.battleSide, npc.team, npc.battleSlot))
-                        if npc.battleAlly:
-                            for ally in self.npcs:
-                                if ally.dbSymbol == npc.battleAlly:
-                                    self.Player.battleStations.append(
-                                        BattleStation(ally, ally.battleSide, ally.team, ally.battleSlot))
                         self.switchGameStateQuery = True
+                    return
 
             for item in self.items:
                 spot = self.Player.facingTile if item["shown"] else self.Player.hitbox
@@ -225,16 +213,15 @@ class WorldEngine:
                     self.Player.Inventory.add_item(item["item"])
                     self.Player.collectedItems.append(item["worldId"])
 
-                    self.DialogManager.open_dialog(self.Player, "item",
-                                                   context={
-                                                       "itemname": item["item"].dbSymbol
-                                                   })
+                    self.DialogManager.open_dialog(self.Player, item["item"])
+                    return
 
             for tile in self.dynamicsTiles:
                 if tile.dbSymbol == "water":
                     if self.Player.facingTile == tile.rect:
                         if tile.rect in self.collisions:
                             self.DialogManager.open_dialog(self.Player, "water")
+                    return
 
     def check_ext_interaction(self):
         if not self.Player.inMotion:

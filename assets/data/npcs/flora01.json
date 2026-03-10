@@ -4,6 +4,8 @@
   "name": "Flora",
   "spritesheet": "hero_02",
   "direction": "up",
+
+  "dialogOutput": "battle",
   "team": [
     {
       "name": "arceus",
@@ -27,7 +29,6 @@
       }
     }
   ],
-  "battleSide": 1,
-  "battleSlot": 1,
-  "battleAlly": null
+  "battleSide": "opponent",
+  "battleSlot": 1
 }

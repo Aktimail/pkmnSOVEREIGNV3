@@ -16,16 +16,20 @@ class DialogManager:
         self.timer = 0
         self.skip_time = 800
 
+        self.dialogSource = None
+
         self.reading = False
 
-    def open_dialog(self, player, dbsymbol, context=None):
-        self.Dialog = Dialog(player, dbsymbol, context)
+    def open_dialog(self, player, src):
+        self.Dialog = Dialog(player, src)
         self.Dialog.load_dialog()
         self.Dialog.update_tags()
         self.Dialog.format_text()
+        self.dialogSource = src
         self.reading = True
 
     def close_dialog(self):
+        self.Dialog.dialogOutput
         self.reading = False
 
     def update(self):

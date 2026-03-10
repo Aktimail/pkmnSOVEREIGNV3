@@ -1,5 +1,6 @@
 import pygame
 
+from battleStation import BattleStation
 from settings import SETTINGS
 from entityDestinations import entitiesDestinations
 from tool import Tool
@@ -20,8 +21,7 @@ class Entity(pygame.sprite.Sprite):
 
         self.team = []
         self.battleSide = 0
-        self.battleSlot = 0
-        self.battleAlly = None
+        self.battleSlots = 0
         self.worldCompo = None
         self.battleStations = []
         self.publicData = {}

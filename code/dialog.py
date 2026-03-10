@@ -5,11 +5,13 @@ from settings import SETTINGS
 
 
 class Dialog:
-    def __init__(self, player, dbsymbol, context=None):
+    def __init__(self, player, src):
         self.Player = player
-        self.dbSymbol = dbsymbol
-
-        self.context = context
+        self.src = src
+        if type(src) is str:
+            self.dialogDbSymbole = src
+        else:
+            self.dialogDbSymbole = src.dbSymbol
 
         self.txt_size = 32
         self.txt_color = (0, 0, 0)
@@ -24,27 +26,32 @@ class Dialog:
         self.txt_progression = 0
         self.line_idx = 0
 
+        self.dialogOutput = self.check_output()
+
         self.writing = True
 
     def load_dialog(self):
         with open("../assets/dialogs/dialogs.csv", 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                if row[1] == self.dbSymbol:
+                if row[1] == self.dialogDbSymbole:
                     if self.check_condition(row[4]):
                         self.text = row[SETTINGS.LANGUAGE+1]
 
     def update_tags(self):
-        if "<playername>" in self.text:
+        if "<playerName>" in self.text:
             self.text = self.text.replace("<playername>", self.Player.name)
-        if "<playerlead>" in self.text:
-            self.text = self.text.replace("<playerlead>", self.Player.get_active_pkmn().name)
+        if "<playerLead>" in self.text:
+            self.text = self.text.replace("<playerLead>", self.Player.get_active_pkmn().name)
+        if "<speakerName>" in self.text:
+            self.text = self.text.replace("<speakerName>", self.src.name)
+        if "<speakerLead>" in self.text:
+            self.text = self.text.replace("<speakerLead>", self.src.get_active_pkmn().name)
+        if "<pkmnName>" in self.text:
+            self.text = self.text.replace("<pkmnName>", self.src.name)
+        if "<itemName>" in self.text:
+            self.text = self.text.replace("<itemName>", self.src.dbSymbol)
 
-        if self.context:
-            for key, value in self.context.items():
-                tag = f"<{key}>"
-                if tag in self.text:
-                    self.text = self.text.replace(tag, value)
 
     def format_text(self):
         space_width = self.font.render(" ", True, self.txt_color).get_width()
@@ -107,9 +114,12 @@ class Dialog:
         if not condition:
             return True
         elif condition == "defeated":
-            if self.dbSymbol in self.Player.trainersDefeated:
+            if self.src.dbSymbol in self.Player.trainersDefeated:
                 return True
         elif condition == "second":
-            if self.dbSymbol in self.Player.npcsEncountered:
+            if self.src.dbSymbol in self.Player.npcsEncountered:
                 return True
         return False
+
+    def check_output(self):
+        return self.src
