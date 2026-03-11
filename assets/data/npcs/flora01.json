@@ -5,7 +5,7 @@
   "spritesheet": "hero_02",
   "direction": "up",
 
-  "dialogOutput": "battle",
+  "event": "battle",
   "team": [
     {
       "name": "arceus",

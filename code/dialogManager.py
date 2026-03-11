@@ -20,8 +20,8 @@ class DialogManager:
 
         self.reading = False
 
-    def open_dialog(self, player, src):
-        self.Dialog = Dialog(player, src)
+    def open_dialog(self, player, src, speaker=None):
+        self.Dialog = Dialog(player, src, speaker=speaker)
         self.Dialog.load_dialog()
         self.Dialog.update_tags()
         self.Dialog.format_text()

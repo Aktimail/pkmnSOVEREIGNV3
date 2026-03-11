@@ -4,6 +4,6 @@
 "npc","flora02","Salut la compagnie !","Hello everyone !","","","",""
 "npc","flora02","Quoi t'as pas entendu ?","What, you didn't hear me ?","second","","",""
 "battle","wildPkmn","Un <pkmnName> sauvage apparaît !","Wild <pkmnName> appears !","","","",""
-"event","item","<itemName> trouvé","<itemName> found","","","",""
+"event","itemFound","<itemName> trouvé","<itemName> found","","","",""
 "event","water","ca donne envie d aller a l ile de Re","the water is so clear","","","",""
 "event","bike","pas dvelo narvalo","no bike here","","","",""

@@ -192,7 +192,7 @@ class WorldEngine:
                 if self.Player.facingTile == npc.hitbox:
                     npc.facing_entity(self.Player)
                     self.Player.npcsEncountered.append(npc.dbSymbol)
-                    self.DialogManager.open_dialog(self.Player, npc)
+                    self.DialogManager.open_dialog(self.Player, npc.dbSymbol, speaker=npc)
 
                     if npc.team and npc.dbSymbol not in self.Player.trainersDefeated:
                         self.switchGameStateQuery = True
@@ -213,7 +213,7 @@ class WorldEngine:
                     self.Player.Inventory.add_item(item["item"])
                     self.Player.collectedItems.append(item["worldId"])
 
-                    self.DialogManager.open_dialog(self.Player, item["item"])
+                    self.DialogManager.open_dialog(self.Player, "itemFound", speaker=item["item"])
                     return
 
             for tile in self.dynamicsTiles:

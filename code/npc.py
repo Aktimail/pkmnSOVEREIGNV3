@@ -17,10 +17,7 @@ class NPC(Entity):
         self.spritesheet = f"../assets/graphics/spritesheets/{data["spritesheet"]}.png"
         self.sprite_update()
 
-        if "team" in data:
-            self.team = self.init_team(data["team"])
-            self.battleSide = data["battleSide"]
-            self.battleSlot = data["battleSlot"]
+        self.event = data["event"]
 
         self.direction = data["direction"]
 
