@@ -35,7 +35,7 @@ class Dialog:
                     if self.check_condition(row[4]):
                         self.text = row[SETTINGS.LANGUAGE+1]
 
-    def update_tags(self):
+    def parse_tokens(self):
         if "<playerName>" in self.text:
             self.text = self.text.replace("<playername>", self.Player.name)
         if "<playerLead>" in self.text:
@@ -75,23 +75,6 @@ class Dialog:
                     form_line.append(concat_txt)
             form_txt.append(form_line)
         self.text = form_txt
-
-    def render_text(self, screen, x, y):
-        for idx, line in enumerate(self.text[self.txt_idx]):
-            if self.line_idx == idx:
-                z = self.txt_gap if self.line_idx else 0
-                text = self.font.render(line[:int(self.txt_progression)], True, self.txt_color)
-                screen.display.blit(text, (x, y + z))
-            elif self.line_idx > idx >= self.line_idx - 1:
-                text = self.font.render(line, True, self.txt_color)
-                screen.display.blit(text, (x, y))
-
-        self.txt_progression += self.txt_spd
-        if self.txt_progression >= len(self.text[self.txt_idx][self.line_idx]):
-            self.writing = False
-            if self.line_idx < len(self.text[self.txt_idx]) - 1 and self.line_idx < 1:
-                self.txt_progression = 0
-                self.line_idx += 1
 
     def next_text(self):
         if self.text:

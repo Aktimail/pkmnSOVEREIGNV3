@@ -23,7 +23,7 @@ class DialogManager:
     def open_dialog(self, player, src, speaker=None):
         self.Dialog = Dialog(player, src, speaker=speaker)
         self.Dialog.load_dialog()
-        self.Dialog.update_tags()
+        self.Dialog.parse_tokens()
         self.Dialog.format_text()
         self.dialogSource = src
         self.reading = True
@@ -34,7 +34,7 @@ class DialogManager:
 
     def update(self):
         self.Ui.render_box()
-        self.Dialog.render_text(self.Screen, 140, 575)
+        self.Ui.render_dialog(self.Dialog, 140, 575)
         self.check_inputs()
 
     def check_auto_skip(self):

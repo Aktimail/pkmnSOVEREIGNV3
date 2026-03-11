@@ -17,7 +17,7 @@ class NPC(Entity):
         self.spritesheet = f"../assets/graphics/spritesheets/{data["spritesheet"]}.png"
         self.sprite_update()
 
-        self.event = data["event"]
+        self.event = None
 
         self.direction = data["direction"]
 
