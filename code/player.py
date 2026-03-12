@@ -43,6 +43,8 @@ class Player(Entity):
                      Pokemon("pikachu", 50),
                      Pokemon("chandelure", 75)
                      ]
+        self.worldCompo = []
+        self.get_back_world_comp()
         self.ally = None
         self.opponent = None
 
@@ -112,6 +114,22 @@ class Player(Entity):
                 self.switch_walk()
                 self.bike = False
                 self.speed = SETTINGS.WALK_SPEED
+
+    def get_back_world_comp(self):
+        world_compo = []
+        for name in self.worldCompo:
+            for pkmn in self.team:
+                if pkmn.name == name:
+                    world_compo.append(pkmn)
+                    break
+        self.team = world_compo
+
+    def is_aligned(self):
+        if self.position.x % 16:
+            return False
+        if self.position.y % 16:
+            return False
+        return True
 
     def save_player(self):
         return {

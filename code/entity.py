@@ -20,9 +20,6 @@ class Entity(pygame.sprite.Sprite):
         self.shadow = pygame.image.load("../assets/graphics/spritesheets/shadow.png")
 
         self.team = []
-        self.worldCompo = None
-        self.battleStations = []
-        self.publicData = {}
 
         self.direction = "down"
         self.stepProgression = 0
@@ -169,19 +166,3 @@ class Entity(pygame.sprite.Sprite):
 
     def get_active_pkmn(self):
         return self.team[0] if self.team else 0
-
-    def get_back_world_comp(self):
-        world_compo = []
-        for name in self.worldCompo:
-            for pkmn in self.team:
-                if pkmn.name == name:
-                    world_compo.append(pkmn)
-                    break
-        self.team = world_compo
-
-    def is_aligned(self):
-        if self.position.x % 16:
-            return False
-        if self.position.y % 16:
-            return False
-        return True

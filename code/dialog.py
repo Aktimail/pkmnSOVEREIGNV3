@@ -5,10 +5,12 @@ from settings import SETTINGS
 
 
 class Dialog:
-    def __init__(self, player, src, speaker=None):
+    def __init__(self, player, src, speaker=None, item=None, pkmn=None):
         self.Player = player
         self.src = src
         self.speaker = speaker
+        self.item = item
+        self.pkmn = pkmn
 
         self.txt_size = 32
         self.txt_color = (0, 0, 0)
@@ -22,8 +24,6 @@ class Dialog:
         self.txt_idx = 0
         self.txt_progression = 0
         self.line_idx = 0
-
-        self.dialogOutput = self.check_output()
 
         self.writing = True
 
@@ -46,10 +46,13 @@ class Dialog:
                 self.text = self.text.replace("<speakerName>", self.speaker.name)
             if "<speakerLead>" in self.text:
                 self.text = self.text.replace("<speakerLead>", self.speaker.get_active_pkmn().name)
-            if "<pkmnName>" in self.text:
-                self.text = self.text.replace("<pkmnName>", self.speaker.name)
+        if self.item:
             if "<itemName>" in self.text:
-                self.text = self.text.replace("<itemName>", self.speaker.dbSymbol)
+                self.text = self.text.replace("<itemName>", self.item.dbSymbol)
+
+        if self.pkmn:
+            if "<pkmnName>" in self.text:
+                self.text = self.text.replace("<pkmnName>", self.pkmn.name)
 
 
     def format_text(self):
@@ -102,6 +105,3 @@ class Dialog:
             if self.src in self.Player.npcsEncountered:
                 return True
         return False
-
-    def check_output(self):
-        return self.src

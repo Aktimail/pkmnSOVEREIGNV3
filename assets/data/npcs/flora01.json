@@ -4,8 +4,6 @@
   "name": "Flora",
   "spritesheet": "hero_02",
   "direction": "up",
-
-  "event": "battle",
   "team": [
     {
       "name": "arceus",
@@ -28,7 +26,5 @@
         "nature": "mild"
       }
     }
-  ],
-  "battleSide": "opponent",
-  "battleSlot": 1
+  ]
 }

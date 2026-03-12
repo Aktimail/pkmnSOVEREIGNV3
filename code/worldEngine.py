@@ -213,7 +213,7 @@ class WorldEngine:
                     self.Player.Inventory.add_item(item["item"])
                     self.Player.collectedItems.append(item["worldId"])
 
-                    self.DialogManager.open_dialog(self.Player, "itemFound", speaker=item["item"])
+                    self.DialogManager.open_dialog(self.Player, "itemFound", item=item["item"])
                     return
 
             for tile in self.dynamicsTiles:

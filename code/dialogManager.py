@@ -20,8 +20,8 @@ class DialogManager:
 
         self.reading = False
 
-    def open_dialog(self, player, src, speaker=None):
-        self.Dialog = Dialog(player, src, speaker=speaker)
+    def open_dialog(self, player, src, speaker=None, item=None, pkmn=None):
+        self.Dialog = Dialog(player, src, speaker=speaker, item=item, pkmn=pkmn)
         self.Dialog.load_dialog()
         self.Dialog.parse_tokens()
         self.Dialog.format_text()
@@ -29,7 +29,6 @@ class DialogManager:
         self.reading = True
 
     def close_dialog(self):
-        self.Dialog.dialogOutput
         self.reading = False
 
     def update(self):
