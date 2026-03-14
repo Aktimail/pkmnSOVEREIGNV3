@@ -4,6 +4,8 @@
   "name": "Flora",
   "spritesheet": "hero_02",
   "direction": "up",
+  "dialogDbSymbol": "flora01",
+  "event": "battle",
   "team": [
     {
       "name": "arceus",
@@ -26,5 +28,6 @@
         "nature": "mild"
       }
     }
-  ]
+  ],
+  "postBattleDialog": true
 }

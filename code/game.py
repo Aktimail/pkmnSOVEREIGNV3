@@ -8,7 +8,7 @@ from keyboard import Keyboard
 from cursor import Cursor
 from controller import Controller
 
-from worldEngine import WorldEngine
+from worldManager import WorldManager
 from battleManager import BattleManager
 from player import Player
 
@@ -29,7 +29,7 @@ class Game:
             self.Keyboard,
             self.Controller
         )
-        self.WorldEngine = WorldEngine(
+        self.WorldManager = WorldManager(
             self.Screen,
             self.Keyboard,
             self.Controller,
@@ -45,7 +45,7 @@ class Game:
 
         self.load_data()
 
-        self.gameState = self.WorldEngine
+        self.gameState = self.WorldManager
 
         self.running = True
 
@@ -60,12 +60,12 @@ class Game:
         if self.gameState.switchGameStateQuery:
             if not self.gameState.DialogManager.reading:
 
-                if self.gameState == self.WorldEngine:
+                if self.gameState == self.WorldManager:
                     self.gameState = self.BattleManager
                     self.gameState.config_battle(self.Player.battleStations)
 
                 elif self.gameState == self.BattleManager:
-                    self.gameState = self.WorldEngine
+                    self.gameState = self.WorldManager
 
                 self.gameState.switchGameStateQuery = False
 
@@ -102,7 +102,7 @@ class Game:
             pathlib.Path("../save/player.data").touch()
 
         with open("../save/map.data", "w") as file:
-            file.write(json.dumps(self.WorldEngine.save_map()))
+            file.write(json.dumps(self.WorldManager.save_map()))
 
         with open("../save/player.data", "w") as file:
             file.write(json.dumps(self.Player.save_player()))
@@ -113,6 +113,6 @@ class Game:
             map_data = json.load(open("../save/map.data"))
 
             self.Player.load_player(player_data)
-            self.WorldEngine.load_map(map_data)
+            self.WorldManager.load_map(map_data)
         else:
-            self.WorldEngine.switch_map("Saint-Rémy")
+            self.WorldManager.switch_map("Saint-Rémy")

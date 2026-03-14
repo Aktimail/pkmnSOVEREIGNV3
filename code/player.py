@@ -44,7 +44,6 @@ class Player(Entity):
                      Pokemon("chandelure", 75)
                      ]
         self.worldCompo = []
-        self.get_back_world_comp()
         self.ally = None
         self.opponent = None
 

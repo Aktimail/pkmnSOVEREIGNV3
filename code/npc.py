@@ -17,6 +17,10 @@ class NPC(Entity):
         self.spritesheet = f"../assets/graphics/spritesheets/{data["spritesheet"]}.png"
         self.sprite_update()
 
+        self.dialogDbSymbol = data["dialogDbSymbol"]
+
+        self.team = self.init_team(data["team"])
+
         self.direction = data["direction"]
 
         self.scanRange = data["scan"] if "scan" in data else None

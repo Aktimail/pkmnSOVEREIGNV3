@@ -3,5 +3,12 @@
   "dbsymbol": "flora02",
   "name": "Flora",
   "spritesheet": "hero_02",
-  "direction": "left"
+  "direction": "left",
+  "dialogDbSymbol": "flora02",
+  "team": [
+    {
+      "name": "arceus",
+      "lvl": 100
+    }
+  ]
 }

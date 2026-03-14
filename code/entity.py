@@ -1,6 +1,5 @@
 import pygame
 
-from battleStation import BattleStation
 from settings import SETTINGS
 from entityDestinations import entitiesDestinations
 from tool import Tool
